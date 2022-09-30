@@ -1,0 +1,43 @@
+.ChannelButton {
+    display: flex;
+}
+
+.ChannelButton:hover {
+    background: rgba(0, 0, 255, 0.5);
+}
+
+.Variable {
+    color: blue;
+}
+
+.Tag {
+    color: white;
+    background: rgba(255, 192, 203, 1.0);
+}
+
+.Beige_Mat {
+    background: rgba(231, 208, 169, 1.0);
+}
+
+.RzH1 {
+    color: white;
+    background: linear-gradient(90deg, rgba(200, 200, 200, 1.0), rgba(255, 255, 255, 0.5));
+}
+
+.RzH2 {
+    color: white;
+    background: linear-gradient(90deg, rgba(200, 200, 200, 1.0), rgba(255, 255, 255, 0.5));
+}
+
+.RzH3Ex {
+    color: black;
+    font-weight: bold;
+}
+
+.LimeMarker {
+    background: linear-gradient(transparent 40%, rgb(0, 255, 0) 80%);
+}
+
+.Chunk {
+    background: rgba(240, 240, 240, 1.0);
+}
