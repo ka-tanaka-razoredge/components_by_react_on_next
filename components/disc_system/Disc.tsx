@@ -40,17 +40,25 @@ export default (props: { identifier: string }, ref) => {
   };
 
   const drawFront = () => {
+    const buildTransform = () => {
+      let reply = 'rotateX(-90deg) translateY(-25px) translateZ(-50px)';
+      if (props.height && props.width) {
+        if (props.width === 400 && props.height === 225) reply = 'rotateX(-90deg) translateX(20px) translateY(-100px) translateZ(-160px)';
+      }
+      return reply;
+    };
+
     if (!props.isBottomOnly) {
       let t = 'title' in props ? props.title : '';
       return (
         <div
           style={{
-            transformStyle: 'preserve-3d',
+//            transformStyle: 'preserve-3d',
             border: 'solid 1px lime',
             //          position: 'relative',
-            width: 100 + 'px',
-            height: 50 + 'px',
-            transform: 'rotateX(-90deg) translateY(-25px) translateZ(-50px)'
+            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            height: (props.height) ? props.height + 'px' : 50 + 'px',
+            transform: 'rotateX(180deg)'
           }}
           dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
           title={t}
@@ -60,7 +68,7 @@ export default (props: { identifier: string }, ref) => {
       return null;
     }
   };
-
+  
   return (
     <div
       ref={base}
@@ -69,14 +77,23 @@ export default (props: { identifier: string }, ref) => {
         transformStyle: 'preserve-3d',
         border: '1px solid orange',
         height: 10 + 'px',
-        width: 100 + 'px',
+        width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
         position: 'absolute'
       }}
     >
       {drawBottomInner()}
-      {drawFront()}
+      <div
+        style={{
+          position: 'absolute',
+          width: (props.width) ? props.width + 'px' : 100 + 'px',
+          top: '0px',
+          height: '1px',
+          transform: 'rotateX(90deg)'
+        }}>
+          {drawFront()}
+      </div>
     </div>
   );
 };

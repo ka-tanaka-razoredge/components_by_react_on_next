@@ -148,7 +148,7 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
         transform: 'rotateY(40deg) rotateX(60deg)',
       }}
     >
-      <canvas id="tank-canvas" width={800} height={450}></canvas>
+      <canvas id="tank-canvas" width={800} height={400}></canvas>
       {discsRef.current.map((disc: { identifier }, index) => {
         if (discsRef.current.indexOf(disc.identifier) == -1) {
           if ('type' in disc === false || disc.type === 'Disc') {
@@ -158,6 +158,8 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 contentsForFrontInner={disc.contentsForFrontInner}
                 contentsForBottomInner={disc.contentsForBottomInner}
                 title={disc.title}
+                height={disc.height}
+                width={disc.width}
               />
             );
           } else if (disc.type === 'Sail') {
