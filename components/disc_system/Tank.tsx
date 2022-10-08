@@ -20,6 +20,9 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
     setDiscs(discs);
   };
   const [context, setContext] = useState(null);
+  let width = (props?.width) ? props.width : 800;
+  let height = (props?.height) ? props.height : 400;
+  let left = (props?.left) ? props.left : 50;
 
   // useImperativeHandle(ref, () => ({}));
 
@@ -33,12 +36,12 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
         context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
         context.beginPath();
         context.moveTo(e.detail.left, 0);
-        context.lineTo(e.detail.left, 800);
+        context.lineTo(e.detail.left, width);
         context.stroke();
         context.closePath();
         context.beginPath();
         context.moveTo(e.detail.left + e.detail.width, 0);
-        context.lineTo(e.detail.left + e.detail.width, 800);
+        context.lineTo(e.detail.left + e.detail.width, width);
         context.stroke();
         context.closePath();
       });
@@ -141,14 +144,14 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
         transformStyle: 'preserve-3d',
         perspective: 1600 + 'px',
         border: '1px solid red',
-        width: 800 + 'px',
-        height: 450 + 'px',
+        width: width + 'px',
+        height: height + 'px',
         position: 'relative',
-        left: 50 + 'px',
+        left: left + 'px',
         transform: 'rotateY(40deg) rotateX(60deg)',
       }}
     >
-      <canvas id="tank-canvas" width={800} height={400}></canvas>
+      <canvas id="tank-canvas" width={width} height={height}></canvas>
       {discsRef.current.map((disc: { identifier }, index) => {
         if (discsRef.current.indexOf(disc.identifier) == -1) {
           if ('type' in disc === false || disc.type === 'Disc') {

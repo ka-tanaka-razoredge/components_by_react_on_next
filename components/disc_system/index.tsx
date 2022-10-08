@@ -41,8 +41,8 @@ export default forwardRef((props, ref) => {
   };
   
   return (
-    <div>
-      <Tank ref={ tank } />
+    <div style={{ position: 'absolute', top: -150, left: 150 }}>
+      <Tank ref={ tank } width={ props.width } height={ props.height } />
     </div>
   )
 })
