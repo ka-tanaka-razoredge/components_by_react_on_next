@@ -40,7 +40,7 @@ export default forwardRef((props, ref) => {
   
   return (
     <div>
-      <div>
+      <div className={ props.classes }>
         JSON:<br />
         <textarea ref={ textarea } cols='1000' rows='1000' style={{ width: '1000px', height: '250px' }} onChange={ (e) => { setJson(e.target.value);  } } value={ json }></textarea><br />
         <input type='button' value='apply' onClick={ (e) => { apply(); } } />

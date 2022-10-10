@@ -28,7 +28,7 @@ export default forwardRef((props ,ref) => {
   }
 
   return (
-    <div ref={ ref } style={ props.style }>
+    <div ref={ ref } className={ props.classes } style={ props.style }>
       <div>
         identifier:<br />
         <input id='new-id' type='text' /><br />
@@ -44,27 +44,33 @@ export default forwardRef((props ,ref) => {
       </div>
       <br />
       <br />
-      <div style={{ border: '1px solid red' }} onClick={ (e) => { apply() } }>apply</div>
-    {
-      aggregate.map((v) => {
-        return (
-          <div style={{ display: 'flex'}}>
-            <div>{ v.identifier }</div>
-            <input id={ v.identifier + '-top' } type='text' defaultValue={ v.top } />
-            <input id={ v.identifier + '-left' } type='text' defaultValue={ v.left } />
-            <input type='button'
-              onClick={
-                (e) => { apply({
-                  identifier: v.identifier,
-                  top: document.getElementById(`${v.identifier}-top`).value,
-                  left: document.getElementById(`${v.identifier}-left`).value
-                }) }
-              }
-            />
-          </div>
-        )
-      })
-    }
+      <div>
+        <div className='SilverGraduation' style={{ color: 'red', border: '1px solid white' }} onClick={ (e) => { apply() } }>apply</div>
+        <div>
+        {
+          aggregate.map((v) => {
+            return (
+              <div>
+                <div style={{ display: 'flex'}}>
+                  <div style={{ height: '10px', minWidth: '100px', maxWidth: '100px', whiteSpace: 'nowrap', textOverflow: 'fade' }}>{ v.identifier }</div>
+                  <input id={ v.identifier + '-top' } type='text' defaultValue={ v.top } style={{ width: '100px' }} />
+                  <input id={ v.identifier + '-left' } type='text' defaultValue={ v.left } style={{ width: '100px' }} />
+                  <input type='button'
+                    onClick={
+                      (e) => { apply({
+                        identifier: v.identifier,
+                        top: document.getElementById(`${v.identifier}-top`).value,
+                        left: document.getElementById(`${v.identifier}-left`).value
+                      }) }
+                    }
+                  />
+                </div>
+              </div>
+            )
+          })
+        }
+        </div>
+      </div>
     </div>
-  )
+  );
 })
