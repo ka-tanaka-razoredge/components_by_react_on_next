@@ -5,7 +5,7 @@ import MetalTape from './MetalTape';
 import Magazine from './Magazine';
 //import MagazineB from './Magazine_b';
 import Sail from './Sail';
-//import Cube from './Cube';
+import Cube from './Cube';
 import Timecode from './Timecode';
 
 
@@ -53,6 +53,27 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
       ref.current.addEventListener('moveY', (e) => {
         return moveY(e.detail);
       });
+      //--------------------------------------------------------------------------------
+      // begin ooRef provider only
+      //--------------------------------------------------------------------------------
+      ref.current.getDiscs = () => {
+        return discsRef.current;
+      };
+      
+      ref.current.setDisc = (value) => {
+      };
+      
+      ref.current.clearAllDiscs = () => {
+        setDiscEx([]);
+      };
+      
+      ref.current.setAllDiscs = (lop) => {
+        console.log(JSON.parse(lop.value, null, 2));
+        setDiscEx(JSON.parse(lop.value));
+      }
+      //--------------------------------------------------------------------------------
+      // end
+      //--------------------------------------------------------------------------------
 
       const canvas = document.getElementById('tank-canvas');
       console.log('---- useEffect ----');
@@ -163,6 +184,8 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 title={disc.title}
                 height={disc.height}
                 width={disc.width}
+                left={disc.left}
+                top={disc.top}
               />
             );
           } else if (disc.type === 'Sail') {
@@ -179,7 +202,14 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
             );
           } else if (disc.type === 'Cube') {
             return (
-              <div></div>
+              <Cube
+                identifier={disc.identifier}
+                //                contentsForFrontInner={disc.contentsForFrontInner}
+                //                title={disc.title}
+                top={disc.top}
+                left={disc.left}
+                z={disc.z}
+              />
             );
           } else if (disc.type === 'MetalTape') {
             return (

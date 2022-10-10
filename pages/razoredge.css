@@ -22,11 +22,16 @@
 .RzH1 {
     color: white;
     background: linear-gradient(90deg, rgba(200, 200, 200, 1.0), rgba(255, 255, 255, 0.5));
+    font-family: "Times new roman";
+    font-size: 36px;
+    height: 48px;
+    line-height: 48px;
 }
 
 .RzH2 {
     color: white;
     background: linear-gradient(90deg, rgba(200, 200, 200, 1.0), rgba(255, 255, 255, 0.5));
+    font-family: "Times new roman";
 }
 
 .RzH3Ex {
