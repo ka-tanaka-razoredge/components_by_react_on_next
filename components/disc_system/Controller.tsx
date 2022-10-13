@@ -34,7 +34,12 @@ export default forwardRef((props, ref) => {
   };
 
   const save = async () => {
-    await axios.get(`https://razor-edge.net/cakephp-2.4.4/sailing_ships/save?id=${ id }&name=${ name }&json=${ encodeURIComponent(json) }`);
+    let params = new URLSearchParams();
+    params.append('id', id);
+    params.append('name', name);
+    params.append('json', json);
+//    params.append('json', encodeURIComponent(json));
+    await axios.post(`https://razor-edge.net/cakephp-2.4.4/sailing_ships/save`, params);
   };
   
   
@@ -45,7 +50,7 @@ export default forwardRef((props, ref) => {
         <textarea ref={ textarea } cols='1000' rows='1000' style={{ width: '1000px', height: '250px' }} onChange={ (e) => { setJson(e.target.value);  } } value={ json }></textarea><br />
         <input type='button' value='apply' onClick={ (e) => { apply(); } } />
         <input type='button' value='fetch' onClick={ (e) => { fetch(); } } /><br />
-        id:&nbsp;<input type='text' onChange={ (e) => { setId(parseInt(e.target.value)); } } value={ id } />
+        id:&nbsp;<input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
         name:&nbsp;<input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } /><br />
         <input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } />
         <input type='button' value='save' onClick={ (e) => { save(); } } />

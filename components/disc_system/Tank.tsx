@@ -7,6 +7,7 @@ import Magazine from './Magazine';
 import Sail from './Sail';
 import Cube from './Cube';
 import Timecode from './Timecode';
+import DiscForDcoml from './DiscForDcoml';
 
 
 export default React.forwardRef((props: { identifier: string }, ref) => {
@@ -231,6 +232,17 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 height={disc.height}
               />
             );
+          } else if (disc.type === 'DiscForDcoml') {
+            return (
+              <DiscForDcoml
+                identifier={disc.identifier}
+                height={disc.height}
+                width={disc.width}
+                left={disc.left}
+                top={disc.top}
+                dcoml={disc.dcoml}
+              />
+            )
           } else {
             return (
               <Magazine
