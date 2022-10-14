@@ -9,17 +9,32 @@ import Cube from './Cube';
 import Timecode from './Timecode';
 import DiscForDcoml from './DiscForDcoml';
 
-
+/**
+ * Tank
+ */
 export default React.forwardRef((props: { identifier: string }, ref) => {
   //const base = useRef(null);
   const [initialized, setInitialized] = useState(false);
-  const [discs, setDiscs] = useState([]);
-  const discsRef = useRef(discs);
   const loRef = [];
-  const setDiscEx = (discs) => {
-    discsRef.current = discs;
-    setDiscs(discs);
+  
+  /**
+   * 
+   */
+  const [discs, setDiscs] = useState([]);
+  const discsRef = useRef([]);
+  const setDiscEx = (value) => {
+    console.log('---- setDiscEx --');
+    console.log('-- parameters --');
+    console.log(value);
+    console.log('-- discsRef  --');
+    console.log(discsRef.current);
+    console.log('-- discs  --');
+    console.log(discs);
+    discsRef.current = value;
+    // Although it is unneed apparently, it length never change, when we remove it a exception arrise.
+    setDiscs(value);
   };
+  
   const [context, setContext] = useState(null);
   let width = (props?.width) ? props.width : 800;
   let height = (props?.height) ? props.height : 400;
