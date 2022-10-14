@@ -17,9 +17,6 @@ export default forwardRef((props, ref) => {
     moveY: (lop) => {
       tank.current.dispatchEvent( new CustomEvent('moveY', { detail: lop }) );
     },
-    removeDisc: (identifier) => {
-      tank.current.removeDisc(identifier);
-    }
   }));
   
   useEffect(() => {
@@ -44,7 +41,7 @@ export default forwardRef((props, ref) => {
   };
   
   return (
-    <div style={{ position: 'absolute', top: -150, left: 150 }}>
+    <div>
       <Tank ref={ tank } width={ props.width } height={ props.height } />
     </div>
   )

@@ -50,20 +50,35 @@ export default (props: { identifier: string }, ref) => {
 
     if (!props.isBottomOnly) {
       let t = 'title' in props ? props.title : '';
-      return (
-        <div
-          style={{
-//            transformStyle: 'preserve-3d',
-            border: 'solid 1px lime',
-            //          position: 'relative',
-            width: (props.width) ? props.width + 'px' : 100 + 'px',
-            height: (props.height) ? props.height + 'px' : 50 + 'px',
-            transform: 'rotateX(180deg)'
-          }}
-          dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
-          title={t}
-        />
-      );
+      if (props?.isReact === false) {
+        return (
+          <div
+            style={{
+              border: 'solid 1px lime',
+              width: (props.width) ? props.width + 'px' : 100 + 'px',
+              height: (props.height) ? props.height + 'px' : 50 + 'px',
+              transform: 'rotateX(180deg)'
+            }}
+            dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
+            title={t}
+          />
+        );
+      } else {
+        console.log(props);
+        return(
+          <div
+            style={{
+              border: 'solid 1px red',
+              width: (props.width) ? props.width + 'px' : 100 + 'px',
+              height: (props.height) ? props.height + 'px' : 50 + 'px',
+              transform: 'rotateX(180deg)'
+            }}
+            title={t}
+          >
+            { props.doIt() }
+          </div>
+        );        
+      }
     } else {
       return null;
     }

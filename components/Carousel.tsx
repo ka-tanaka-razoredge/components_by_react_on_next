@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Carousel from '../../../Carousel';
 
-export default () => {
+export default (props) => {
 //export const Carousel = () => {
   const floator = useRef();
   const gold = useRef();
@@ -16,26 +17,30 @@ export default () => {
   let counter = 0;
   let magazine = [];
   const doRoutine = () => {
-    if (counter === Number.MAX_SAFE_INTEGER) counter = 0;
-    switch (counter) {
-      default:
-        if (1 <= magazine.length) {
-          let simultaneous = magazine.shift();
-          simultaneous.map((doIt) => {
-            doIt();
-          });
-        }
-        magazine.push([() => { forward(); }]);
-        break;
+    try {
+      if (counter === Number.MAX_SAFE_INTEGER) counter = 0;
+      switch (counter) {
+        default:
+          if (1 <= magazine.length) {
+            let simultaneous = magazine.shift();
+            simultaneous.map((doIt) => {
+              doIt();
+            });
+          }
+          if (props.repeatAutomatically) magazine.push([() => { forward(); }]);
+          break;
+      }
+      counter++;
+    } catch (e) {
     }
-    counter++;
   };
   
   useEffect(() => {
     setStyleForCurrent(giveStyle('floator'));
-    silver.current.innerHTML = contents[contents.length - 1].html;
-    gold.current.innerHTML = contents[currentIndex].html;
-    bronze.current.innerHTML = contents[currentIndex + 1].html;
+    silver.current.innerHTML = props.contents[props.contents.length - 1].html;
+    gold.current.innerHTML = props.contents[currentIndex].html;
+    const bronzeIndex = (props.contents.length !== 1) ? currentIndex + 1 : currentIndex;
+    bronze.current.innerHTML = props.contents[bronzeIndex].html;
     timer = setInterval(doRoutine, 1000);
   }, []);
   
@@ -70,13 +75,13 @@ export default () => {
     
     if (valueToSet === 400) {
       if (unit === 400) setCyclic(0);
-      const indexToSet = (currentIndex < contents.length - 1) ? currentIndex + 1 : 0;
+      const indexToSet = (currentIndex < props.contents.length - 1) ? currentIndex + 1 : 0;
       currentIndex = indexToSet;
       silver.current.innerHTML = gold.current.innerHTML;
-      gold.current.innerHTML = contents[indexToSet].html;
+      gold.current.innerHTML = props.contents[indexToSet].html;
 
-      const bronzeIndex = (indexToSet + 1 < contents.length) ? indexToSet + 1 : 0;
-      bronze.current.innerHTML = contents[bronzeIndex].html;
+      const bronzeIndex = (indexToSet + 1 < props.contents.length) ? indexToSet + 1 : 0;
+      bronze.current.innerHTML = props.contents[bronzeIndex].html;
       
       floator.current.style.transform = `translateX(` + 0 + `px)`;
     }
@@ -94,13 +99,13 @@ export default () => {
     }
     if (valueToSet === -400) {
       if (unit === 400) setCyclic(0);
-      const indexToSet = (currentIndex !== 0) ? currentIndex - 1 : contents.length - 1;
+      const indexToSet = (currentIndex !== 0) ? currentIndex - 1 : props.contents.length - 1;
       currentIndex = indexToSet;
       bronze.current.innerHTML = gold.current.innerHTML;
-      gold.current.innerHTML = contents[indexToSet].html;
+      gold.current.innerHTML = props.contents[indexToSet].html;
       
-      const silverIndex = (indexToSet + 1 < contents.length) ? indexToSet + 1 : 0;
-      silver.current.innerHTML = contents[silverIndex].html;
+      const silverIndex = (indexToSet + 1 < props.contents.length) ? indexToSet + 1 : 0;
+      silver.current.innerHTML = props.contents[silverIndex].html;
       
       floator.current.style.transform = `translateX(` + 0 + `px)`;
     }

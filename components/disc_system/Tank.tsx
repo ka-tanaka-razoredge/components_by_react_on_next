@@ -71,7 +71,13 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
       ref.current.setAllDiscs = (lop) => {
         console.log(JSON.parse(lop.value, null, 2));
         setDiscEx(JSON.parse(lop.value));
-      }
+      };
+      
+      ref.current.removeDisc = (identifier) => {
+        const discsToSet = discsRef.current.filter((v) => { if (v.identifier !== identifier) { return v; } });
+        setDiscEx(discsToSet);
+      };
+      
       //--------------------------------------------------------------------------------
       // end
       //--------------------------------------------------------------------------------
@@ -150,6 +156,10 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
     console.log('---- giveDisc ----');
     return discsRef.current.find((disc) => disc.identifier === lop.identifier);
   };
+  
+  const isReact = (disc) => {
+    return (disc?.isReact) ? disc.isReact : false;
+  }
 
   const forwardCurrentIndex = (lop) => {
     loRef[0].current.forwardCurrentIndex(lop.value);
@@ -187,6 +197,8 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 width={disc.width}
                 left={disc.left}
                 top={disc.top}
+                isReact={isReact(disc)}
+                doIt={disc.doIt}
               />
             );
           } else if (disc.type === 'Sail') {
