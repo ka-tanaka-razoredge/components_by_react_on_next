@@ -50,7 +50,7 @@ export default (props: { identifier: string }, ref) => {
 
     if (!props.isBottomOnly) {
       let t = 'title' in props ? props.title : '';
-      if (props?.isReact === false) {
+      if (('isReact' in props == false) || props?.isReact === false) {
         return (
           <div
             style={{
