@@ -8,7 +8,7 @@ export default () => {
   const bronze = useRef();
   const [styleForCurrent, setStyleForCurrent] = useState({});
   const [cyclic, setCyclic] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  let currentIndex = 0;
   //--------------------------------------------------------------------------------
   //
   //--------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ export default () => {
     if (valueToSet === 400) {
       if (unit === 400) setCyclic(0);
       const indexToSet = (currentIndex < contents.length - 1) ? currentIndex + 1 : 0;
-      setCurrentIndex(indexToSet);
+      currentIndex = indexToSet;
       silver.current.innerHTML = gold.current.innerHTML;
       gold.current.innerHTML = contents[indexToSet].html;
 
@@ -95,7 +95,7 @@ export default () => {
     if (valueToSet === -400) {
       if (unit === 400) setCyclic(0);
       const indexToSet = (currentIndex !== 0) ? currentIndex - 1 : contents.length - 1;
-      setCurrentIndex(indexToSet);
+      currentIndex = indexToSet;
       bronze.current.innerHTML = gold.current.innerHTML;
       gold.current.innerHTML = contents[indexToSet].html;
       
