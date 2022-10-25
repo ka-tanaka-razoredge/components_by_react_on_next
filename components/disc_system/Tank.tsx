@@ -14,7 +14,7 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
   //const base = useRef(null);
   const [initialized, setInitialized] = useState(false);
   const [discs, setDiscs] = useState([]);
-  const discsRef = useRef(discs);
+  const discsRef = useRef([]);
   const loRef = [];
   const setDiscEx = (discs) => {
     discsRef.current = discs;
