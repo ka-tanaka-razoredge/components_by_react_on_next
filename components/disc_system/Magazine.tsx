@@ -46,6 +46,13 @@ export default (props: { identifier: string }, ref) => {
   const rotateX = value => {
     joint.current.style.transform = 'rotateX(' + value + 'deg)';
   };
+  
+  const drawContentsForBack = () => {
+      return (
+        <div dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}>
+        </div>
+      );
+  }
 
   return (
     <div
@@ -56,8 +63,8 @@ export default (props: { identifier: string }, ref) => {
         border: '1px solid blue',
         height: 10 + 'px',
         width: 100 + 'px',
-        top: props.height + 'px',
-        left: props.top + 'px',
+        top: props.top + 'px',
+        left: props.left + 'px',
         position: 'absolute'
       }}
     >
@@ -124,6 +131,7 @@ export default (props: { identifier: string }, ref) => {
               }
             });
           })}
+          { drawContentsForBack() }
         </div>
       </div>
     </div>
