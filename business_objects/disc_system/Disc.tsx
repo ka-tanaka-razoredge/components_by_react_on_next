@@ -1,10 +1,12 @@
 export class Disc {
+  type: string;
   identifier: string;
   top: number;
   left: number;
   contentsForFrontInner: string;
   contentsForBottomInner: string;
-  constructor(type='Disc', identifier, top, left, contentsForFrontInner='', contentsForBottomInner='') {
+  isBottomOnly: boolean;
+  constructor(type='Disc', identifier, top, left, contentsForFrontInner='', contentsForBottomInner='', isBottomOnly=false) {
     this.type = type;
     this.identifier = identifier;
     this.top = top;
@@ -12,5 +14,6 @@ export class Disc {
     this.contentsForFrontInner = contentsForFrontInner;
     if (type === 'Sail' && contentsForFrontInner === '') this.contentsForFrontInner = identifier; 
     this.contentsForBottomInner = contentsForBottomInner;
+    this.isBottomOnly = isBottomOnly;
   }
 }
