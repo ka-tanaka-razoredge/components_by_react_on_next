@@ -8,6 +8,7 @@ import Sail from './Sail';
 import Cube from './Cube';
 import Timecode from './Timecode';
 import DiscForDcoml from './DiscForDcoml';
+import MutableSail from './MutableSail';
 
 
 export default React.forwardRef((props: { identifier: string }, ref) => {
@@ -199,6 +200,7 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 top={disc.top}
                 isReact={isReact(disc)}
                 doIt={disc.doIt}
+                isBottomOnly={disc.isBottomOnly}
               />
             );
           } else if (disc.type === 'Sail') {
@@ -253,6 +255,20 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 left={disc.left}
                 top={disc.top}
                 dcoml={disc.dcoml}
+              />
+            )
+          } else if (disc.type === 'MutableSail') {
+            return (
+              <MutableSail
+                identifier={disc.identifier}
+                height={disc.height}
+                width={disc.width}
+                left={disc.left}
+                top={disc.top}
+                trajectory={disc.trajectory}
+                center={disc.center}
+                red={disc.red}
+                green={disc.green}
               />
             )
           } else {
