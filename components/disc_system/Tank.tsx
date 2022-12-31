@@ -201,6 +201,7 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 isReact={isReact(disc)}
                 doIt={disc.doIt}
                 isBottomOnly={disc.isBottomOnly}
+                z={disc.z}
               />
             );
           } else if (disc.type === 'Sail') {

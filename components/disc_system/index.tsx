@@ -43,8 +43,16 @@ export default forwardRef((props, ref) => {
     counter++;
   };
   
+  const giveTop = () => {
+    if ('top' in props) {
+      return props.height;
+    } else {
+      return -150;
+    }
+  }
+  
   return (
-    <div style={{ position: 'absolute', top: -150, left: 150 }}>
+    <div style={{ position: 'absolute', top: giveTop(), left: 150 }}>
       <Tank ref={ tank } width={ props.width } height={ props.height } />
     </div>
   )

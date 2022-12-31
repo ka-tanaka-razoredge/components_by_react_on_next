@@ -11,6 +11,9 @@ export default (props: { identifier: string }, ref) => {
     base.current.addEventListener('moveY', e => {
       moveY(e.detail.value);
     });
+    base.current.addEventListener('moveZ', e => {
+      moveY(e.detail.value);
+    });
 
     if (props.isBottomOnly) {
       base.current.style.border = null;
@@ -22,6 +25,9 @@ export default (props: { identifier: string }, ref) => {
   };
   const moveY = value => {
     base.current.style.top = value + 'px';
+  };
+  const moveZ = value => {
+    base.current.style.transform = `translateZ(${value} + 'px')`;
   };
 
   const drawBottom = () => {
@@ -95,7 +101,8 @@ export default (props: { identifier: string }, ref) => {
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
-        position: 'absolute'
+        position: 'absolute',
+        transform: (props.z) ? `translateZ(${props.z}px)` : ''
       }}
     >
       {drawBottomInner()}

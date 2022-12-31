@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Disc from './Disc';
-//import MetalTape from './MetalTape';
+import MetalTape from './MetalTape';
 import Magazine from './Magazine';
+import Sail from './Sail';
 
 export default (props: { identifier: string }, ref) => {
   const base = useRef(null);
@@ -123,6 +124,18 @@ export default (props: { identifier: string }, ref) => {
                 // TODO
                 return (
                   <div></div>
+                );
+              } else if (disc.type === 'Sail') {
+                return (
+                  <Sail
+                    identifier={disc.identifier}
+                    contentsForFrontInner={disc.contentsForFrontInner}
+                    contentsForBottomInner={disc.contentsForBottomInner}
+                    isBottomOnly={disc.isBottomOnly}
+                    top={disc.top}
+                    left={disc.left}
+                    title={disc.title}
+                  />
                 );
               } else {
                 return (

@@ -1,4 +1,4 @@
-class Ml {
+export class Ml {
   alias;
   m;
   l;
