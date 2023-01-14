@@ -62,8 +62,10 @@ export default () => {
   
   const applyDiscs = (lop) => {
     tank.current.clearAllDiscs();
-    tank.current.setAllDiscs(lop);
-    objectBrowser.current.setAggregate(tank.current.getDiscs());
+    setTimeout(() => {
+      tank.current.setAllDiscs(lop);
+      objectBrowser.current.setAggregate(tank.current.getDiscs());
+    }, 100);
   };
 
   return (

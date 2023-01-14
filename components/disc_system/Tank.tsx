@@ -9,7 +9,7 @@ import Cube from './Cube';
 import Timecode from './Timecode';
 import DiscForDcoml from './DiscForDcoml';
 import MutableSail from './MutableSail';
-
+import Cable from './Cable';
 
 export default React.forwardRef((props: { identifier: string }, ref) => {
   //const base = useRef(null);
@@ -202,6 +202,27 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
                 doIt={disc.doIt}
                 isBottomOnly={disc.isBottomOnly}
                 z={disc.z}
+              />
+            );
+          } else if (disc.type === 'Cable') {
+            return (
+              <Cable
+                identifier={disc.identifier}
+                contentsForFrontInner={disc.contentsForFrontInner}
+                contentsForBottomInner={disc.contentsForBottomInner}
+                title={disc.title}
+                height={disc.height}
+                width={disc.width}
+                left={disc.left}
+                top={disc.top}
+                isReact={isReact(disc)}
+                doIt={disc.doIt}
+                isBottomOnly={disc.isBottomOnly}
+                z={disc.z}
+                bp={disc.bp}
+                ep={disc.ep}
+                ex1={disc.ex1}
+                allow={disc.allow}
               />
             );
           } else if (disc.type === 'Sail') {

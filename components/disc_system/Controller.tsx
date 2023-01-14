@@ -10,6 +10,7 @@ export default forwardRef((props, ref) => {
   const [json, setJson] = useState('');
   const [id, setId] = useState(-1);
   const [name, setName] = useState('');
+  const [resource, setResource] = useState('SailingShip');
   const textarea = useRef(null);
   useImperativeHandle(ref, () => ({
     fetch: () => {
@@ -30,11 +31,13 @@ export default forwardRef((props, ref) => {
     const response = await axios.get(`https://razor-edge.net/cakephp-2.4.4/sailing_ships/findById?id=${ id }`);
     setJson(JSON.stringify(response.data[0].json, null, 2));
     setName(response.data[0].name);
+    setResource(response.data[0].resource);
     apply();
   };
 
   const save = async () => {
     let params = new URLSearchParams();
+    params.append('resource', resource);
     params.append('id', id);
     params.append('name', name);
     params.append('json', json);
@@ -75,7 +78,8 @@ export default forwardRef((props, ref) => {
         <input type='button' value='apply' onClick={ (e) => { apply(); } } />
         <input type='button' value='fetch' onClick={ (e) => { fetch(); } } /><br />
         id:&nbsp;<input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
-        name:&nbsp;<input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } /><br />
+        name:&nbsp;<input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
+        resource:&nbsp;<input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
         <input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } />
         <input type='button' value='save' onClick={ (e) => { save(); } } />
       </div>

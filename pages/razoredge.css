@@ -1,10 +1,32 @@
 .ChannelButton {
     display: flex;
+    overflow: hidden;
+}
+
+.ChannelButton::after {
 }
 
 .ChannelButton:hover {
     background: rgba(0, 0, 255, 0.5);
+/*    
+    position: absolute;
+    z-index: -1;
+    animation-name: channel_button_coloring;
+    animation-duration: .5s;
+    animation-fill-mode: forwards;
+    transform: translateX(-100%);
+*/    
 }
+
+@keyframes channel_button_coloring {
+    0% {
+        transform: translate(-100%, 0)
+    }
+    100% {
+        transform: translate(0, 0)
+    }
+}
+
 
 .Variable {
     color: blue;
