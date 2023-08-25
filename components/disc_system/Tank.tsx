@@ -10,6 +10,7 @@ import Timecode from './Timecode';
 import DiscForDcoml from './DiscForDcoml';
 import MutableSail from './MutableSail';
 import Cable from './Cable';
+import Vector from '../bo/Vector';
 
 export default React.forwardRef((props: { identifier: string }, ref) => {
   //const base = useRef(null);
@@ -27,9 +28,9 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
   let left = (props?.left) ? props.left : 50;
 
   // useImperativeHandle(ref, () => ({}));
-
+  
   useEffect(() => {
-    if (initialized === false) {
+//DEL    if (initialized === false) {
       // TODO: removeEventListener
       ref.current.addEventListener('pushDisc', (e) => {
         pushDisc(e.detail);
@@ -79,6 +80,36 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
         setDiscEx(discsToSet);
       };
       
+      ref.current.quadraticCurveTo = (lop: { beginVector: Vector, imaginaryVectorFirst: Vector, endVector: Vector }) => {
+        console.log('---- quadraticCurveTo begin ----');
+        let context = document.getElementById('fore-canvas').getContext('2d');
+        console.log(context);
+        try {
+          context.beginPath();
+          context.moveTo(lop.beginVector.x, lop.beginVector.y);
+          context.quadraticCurveTo(lop.imaginaryVectorFirst.x, lop.imaginaryVectorFirst.y, lop.endVector.x, lop.endVector.y);
+          context.stroke();
+        } catch (e) {
+        } finally {
+          console.log('---- quadraticCurveTo end ----');
+        }
+      };
+      
+      ref.current.drawText = (lop) => {
+        let context = document.getElementById('fore-canvas').getContext('2d');
+        context.fillText(lop.text, lop.x, lop.y);
+      };
+  
+      ref.current.drawFilledTriangle= (lop: { top: Vector, left: Vector, right: Vector }) => {
+        let context = document.getElementById('fore-canvas').getContext('2d');
+        context.beginPath();
+        context.moveTo(lop.top.x, lop.top.y);
+        context.lineTo(lop.left.x, lop.left.y);
+        context.lineTo(lop.right.x, lop.right.y);
+        context.lineTo(lop.top.x, lop.y);
+        context.fill();
+      };
+      
       //--------------------------------------------------------------------------------
       // end
       //--------------------------------------------------------------------------------
@@ -105,7 +136,7 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
       context.closePath();
       context.fillText('t', 15, 15);
       setContext(context);
-    }
+//    }
     //    ref.current.style.tranform = 'rotateY(45deg) rotateX(45deg)';
   }, []);
 
@@ -171,145 +202,152 @@ export default React.forwardRef((props: { identifier: string }, ref) => {
   }
 
   return (
-    <div
-      ref={ref}
-      style={{
-        transformStyle: 'preserve-3d',
-        perspective: 1600 + 'px',
-        border: '1px solid red',
-        width: width + 'px',
-        height: height + 'px',
-        position: 'relative',
-        left: left + 'px',
-        transform: 'rotateY(40deg) rotateX(60deg)',
-      }}
-    >
-      <canvas id="tank-canvas" width={width} height={height}></canvas>
-      {discsRef.current.map((disc: { identifier }, index) => {
-        if (discsRef.current.indexOf(disc.identifier) == -1) {
-          if ('type' in disc === false || disc.type === 'Disc') {
-            return (
-              <Disc
-                identifier={disc.identifier}
-                contentsForFrontInner={disc.contentsForFrontInner}
-                contentsForBottomInner={disc.contentsForBottomInner}
-                title={disc.title}
-                height={disc.height}
-                width={disc.width}
-                left={disc.left}
-                top={disc.top}
-                isReact={isReact(disc)}
-                doIt={disc.doIt}
-                isBottomOnly={disc.isBottomOnly}
-                z={disc.z}
-              />
-            );
-          } else if (disc.type === 'Cable') {
-            return (
-              <Cable
-                identifier={disc.identifier}
-                contentsForFrontInner={disc.contentsForFrontInner}
-                contentsForBottomInner={disc.contentsForBottomInner}
-                title={disc.title}
-                height={disc.height}
-                width={disc.width}
-                left={disc.left}
-                top={disc.top}
-                isReact={isReact(disc)}
-                doIt={disc.doIt}
-                isBottomOnly={disc.isBottomOnly}
-                z={disc.z}
-                bp={disc.bp}
-                ep={disc.ep}
-                ex1={disc.ex1}
-                allow={disc.allow}
-              />
-            );
-          } else if (disc.type === 'Sail') {
-            return (
-              <Sail
-                identifier={disc.identifier}
-                contentsForFrontInner={disc.contentsForFrontInner}
-                title={disc.title}
-                top={disc.top}
-                left={disc.left}
-                height={disc.height}
-                width={disc.width}
-              />
-            );
-          } else if (disc.type === 'Cube') {
-            return (
-              <Cube
-                identifier={disc.identifier}
-                //                contentsForFrontInner={disc.contentsForFrontInner}
-                //                title={disc.title}
-                top={disc.top}
-                left={disc.left}
-                z={disc.z}
-              />
-            );
-          } else if (disc.type === 'MetalTape') {
-            return (
-              <MetalTape
-                identifier={disc.identifier}
-                contentsForFrontInner={disc.contentsForFrontInner}
-                top={disc.top}
-                left={disc.left}
-                height={disc.height}
-              />
-            );
-          } else if (disc.type === 'Timecode') {
-            return (
-              <Timecode
-                identifier={disc.identifier}
-                contentsForBottomInner={disc.contentsForBottomInner}
-                top={disc.top}
-                left={disc.left}
-                height={disc.height}
-              />
-            );
-          } else if (disc.type === 'DiscForDcoml') {
-            return (
-              <DiscForDcoml
-                identifier={disc.identifier}
-                height={disc.height}
-                width={disc.width}
-                left={disc.left}
-                top={disc.top}
-                dcoml={disc.dcoml}
-              />
-            )
-          } else if (disc.type === 'MutableSail') {
-            return (
-              <MutableSail
-                identifier={disc.identifier}
-                height={disc.height}
-                width={disc.width}
-                left={disc.left}
-                top={disc.top}
-                trajectory={disc.trajectory}
-                center={disc.center}
-                red={disc.red}
-                green={disc.green}
-              />
-            )
-          } else {
-            return (
-              <Magazine
-                ref={loRef[index]}
-                identifier={disc.identifier}
-                contentsForFrontInner={disc.contentsForFrontInner}
-                contentsForBottomInner={disc.contentsForBottomInner}
-                discs={disc.discs}
-                top={disc.top}
-                left={disc.left}
-                height={disc.height}
-                width={disc.width}
-              />
-            );
+    <div style={{ position: 'relative' }}>
+      {
+        props.foreCanvas && (<div style={{ position: 'absolute', backgroundColor: 'rgba(200, 200, 200, 0.1)', width: '50vw', height: '100vh', zIndex: 1000, left: 0, top: 0 }}>
+          <canvas id='fore-canvas' width={width} height={height}></canvas>
+        </div>)
+      }
+      <div
+        ref={ref}
+        style={{
+          transformStyle: 'preserve-3d',
+          perspective: 1600 + 'px',
+          border: '1px solid red',
+          width: width + 'px',
+          height: height + 'px',
+          position: 'relative',
+          left: left + 'px',
+          transform: 'rotateY(40deg) rotateX(60deg)',
+        }}
+      >
+        <canvas id="tank-canvas" width={width} height={height}></canvas>
+        {discsRef.current.map((disc: { identifier }, index) => {
+          if (discsRef.current.indexOf(disc.identifier) == -1) {
+            if ('type' in disc === false || disc.type === 'Disc') {
+              return (
+                <Disc
+                  identifier={disc.identifier}
+                  contentsForFrontInner={disc.contentsForFrontInner}
+                  contentsForBottomInner={disc.contentsForBottomInner}
+                  title={disc.title}
+                  height={disc.height}
+                  width={disc.width}
+                  left={disc.left}
+                  top={disc.top}
+                  isReact={isReact(disc)}
+                  doIt={disc.doIt}
+                  isBottomOnly={disc.isBottomOnly}
+                  z={disc.z}
+                />
+              );
+            } else if (disc.type === 'Cable') {
+              return (
+                <Cable
+                  identifier={disc.identifier}
+                  contentsForFrontInner={disc.contentsForFrontInner}
+                  contentsForBottomInner={disc.contentsForBottomInner}
+                  title={disc.title}
+                  height={disc.height}
+                  width={disc.width}
+                  left={disc.left}
+                  top={disc.top}
+                  isReact={isReact(disc)}
+                  doIt={disc.doIt}
+                  isBottomOnly={disc.isBottomOnly}
+                  z={disc.z}
+                  bp={disc.bp}
+                  ep={disc.ep}
+                  ex1={disc.ex1}
+                  allow={disc.allow}
+                />
+              );
+            } else if (disc.type === 'Sail') {
+              return (
+                <Sail
+                  identifier={disc.identifier}
+                  contentsForFrontInner={disc.contentsForFrontInner}
+                  title={disc.title}
+                  top={disc.top}
+                  left={disc.left}
+                  height={disc.height}
+                  width={disc.width}
+                />
+              );
+            } else if (disc.type === 'Cube') {
+              return (
+                <Cube
+                  identifier={disc.identifier}
+                  //                contentsForFrontInner={disc.contentsForFrontInner}
+                  //                title={disc.title}
+                  top={disc.top}
+                  left={disc.left}
+                  z={disc.z}
+                />
+              );
+            } else if (disc.type === 'MetalTape') {
+              return (
+                <MetalTape
+                  identifier={disc.identifier}
+                  contentsForFrontInner={disc.contentsForFrontInner}
+                  top={disc.top}
+                  left={disc.left}
+                  height={disc.height}
+                />
+              );
+            } else if (disc.type === 'Timecode') {
+              return (
+                <Timecode
+                  identifier={disc.identifier}
+                  contentsForBottomInner={disc.contentsForBottomInner}
+                  top={disc.top}
+                  left={disc.left}
+                  height={disc.height}
+                />
+              );
+            } else if (disc.type === 'DiscForDcoml') {
+              return (
+                <DiscForDcoml
+                  identifier={disc.identifier}
+                  height={disc.height}
+                  width={disc.width}
+                  left={disc.left}
+                  top={disc.top}
+                  dcoml={disc.dcoml}
+                />
+              )
+            } else if (disc.type === 'MutableSail') {
+              return (
+                <MutableSail
+                  identifier={disc.identifier}
+                  height={disc.height}
+                  width={disc.width}
+                  left={disc.left}
+                  top={disc.top}
+                  trajectory={disc.trajectory}
+                  center={disc.center}
+                  red={disc.red}
+                  green={disc.green}
+                />
+              )
+            } else {
+              return (
+                <Magazine
+                  ref={loRef[index]}
+                  identifier={disc.identifier}
+                  contentsForFrontInner={disc.contentsForFrontInner}
+                  contentsForBottomInner={disc.contentsForBottomInner}
+                  discs={disc.discs}
+                  top={disc.top}
+                  left={disc.left}
+                  height={disc.height}
+                  width={disc.width}
+                />
+              );
+            }
           }
-        }
-      })}
+        })}
+      </div>
     </div>
   );
 });
