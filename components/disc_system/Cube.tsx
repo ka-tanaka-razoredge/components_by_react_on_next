@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-export default (props: { identifier: string }, ref) => {
+export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
 
   useEffect(() => {
@@ -13,6 +13,7 @@ export default (props: { identifier: string }, ref) => {
     base.current.addEventListener('moveZ', (e) => {
       moveZ(e.detail.value);
     });
+    if (props.z) moveZ(props.z);
   }, []);
 
   const moveX = (value) => {
