@@ -40,18 +40,32 @@ export default (props) => {
     // contextMenu.current.style.visibility = 'collapse';
   };
   
+  const drawCells = (cells) => {
+    const doms = [];
+    for (let i = 0; i <= cells.length - 1; i++) {
+      doms.push(<div>{cells.character}</div>);
+    }
+    if (cells.length === 0) doms.push(<div>{cells.character}</div>);
+    
+    const color = (1 <= cells.length) ? cells.color : 'rgba(0, 0, 0, 0.0)';
+
+    return (
+      <div style={{ color: color, marginBottom: '-16px', display: 'flex' }}>
+        {doms}
+      </div>
+    );
+  };
+  
   return (
     <div style={{ position: 'relative' }} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
 {/*    
-      <div ref={contextMenu} style={{ position: 'absolute', zIndex: '1200', border: '1px solid black', width: '100px', height: '50px', top: 0, left: '100px', opacity: 0, visibility: 'collapse'}}>
+      <div ref={contextMenu} style={{ position: 'absolute', zIndex: '1200', border: '1px solid black', width: '100px', height: '50px', top: 0, left: '100px', opacity: 0, visibility: 'collapse' }}>
         dummy
       </div>
-*/}     
+*/}
     {
       props.aggregate.map((v, index) => {
-        return (
-          <Ml singleton={ v } />
-        )
+        return drawCells(v)
       })
     }
     </div>

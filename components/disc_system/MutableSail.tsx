@@ -1,4 +1,7 @@
+// @ts-nocheck
+
 import React, { useEffect, useRef, useState } from 'react';
+
 
 export default (props) => {
   const refForMs = useRef();

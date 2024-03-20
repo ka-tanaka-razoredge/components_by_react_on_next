@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import Tank from './Tank';
 

@@ -1,6 +1,8 @@
+// @ts-nocheck
+
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 
-export default forwardRef((props ,ref) => {
+export default forwardRef((props, ref) => {
   const [aggregate, setAggregate] = useState([
     { type: 'Disc', identifier: 'dummy', top: 0, left: 0 },
   ]);
@@ -50,7 +52,7 @@ export default forwardRef((props ,ref) => {
         {
           aggregate.map((v) => {
             return (
-              <div>
+              <div key={v.identifier}>
                 <div style={{ display: 'flex'}}>
                   <div style={{ height: '10px', minWidth: '100px', maxWidth: '100px', whiteSpace: 'nowrap', textOverflow: 'fade' }}>{ v.identifier }</div>
                   <input id={ v.identifier + '-top' } type='text' defaultValue={ v.top } style={{ width: '100px' }} />

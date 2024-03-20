@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
-export default (props: { identifier: string }, ref) => {
+export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
 
   useEffect(() => {
@@ -92,6 +92,15 @@ export default (props: { identifier: string }, ref) => {
     }
   };
   
+  const buildTransform = () => {
+    console.log('---- buildTransform begin ----');
+    let reply = '';
+    if (props.z) reply += `translateZ(${props.z}px) `;
+    if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
+    console.log(reply);
+    return reply;
+  };
+  
   return (
     <div
       ref={base}
@@ -99,12 +108,12 @@ export default (props: { identifier: string }, ref) => {
       style={{
         transformStyle: 'preserve-3d',
         border: '1px solid orange',
-        height: 10 + 'px',
+        height: (props.duration) ? props.duration : '1rem',
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
         position: 'absolute',
-        transform: (props.z) ? `translateZ(${props.z}px)` : ''
+        transform: buildTransform(),
       }}
     >
       {drawBottomInner()}

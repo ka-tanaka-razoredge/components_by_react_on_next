@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import Tank from './Tank';
 
@@ -16,6 +18,9 @@ export default forwardRef((props, ref) => {
     },
     moveY: (lop) => {
       tank.current.dispatchEvent( new CustomEvent('moveY', { detail: lop }) );
+    },
+    shiftXThme: (lop) => {
+      tank.current.shiftXThem(lop);
     },
     removeDisc: (identifier) => {
       tank.current.removeDisc(identifier);

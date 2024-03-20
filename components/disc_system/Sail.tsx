@@ -1,7 +1,9 @@
+// @ts-nocheck
+
 import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
-export default (props: { identifier: string }, ref) => {
+export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
 
   useEffect(() => {
@@ -43,7 +45,8 @@ export default (props: { identifier: string }, ref) => {
             //            position: 'absolute',
             width: props.width + 'px',
             height: props.height + 'px',
-            transform: 'translateY(-75px)',
+            transform: (props.transform) ? props.transform : 'translateY(-75px)',
+//            transform: (props.transform) ? props.transform : 'rotateX(180deg)',
           }}
           dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
           title={t}
@@ -61,17 +64,19 @@ export default (props: { identifier: string }, ref) => {
       style={{
         transformStyle: 'preserve-3d',
         border: '1px solid blue',
-        height: 1 + 'px',
+        height:  1 + 'px',
         width: 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
         position: 'absolute',
+        transform: (props.z) ? `translateZ(${props.z}px)` : ''
       }}
     >
       <div
         style={{
           height: 1 + 'px',
           transform: 'rotateX(-90deg)',
+//          transform: 'rotateX(90deg)',
         }}
       >
         {drawBottomInner()}

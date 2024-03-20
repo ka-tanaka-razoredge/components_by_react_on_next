@@ -10,23 +10,16 @@ import Sail from './Sail';
 import Cube from './Cube';
 import Timecode from './Timecode';
 import DiscForDcoml from './DiscForDcoml';
-import DiscForDcosml from './DiscForDcosml';
 import MutableSail from './MutableSail';
 import Cable from './Cable';
 import Carousel from './Carousel';
-import PastOrFuture from './PastOrFuture';
 
 
 export default React.forwardRef((props: { identifier: string, [key: string]: any }, ref) => {
   //const base = useRef(null);
   const [initialized, setInitialized] = useState(false);
   const [discs, setDiscs] = useState([]);
-  const discsRef = useRef([]);
   const loRef = [];
-  const setDiscEx = (discs) => {
-    discsRef.current = discs;
-    setDiscs(discs);
-  };
   const [context, setContext] = useState(null);
   let width = (props?.width) ? props.width : 800;
   let height = (props?.height) ? props.height : 400;
@@ -35,7 +28,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
   // useImperativeHandle(ref, () => ({}));
   
   useEffect(() => {
-    if ('discs' in props && 1 <= props.discs.length) setDiscEx(props.discs);
+    if ('discs' in props && 1 <= props.discs.length) setDiscs(props.discs);
 
     // TODO: removeEventListener
     ref.current.addEventListener('pushDisc', (e) => {
@@ -66,36 +59,26 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     // begin ooRef provider only
     //--------------------------------------------------------------------------------
     ref.current.getDiscs = () => {
-      return discsRef.current;
+      return discs;
     };
     
     ref.current.setDisc = (value) => {
     };
     
     ref.current.clearAllDiscs = () => {
-      setDiscEx([]);
+      setDiscs([]);
     };
     
     ref.current.setAllDiscs = (lop) => {
       console.log(JSON.parse(lop.value, null, 2));
-      setDiscEx(JSON.parse(lop.value));
+      setDiscs(JSON.parse(lop.value));
     };
     
     ref.current.removeDisc = (identifier) => {
-      const discsToSet = discsRef.current.filter((v) => { if (v.identifier !== identifier) { return v; } });
-      setDiscEx(discsToSet);
+      const discsToSet = discs.filter((v) => { if (v.identifier !== identifier) { return v; } });
+      setDiscs(discsToSet);
     };
-
-    ref.current.shiftXThem = (lop) => {
-      const discs = discsRef.current.map((disc) => {
-        if (lop.left <= parseInt(disc.left)) {
-          disc.left = disc.left + lop.value;
-        }
-        return disc;
-      });
-      setDiscEx(discs);
-    };
-
+    
     ref.current.quadraticCurveTo = (lop: { beginVector: Vector, imaginaryVectorFirst: Vector, endVector: Vector }) => {
       console.log('---- quadraticCurveTo begin ----');
       let context = document.getElementById('fore-canvas').getContext('2d');
@@ -156,7 +139,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
   }, []);
 
   const pushDisc = (lop = { identifier }) => {
-    setDiscEx(discsRef.current.concat(lop));
+    setDiscs(discs.concat(lop));
     setTimeout(() => {
       document.getElementById(lop.identifier).dispatchEvent(
         new CustomEvent('moveX', {
@@ -197,10 +180,10 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
       })
     );
   };
-  
+
   const giveDisc = (lop) => {
     console.log('---- giveDisc ----');
-    return discsRef.current.find((disc) => disc.identifier === lop.identifier);
+    return discs.find((disc) => disc.identifier === lop.identifier);
   };
   
   const isReact = (disc) => {
@@ -236,8 +219,8 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
         }}
       >
         <canvas id="tank-canvas" width={width} height={height}></canvas>
-        {discsRef.current.map((disc: { identifier }, index) => {
-          if (discsRef.current.indexOf(disc.identifier) == -1) {
+        {discs.map((disc: { identifier }, index) => {
+          if (discs.indexOf(disc.identifier) == -1) {
             if ('type' in disc === false || disc.type === 'Disc') {
               return (
                 <Disc
@@ -253,8 +236,6 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   doIt={disc.doIt}
                   isBottomOnly={disc.isBottomOnly}
                   z={disc.z}
-                  rotateY={disc.rotateY}
-                  duration={disc.duration}
                 />
               );
             } else if (disc.type === 'Cable') {
@@ -335,17 +316,6 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   dcoml={disc.dcoml}
                 />
               )
-            } else if (disc.type === 'DiscForDcosml') {
-              return (
-                <DiscForDcosml
-                  identifier={disc.identifier}
-                  height={disc.height}
-                  width={disc.width}
-                  left={disc.left}
-                  top={disc.top}
-                  dcoml={disc.dcoml}
-                />
-              )
             } else if (disc.type === 'MutableSail') {
               return (
                 <MutableSail
@@ -376,24 +346,6 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   isBottomOnly={disc.isBottomOnly}
                   z={disc.z}
                   contents={disc.contents}
-                />
-              )
-            } else if (disc.type === 'PastOrFuture') {
-              return (
-                <PastOrFuture
-                  ref={loRef[index]}
-                  identifier={disc.identifier}
-                  contentsForFrontInner={disc.contentsForFrontInner}
-                  contentsForBottomInner={disc.contentsForBottomInner}
-                  discs={disc.discs}
-                  top={disc.top}
-                  left={disc.left}
-                  height={disc.height}
-                  width={disc.width}
-                  isPast={disc.isPast}
-                  z={disc.z}
-                  rotateY={disc.rotateY}
-                  tail={disc.tail}
                 />
               )
             } else {

@@ -35,6 +35,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     });
 
     rotateX(0);
+    
+    if (props.isPast) {
+      base.current.style.transform = 'rotateZ(-180deg)';
+// NG      base.current.style.transform = 'rotateZ(180deg)';
+    }
   }, []);
 
   const moveX = value => {
@@ -55,6 +60,29 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       );
   }
 
+  const buildTransform = () => {
+    console.log('---- buildTransform begin ----');
+    let reply = '';
+    if (props.z) reply += `translateZ(${props.z}px) `;
+    if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
+    console.log(reply);
+    return reply;
+  };
+  
+  const drawBottom = () => {
+    if (props.isPast) {
+      return (
+        <div
+          style={{ transform: `rotateZ(180deg) translateY(10px)` }}
+        >
+          {props.contentsForBottomInner}
+        </div>
+      );
+    } else {
+      return props.contentsForBottomInner;
+    }
+  };
+
   return (
     <div
       ref={base}
@@ -66,10 +94,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         width: 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
-        position: 'absolute'
+        position: 'absolute',
+        transform: buildTransform()
       }}
     >
-      { props.contentsForBottomInner && (props.contentsForBottomInner) }
+      { props.contentsForBottomInner && drawBottom() }
       <div
         ref={joint}
         style={{
@@ -107,6 +136,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     top={disc.top}
                     left={disc.left}
                     title={disc.title}
+                    rotateY={(props.isPast) ? 180 : 0}
                   />
                 );
               } else if (disc.type === 'Magazine') {
@@ -148,6 +178,19 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           { drawContentsForBack() }
         </div>
       </div>
+      {
+        props.tail && (
+          <Disc
+            identifier={props.identifier}
+            top={(props.tail.duration / 2 * -1) - 10}
+            left={props.tail.left}
+            width={props.tail.duration}
+            isBottomOnly={('isBottomOnly' in props.tail) ?  props.tail.isBottomOnly : true}
+            contentsForBottomInner={props.tail.contentsForBottomInner}
+            rotateY={`-90`}
+          />
+        )
+      }
     </div>
   );
 };

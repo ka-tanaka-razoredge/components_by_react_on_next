@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Dcoml from './Dcoml';
+import Carousel from './CarouselForDiscSystem';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
@@ -10,6 +10,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       moveX(e.detail.value);
     });
     base.current.addEventListener('moveY', e => {
+      moveY(e.detail.value);
+    });
+    base.current.addEventListener('moveZ', e => {
       moveY(e.detail.value);
     });
 
@@ -24,6 +27,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   const moveY = value => {
     base.current.style.top = value + 'px';
   };
+  const moveZ = value => {
+    base.current.style.transform = `translateZ(${value} + 'px')`;
+  };
 
   const drawBottom = () => {
     if (!props.isBottomOnly) {
@@ -36,7 +42,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       return '　';
       //      return props.contentsForFrontInner;
     } else {
-      return props.contentsForBottomInner;
+      return (
+        <div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }} />
+      );
     }
   };
 
@@ -51,21 +59,35 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 
     if (!props.isBottomOnly) {
       let t = 'title' in props ? props.title : '';
-      return (
-        <div
-          style={{
-//            transformStyle: 'preserve-3d',
-            border: 'solid 1px lime',
-            //          position: 'relative',
-            width: (props.width) ? props.width + 'px' : 100 + 'px',
-            height: (props.height) ? props.height + 'px' : 50 + 'px',
-            transform: 'rotateX(180deg)'
-          }}
-          title={t}
-        >
-          <Dcoml aggregate={ props.dcoml } />
-        </div>
-      );
+      if (('isReact' in props == false) || props?.isReact === false) {
+        return (
+          <div
+            style={{
+              border: 'solid 1px lime',
+              width: (props.width) ? props.width + 'px' : 100 + 'px',
+              height: (props.height) ? props.height + 'px' : 50 + 'px',
+              transform: 'rotateX(180deg)'
+            }}
+            dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
+            title={t}
+          />
+        );
+      } else {
+        console.log(props);
+        return(
+          <div
+            style={{
+              border: 'solid 1px red',
+              width: (props.width) ? props.width + 'px' : 100 + 'px',
+              height: (props.height) ? props.height + 'px' : 50 + 'px',
+              transform: 'rotateX(180deg)'
+            }}
+            title={t}
+          >
+            { props.doIt() }
+          </div>
+        );        
+      }
     } else {
       return null;
     }
@@ -82,7 +104,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
-        position: 'absolute'
+        position: 'absolute',
+        transform: (props.z) ? `translateZ(${props.z}px)` : ''
       }}
     >
       {drawBottomInner()}
@@ -92,9 +115,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           width: (props.width) ? props.width + 'px' : 100 + 'px',
           top: '0px',
           height: '1px',
-          transform: 'rotateX(90deg)'
+          transform: `rotateX(-90deg) translateY(-${props.height}px)`
         }}>
-          {drawFront()}
+        <Carousel {...props} />
       </div>
     </div>
   );

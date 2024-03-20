@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 class Vector {
-  x: float;
-  y: float;
+  x: Number;
+  y: Number;
   constructor(x, y) {
     this.x = x;
     this.y = y;
@@ -18,12 +20,16 @@ export default (props: { identifier: string, bp: Vector, ep: Vector, ex1: Vector
   useEffect(() => {
     context = canvas.current.getContext('2d');
     context.clearRect(0, 0, props.width, props.height);
+    
+    // TODO: props.isLineDash
+    context.setLineDash([2, 2]);
     context.beginPath();
     context.moveTo(props.bp.x, props.bp.y);
 //    context.moveTo(props.bp.x, props.bp.y);
     context.quadraticCurveTo(props.ex1.x, props.ex1.y, props.ep.x, props.ep.y);
     context.stroke();
     context.closePath();
+    context.setLineDash([]);
     
     context.beginPath();
 //    context.translate(props.width / 2, props.height / 2);
@@ -34,7 +40,10 @@ export default (props: { identifier: string, bp: Vector, ep: Vector, ex1: Vector
     context.moveTo(props.allow.top.x, props.allow.top.y);
     context.lineTo(props.allow.r.x, props.allow.r.y);
     context.lineTo(props.allow.l.x, props.allow.l.y);
+    // TODO: props.allow.fillStyle
+    context.fillStyle = 'rgb(255, 255, 255)';
     context.fill();
+    context.stroke();
     context.closePath();
     
     base.current.addEventListener('moveX', e => {

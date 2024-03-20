@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
-export default (props: { identifier: string }, ref) => {
+export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
 
   useEffect(() => {

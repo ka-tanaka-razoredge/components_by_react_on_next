@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Dcoml from './Dcoml';
+import Dcosml from './Dcosml';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
@@ -63,7 +63,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           }}
           title={t}
         >
-          <Dcoml aggregate={ props.dcoml } />
+          <Dcosml aggregate={ props.dcoml } />
         </div>
       );
     } else {
