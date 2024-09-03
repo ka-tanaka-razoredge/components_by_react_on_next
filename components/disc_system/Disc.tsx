@@ -18,6 +18,13 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     if (props.isBottomOnly) {
       base.current.style.border = null;
     }
+    
+    if (props.rows) {
+      props.parameterForGraphes.map((v) => {
+        // ex: id-graph_0-
+        document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+      });
+    }
   }, []);
 
   const moveX = value => {
@@ -29,6 +36,50 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   const moveZ = value => {
     base.current.style.transform = `translateZ(${value} + 'px')`;
   };
+  
+  const drawMs = () => {
+    let buildContents;
+    if (props.msView === 'frontInner') {
+      buildContents = (rows=11, columns=11) => {
+        let reply = '';
+        reply += `<div style='width: ${10 * columns}px; transform: rotateX(180deg);'>`;
+        for (let i = 0; i <= rows - 1; i++) {
+          reply += `<div style='display: flex;'>`;
+          for (let j = 0; j <= columns - 1; j++) {
+            reply += `<div id='${props.idForGraph}${i}-${j}' style='border: 1px solid silver; width: ${10}px; height: ${10}px;'></div>`;
+          }
+          reply += `</div>`;
+
+          if (i === 0) {
+            reply += `<div style='border-top: 1px solid ${props.topBorder};'></div>`
+          }
+          if (i === rows - 2) {
+            reply += `<div style='border-top: 1px solid ${props.bottomBorder};'></div>`
+          }
+        }
+        reply += `</div>`;
+        return reply;
+      };
+    } else {
+      buildContents = (rows=11, columns=11) => {
+        let reply = '';
+        for (let i = 0; i <= rows - 1; i++) {
+          reply += `<div style='display: flex; justify-content: center;'>`;
+          reply += `<div style='display: flex;'>`;
+          for (let j = 0; j <= columns - 1; j++) {
+            reply += `<div id='${props.idForGraph}${i}-${j}' style='border: 1px solid silver; width: 10px; height: 10px;'></div>`;
+          }
+          reply += `</div>`;
+          reply += `</div>`;
+        }
+        return reply;
+      };
+    }
+
+    return (
+      <div dangerouslySetInnerHTML={{ __html: buildContents(props.rows, props.columns) }} />
+    );
+  };
 
   const drawBottom = () => {
     if (!props.isBottomOnly) {
@@ -37,13 +88,18 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
 
   const drawBottomInner = () => {
-    if (!props.contentsForBottomInner) {
+    if (props?.msView === 'frontInner') return ('　');
+
+    if (!props.contentsForBottomInner && !props.rows) {
       return '　';
       //      return props.contentsForFrontInner;
     } else {
-      return (
-        <div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }} />
-      );
+      if (!props.rows) {
+        return (
+          <div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }} />
+        );
+      }
+      return drawMs();
     }
   };
 
@@ -58,6 +114,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 
     if (!props.isBottomOnly) {
       let t = 'title' in props ? props.title : '';
+      
+      if (props?.msView === 'frontInner') {
+        return drawMs();
+      }
+
       if (('isReact' in props == false) || props?.isReact === false) {
         return (
           <div

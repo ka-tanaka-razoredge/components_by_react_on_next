@@ -37,6 +37,9 @@ export default (props) => {
   };
   
   useEffect(() => {
+    console.log('---- CarouselForDiscSystem useEffect begin ----');
+    console.log(props);
+    console.log('---- CarouselForDiscSystem useEffect end ----');
     try {
       setStyleForCurrent(giveStyle('floator'));
       silver.current.innerHTML = props.contents[props.contents.length - 1].html;
@@ -65,6 +68,7 @@ export default (props) => {
   ];
   
   const forward = () => {
+console.log('---- CarouselForDiscSystem.forward begin ----');
     const unit = props.width;
     const valueToSet = cyclic + unit;
 //    console.log(valueToSet);

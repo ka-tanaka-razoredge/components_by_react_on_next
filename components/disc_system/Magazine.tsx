@@ -3,6 +3,7 @@ import Disc from './Disc';
 import MetalTape from './MetalTape';
 import Magazine from './Magazine';
 import Sail from './Sail';
+import Cube from './Cube';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
@@ -103,10 +104,24 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     identifier={disc.identifier}
                     contentsForFrontInner={disc.contentsForFrontInner}
                     contentsForBottomInner={disc.contentsForBottomInner}
-                    isBottomOnly={disc.isBottomOnly}
-                    top={disc.top}
-                    left={disc.left}
                     title={disc.title}
+                    height={disc.height}
+                    width={disc.width}
+                    left={disc.left}
+                    top={disc.top}
+                    doIt={disc.doIt}
+                    isBottomOnly={disc.isBottomOnly}
+                    z={disc.z}
+                    rotateY={disc.rotateY}
+                    duration={disc.duration}
+  
+                    rows={disc.rows}
+                    columns={disc.columns}
+                    idForGraph={disc.idForGraph}
+                    parameterForGraphes={disc.parameterForGraphes}
+                    msView={disc.msView}
+                    topBorder={disc.topBorder}
+                    bottomBorder={disc.bottomBorder}
                   />
                 );
               } else if (disc.type === 'Magazine') {
@@ -122,9 +137,14 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                   />
                 );
               } else if (disc.type === 'MetalTape') {
-                // TODO
                 return (
-                  <div></div>
+                  <MetalTape
+                    identifier={disc.identifier}
+                    contentsForFrontInner={disc.contentsForFrontInner}
+                    top={disc.top}
+                    left={disc.left}
+                    height={disc.height}
+                  />
                 );
               } else if (disc.type === 'Sail') {
                 return (
@@ -136,6 +156,15 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     top={disc.top}
                     left={disc.left}
                     title={disc.title}
+                  />
+                );
+              } else if (disc.type === 'Cube') {
+                return (
+                  <Cube
+                    identifier={disc.identifier}
+                    top={disc.top}
+                    left={disc.left}
+                    z={disc.z}
                   />
                 );
               } else {

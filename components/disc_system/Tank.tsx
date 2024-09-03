@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useImperativeHandle } from 'react';
 
 import Disc from './Disc';
+import DiscFor from './DiscFor';
 import MetalTape from './MetalTape';
 import Magazine from './Magazine';
 //import MagazineB from './Magazine_b';
@@ -15,6 +16,8 @@ import MutableSail from './MutableSail';
 import Cable from './Cable';
 import Carousel from './Carousel';
 import PastOrFuture from './PastOrFuture';
+import Ms from '../atoms/Ms';
+import Matrix from '../rz_uml/atoms/Matrix';
 
 
 export default React.forwardRef((props: { identifier: string, [key: string]: any }, ref) => {
@@ -53,7 +56,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
       context.lineTo(e.detail.left + e.detail.width, width);
       context.stroke();
       context.closePath();
-    });
+    }, []);
 
     ref.current.addEventListener('forwardCurrentIndex', (e) => {
       forwardCurrentIndex(e.detail);
@@ -131,9 +134,10 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     //--------------------------------------------------------------------------------
 
     const canvas = document.getElementById('tank-canvas');
-    console.log('---- useEffect ----');
-    console.log(canvas);
+    // console.log('---- useEffect ----');
+    // console.log(canvas);
     const context = canvas.getContext('2d');
+    
     console.log(context);
     context.beginPath();
     context.moveTo(10, 10);
@@ -151,8 +155,9 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     context.stroke();
     context.closePath();
     context.fillText('t', 15, 15);
+    
     setContext(context);
-//    ref.current.style.tranform = 'rotateY(45deg) rotateX(45deg)';
+//    ref.current.style.transform = `rotateZ(${180}deg) rotateX(${60}deg) rotateY(${180}deg)`;
   }, []);
 
   const pushDisc = (lop = { identifier }) => {
@@ -232,7 +237,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
           height: height + 'px',
           position: 'relative',
           left: left + 'px',
-          transform: 'rotateY(40deg) rotateX(60deg)',
+          transform: `rotateY(${40}deg) rotateX(60deg)`,
         }}
       >
         <canvas id="tank-canvas" width={width} height={height}></canvas>
@@ -255,7 +260,44 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   z={disc.z}
                   rotateY={disc.rotateY}
                   duration={disc.duration}
+
+                  rows={disc.rows}
+                  columns={disc.columns}
+                  idForGraph={disc.idForGraph}
+                  parameterForGraphes={disc.parameterForGraphes}
+                  msView={disc.msView}
+                  topBorder={disc.topBorder}
+                  bottomBorder={disc.bottomBorder}
                 />
+              );
+            } else if (disc.type === 'DiscForReadyMade') {
+              let doms = [];
+              if (disc.subType === 'Ms') {
+                doms.push(<Ms {...disc.ms} />);
+              } else if (disc.subType === 'Matrix') {
+                doms.push(<Matrix {...disc.matrix} />);
+              }
+              
+              return (
+                <DiscFor
+                  identifier={disc.identifier}
+                  contentsForFrontInner={disc.contentsForFrontInner}
+                  contentsForBottomInner={disc.contentsForBottomInner}
+                  title={disc.title}
+                  height={disc.height}
+                  width={disc.width}
+                  left={disc.left}
+                  top={disc.top}
+                  isReact={isReact(disc)}
+                  doIt={disc.doIt}
+                  isBottomOnly={disc.isBottomOnly}
+                  z={disc.z}
+                  rotateY={disc.rotateY}
+                  duration={disc.duration}
+                  views={disc.views}
+                >
+                  {doms||props.children}
+                </DiscFor>
               );
             } else if (disc.type === 'Cable') {
               return (
@@ -312,6 +354,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   top={disc.top}
                   left={disc.left}
                   height={disc.height}
+                  carousel={disc.carousel}
                 />
               );
             } else if (disc.type === 'Timecode') {
