@@ -1,9 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Disc from './Disc';
+import DiscFor from './DiscFor';
 import MetalTape from './MetalTape';
 import Magazine from './Magazine';
 import Sail from './Sail';
 import Cube from './Cube';
+import Carousel from './Carousel';
+import Cable from './Cable';
+import Matrix from '../rz_uml/atoms/Matrix';
+import Cluster from '../rz_uml/atoms/Cluster';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
@@ -62,7 +67,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       id={props.identifier}
       style={{
         transformStyle: 'preserve-3d',
-        border: '1px solid blue',
+//        border: '1px solid blue',
         height: 10 + 'px',
         width: 100 + 'px',
         top: props.top + 'px',
@@ -95,7 +100,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             transform: ''
           }}
         >
-          {props.discs.map((line, index) => {
+          {props.discs?.map((line, index) => {
             return line.map((disc, index) => {
               if ('type' in disc === false || disc.type === 'Disc') {
                 console.log(disc);
@@ -123,7 +128,39 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     topBorder={disc.topBorder}
                     bottomBorder={disc.bottomBorder}
                   />
-                );
+                )
+              } else if (disc.type === 'DiscForReadyMade') {
+                let doms = [];
+                if (disc.subType === 'Ms') {
+                  doms.push(<Ms {...disc.ms} />);
+                } else if (disc.subType === 'Matrix') {
+                  doms.push(<Matrix {...disc.matrix} />);
+                } else if (disc.subType === 'Cluster') {
+                  doms.push(<Cluster {...disc.cluster} />);
+                }
+                
+                return (
+                  <DiscFor
+                    identifier={disc.identifier}
+                    contentsForFrontInner={disc.contentsForFrontInner}
+                    contentsForBottomInner={disc.contentsForBottomInner}
+                    title={disc.title}
+                    height={disc.height}
+                    width={disc.width}
+                    left={disc.left}
+                    top={disc.top}
+                    isReact={false}
+//                    isReact={isReact(disc)}
+                    doIt={disc.doIt}
+                    isBottomOnly={disc.isBottomOnly}
+                    z={disc.z}
+                    rotateY={disc.rotateY}
+                    duration={disc.duration}
+                    views={disc.views}
+                  >
+                    {doms||props.children}
+                  </DiscFor>
+                )
               } else if (disc.type === 'Magazine') {
                 return (
                   <Magazine
@@ -135,7 +172,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     height={disc.height}
                     width={disc.width}
                   />
-                );
+                )
               } else if (disc.type === 'MetalTape') {
                 return (
                   <MetalTape
@@ -145,19 +182,24 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     left={disc.left}
                     height={disc.height}
                   />
-                );
+                )
               } else if (disc.type === 'Sail') {
+                console.log('disc: ', disc);
                 return (
                   <Sail
+                    key={disc.identifier}
                     identifier={disc.identifier}
                     contentsForFrontInner={disc.contentsForFrontInner}
-                    contentsForBottomInner={disc.contentsForBottomInner}
                     isBottomOnly={disc.isBottomOnly}
                     top={disc.top}
                     left={disc.left}
+                    width={disc.width}
+                    height={disc.height}
                     title={disc.title}
+                    transform={disc.transform}
+                    z={disc.z}
                   />
-                );
+                )
               } else if (disc.type === 'Cube') {
                 return (
                   <Cube
@@ -166,13 +208,54 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     left={disc.left}
                     z={disc.z}
                   />
-                );
+                )
+              } else if (disc.type === 'Carousel') {
+                return (
+                  <Carousel
+                    identifier={disc.identifier}
+                    contentsForFrontInner={disc.contentsForFrontInner}
+                    contentsForBottomInner={disc.contentsForBottomInner}
+                    title={disc.title}
+                    height={disc.height}
+                    width={disc.width}
+                    left={disc.left}
+                    top={disc.top}
+//                    isReact={isReact(disc)}
+                    doIt={disc.doIt}
+                    isBottomOnly={disc.isBottomOnly}
+                    z={disc.z}
+                    contents={disc.contents}
+                  />
+                )
+              } else if (disc.type === 'Cable') {
+                return (
+                  <Cable
+                    identifier={disc.identifier}
+                    contentsForFrontInner={disc.contentsForFrontInner}
+                    contentsForBottomInner={disc.contentsForBottomInner}
+                    title={disc.title}
+                    height={disc.height}
+                    width={disc.width}
+                    left={disc.left}
+                    top={disc.top}
+//                    isReact={isReact(disc)}
+                    doIt={disc.doIt}
+                    isBottomOnly={disc.isBottomOnly}
+                    z={disc.z}
+                    bp={disc.bp}
+                    ep={disc.ep}
+                    ex1={disc.ex1}
+                    allow={disc.allow}
+                    transform={disc.transform}
+                    leans={disc.leans}
+                  />
+                )
               } else {
                 return (
                   <div></div>
-                );
+                )
               }
-            });
+            })
           })}
           { drawContentsForBack() }
         </div>

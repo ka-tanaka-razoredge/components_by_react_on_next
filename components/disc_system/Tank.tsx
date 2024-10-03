@@ -9,6 +9,7 @@ import Magazine from './Magazine';
 //import MagazineB from './Magazine_b';
 import Sail from './Sail';
 import Cube from './Cube';
+import Pyramid from './Pyramid';
 import Timecode from './Timecode';
 import DiscForDcoml from './DiscForDcoml';
 import DiscForDcosml from './DiscForDcosml';
@@ -16,8 +17,10 @@ import MutableSail from './MutableSail';
 import Cable from './Cable';
 import Carousel from './Carousel';
 import PastOrFuture from './PastOrFuture';
+import Wings from './molecules/Wings';
 import Ms from '../atoms/Ms';
 import Matrix from '../rz_uml/atoms/Matrix';
+import Cluster from '../rz_uml/atoms/Cluster';
 
 
 export default React.forwardRef((props: { identifier: string, [key: string]: any }, ref) => {
@@ -269,13 +272,15 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   topBorder={disc.topBorder}
                   bottomBorder={disc.bottomBorder}
                 />
-              );
+              )
             } else if (disc.type === 'DiscForReadyMade') {
               let doms = [];
               if (disc.subType === 'Ms') {
                 doms.push(<Ms {...disc.ms} />);
               } else if (disc.subType === 'Matrix') {
                 doms.push(<Matrix {...disc.matrix} />);
+              } else if (disc.subType === 'Cluster') {
+                doms.push(<Cluster {...disc.cluster} />);
               }
               
               return (
@@ -298,7 +303,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                 >
                   {doms||props.children}
                 </DiscFor>
-              );
+              )
             } else if (disc.type === 'Cable') {
               return (
                 <Cable
@@ -318,8 +323,10 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   ep={disc.ep}
                   ex1={disc.ex1}
                   allow={disc.allow}
+                  transform={disc.transform}
+                  leans={disc.leans}
                 />
-              );
+              )
             } else if (disc.type === 'Sail') {
               return (
                 <Sail
@@ -334,10 +341,11 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   z={disc.z}
                   transform={disc.transform}
                 />
-              );
+              )
             } else if (disc.type === 'Cube') {
               return (
                 <Cube
+                  key={disc.identifier}
                   identifier={disc.identifier}
                   //                contentsForFrontInner={disc.contentsForFrontInner}
                   //                title={disc.title}
@@ -345,7 +353,18 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   left={disc.left}
                   z={disc.z}
                 />
-              );
+              )
+            } else if (disc.type === 'Pyramid') {
+              return (
+                <Pyramid
+                  key={disc.identifier}
+                  identifier={disc.identifier}
+                  transform={disc.transform}
+                  top={disc.top}
+                  left={disc.left}
+                  z={disc.z}
+                />
+              )
             } else if (disc.type === 'MetalTape') {
               return (
                 <MetalTape
@@ -356,7 +375,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   height={disc.height}
                   carousel={disc.carousel}
                 />
-              );
+              )
             } else if (disc.type === 'Timecode') {
               return (
                 <Timecode
@@ -437,6 +456,17 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   z={disc.z}
                   rotateY={disc.rotateY}
                   tail={disc.tail}
+                />
+              )
+            } else if (disc.type === 'Wings') {
+              return (
+                <Wings
+                  ref={loRef[index]}
+                  identifier={disc.identifier}
+                  top={disc.top}
+                  left={disc.left}
+                  width={disc.width}
+                  duration={disc.duration}
                 />
               )
             } else {

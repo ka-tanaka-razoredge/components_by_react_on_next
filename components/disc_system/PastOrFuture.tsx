@@ -3,6 +3,7 @@ import Disc from './Disc';
 import MetalTape from './MetalTape';
 import Magazine from './Magazine';
 import Sail from './Sail';
+import Carousel from './Carousel';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
@@ -74,12 +75,12 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       return (
         <div
           style={{ transform: `rotateZ(180deg) translateY(10px)` }}
+          dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }}
         >
-          {props.contentsForBottomInner}
         </div>
       );
     } else {
-      return props.contentsForBottomInner;
+      return (<div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }}></div>);
     }
   };
 
@@ -132,11 +133,21 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     identifier={disc.identifier}
                     contentsForFrontInner={disc.contentsForFrontInner}
                     contentsForBottomInner={disc.contentsForBottomInner}
-                    isBottomOnly={disc.isBottomOnly}
-                    top={disc.top}
-                    left={disc.left}
                     title={disc.title}
-                    rotateY={(props.isPast) ? 180 : 0}
+                    height={disc.height}
+                    width={disc.width}
+                    left={disc.left}
+                    top={disc.top}
+                    doIt={disc.doIt}
+                    isBottomOnly={disc.isBottomOnly}
+                    z={disc.z}
+                    rotateY={(props.isPast) ? `${180}` : disc.rotateY}
+                    duration={disc.duration}
+  
+                    rows={disc.rows}
+                    columns={disc.columns}
+                    idForGraph={disc.idForGraph}
+                    parameterForGraphes={disc.parameterForGraphes}
                   />
                 );
               } else if (disc.type === 'Magazine') {
@@ -166,6 +177,25 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     top={disc.top}
                     left={disc.left}
                     title={disc.title}
+                  />
+                );
+              } else if (disc.type === 'Carousel') {
+                return (
+                  <Carousel
+                    identifier={disc.identifier}
+                    contentsForFrontInner={disc.contentsForFrontInner}
+                    contentsForBottomInner={disc.contentsForBottomInner}
+                    title={disc.title}
+                    height={disc.height}
+                    width={disc.width}
+                    left={disc.left}
+                    top={disc.top}
+//                    isReact={isReact(disc)}
+                    doIt={disc.doIt}
+                    isBottomOnly={disc.isBottomOnly}
+//                    z={disc.z}
+                    contents={disc.contents}
+                    transform={(props.isPast) ? 'rotateZ(180deg)' : ''}
                   />
                 );
               } else {
