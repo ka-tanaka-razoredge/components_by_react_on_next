@@ -1,34 +1,12 @@
+/**
+ * 
+ */
 import React, { useRef, useState } from 'react';
 import Ml from './Ml';
 
 export default (props) => {
   const contextMenu = useRef();
-  const [aggregate, setAggregate] = useState(
-    [
-      {
-        id: `first`,
-        alias: '浹',
-        style: { color: 'red', backgroundColor: 'black' },
-        m: '\"\"',
-        l:
-`<pre><code>(m) => {
-  throw new CustomEvent("sudden death");
-}</pre></code>
-          `
-      },
-      {
-        id: `second`,
-        alias: '漲',
-        style: {},
-        m: '\"冗長なメッセージを入れてみました\"',
-        l:
-`<pre><code>(m) => {
-  bloom();
-}</pre></code>
-          `
-      }
-    ]
-  );
+  const [aggregate, setAggregate] = useState([]);
   
   const onMouseOver = (e) => {
     // contextMenu.current.style.opacity = 1;
@@ -43,7 +21,11 @@ export default (props) => {
   const drawCells = (cells) => {
     const doms = [];
     for (let i = 0; i <= cells.length - 1; i++) {
-      doms.push(<div>{cells.character}</div>);
+      if (!(cells.indexes && (cells.indexes.find((v) => v === i) !== undefined))) {
+        doms.push(<div>{cells.character}</div>);
+      } else {
+        doms.push(<div style={{ color: 'blue' }}>■</div>);
+      }
     }
     if (cells.length === 0) doms.push(<div>{cells.character}</div>);
     

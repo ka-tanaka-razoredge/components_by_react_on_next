@@ -12,21 +12,36 @@ class Vector {
   }
 }
 
-export default (props: { identifier: string, bp: Vector, ep: Vector, ex1: Vector, ex2: Vector, allow: { top: Vector, l: Vector, r: Vector } }, ref) => {
+export default (props, ref) => {
   const base = useRef(null);
+  const frontInner = useRef(null);
   const canvas = useRef();
   let context;
+  
+  const { 'isBottomVisible': isBottomVisible = false } = props;
 
   useEffect(() => {
+console.log(isBottomVisible);
     context = canvas.current.getContext('2d');
     context.clearRect(0, 0, props.width, props.height);
+    
+context.beginPath();
+context.arc(props.bp.x, props.bp.y, 2, 0, 2 * Math.PI);
+context.fillStyle = 'red';
+context.closePath();
+context.fill();
     
     // TODO: props.isLineDash
     context.setLineDash([2, 2]);
     context.beginPath();
     context.moveTo(props.bp.x, props.bp.y);
 //    context.moveTo(props.bp.x, props.bp.y);
-    context.quadraticCurveTo(props.ex1.x, props.ex1.y, props.ep.x, props.ep.y);
+
+    if (props.ex1) {
+      context.quadraticCurveTo(props.ex1.x, props.ex1.y, props.ep.x, props.ep.y);
+    } else {
+      context.quadraticCurveTo(props.ep.x, props.ep.y, props.ep.x, props.ep.y);
+    }
     context.stroke();
     context.closePath();
     context.setLineDash([]);
@@ -56,8 +71,12 @@ export default (props: { identifier: string, bp: Vector, ep: Vector, ex1: Vector
       moveY(e.detail.value);
     });
 
-    if (props.isBottomOnly) {
+    if (!isBottomVisible) {
       base.current.style.border = null;
+    }
+    
+    if (props.leans) {
+      frontInner.current.style.transform += `${props.leans} translateY(-100px)`;
     }
   }, []);
 
@@ -97,7 +116,7 @@ export default (props: { identifier: string, bp: Vector, ep: Vector, ex1: Vector
       context.stroke();
       context.closePath();
     }
-      console.log('---- drawFront end ----');
+    console.log('---- drawFront end ----');
 
     const buildTransform = () => {
       let reply = 'rotateX(-90deg) translateY(-25px) translateZ(-50px)';
@@ -107,7 +126,7 @@ export default (props: { identifier: string, bp: Vector, ep: Vector, ex1: Vector
       return reply;
     };
 
-    if (!props.isBottomOnly) {
+    if (isBottomVisible) {
       let t = 'title' in props ? props.title : '';
       if (('isReact' in props == false) || props?.isReact === false) {
         return (
@@ -160,14 +179,16 @@ export default (props: { identifier: string, bp: Vector, ep: Vector, ex1: Vector
     >
       {drawBottomInner()}
       <div
+        ref={frontInner}
         style={{
+//border: '1px solid green',
           position: 'absolute',
           width: (props.width) ? props.width + 'px' : 100 + 'px',
-          top: '0px',
-          height: '1px',
+          top: `${0}px`,
+          height: `${1}px`,
           transform: 'rotateX(90deg)'
         }}>
-        <canvas ref={canvas} width={props.width + 'px'} height={props.height + 'px'} />
+        <canvas ref={canvas} /* style={{ border: '1px solid black' }} */ width={props.width + 'px'} height={props.height + 'px'} />
       </div>
     </div>
   );

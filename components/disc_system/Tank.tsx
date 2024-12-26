@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React, { useState, useRef, useEffect, useImperativeHandle } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import Disc from './Disc';
 import DiscFor from './DiscFor';
@@ -22,23 +22,28 @@ import Ms from '../atoms/Ms';
 import Matrix from '../rz_uml/atoms/Matrix';
 import Cluster from '../rz_uml/atoms/Cluster';
 
-
 export default React.forwardRef((props: { identifier: string, [key: string]: any }, ref) => {
-  //const base = useRef(null);
   const [initialized, setInitialized] = useState(false);
   const [discs, setDiscs] = useState([]);
   const discsRef = useRef([]);
   const loRef = [];
+  
+  /**
+   * discsはstateにつき非同期であるため，Refオブジェクトを用いている
+   */
   const setDiscEx = (discs) => {
+console.log(discs);
     discsRef.current = discs;
     setDiscs(discs);
   };
+
   const [context, setContext] = useState(null);
   let width = (props?.width) ? props.width : 800;
   let height = (props?.height) ? props.height : 400;
   let left = (props?.left) ? props.left : 50;
-
-  // useImperativeHandle(ref, () => ({}));
+  let top = (props?.top) ? props.top : 0;
+  
+  const [isFromNow, setIsFromNow] = useState(false);
   
   useEffect(() => {
     if ('discs' in props && 1 <= props.discs.length) setDiscEx(props.discs);
@@ -60,7 +65,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
       context.stroke();
       context.closePath();
     }, []);
-
+    
     ref.current.addEventListener('forwardCurrentIndex', (e) => {
       forwardCurrentIndex(e.detail);
     });
@@ -68,6 +73,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     ref.current.addEventListener('moveY', (e) => {
       return moveY(e.detail);
     });
+
     //--------------------------------------------------------------------------------
     // begin ooRef provider only
     //--------------------------------------------------------------------------------
@@ -103,7 +109,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     };
 
     ref.current.quadraticCurveTo = (lop: { beginVector: Vector, imaginaryVectorFirst: Vector, endVector: Vector }) => {
-      console.log('---- quadraticCurveTo begin ----');
+//      console.log('---- quadraticCurveTo begin ----');
       let context = document.getElementById('fore-canvas').getContext('2d');
       console.log(context);
       try {
@@ -113,7 +119,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
         context.stroke();
       } catch (e) {
       } finally {
-        console.log('---- quadraticCurveTo end ----');
+//        console.log('---- quadraticCurveTo end ----');
       }
     };
     
@@ -132,16 +138,19 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
       context.fill();
     };
     
+    ref.current.rotate = (value) => {
+      rotate(value);
+    }
     //--------------------------------------------------------------------------------
     // end
     //--------------------------------------------------------------------------------
 
     const canvas = document.getElementById('tank-canvas');
-    // console.log('---- useEffect ----');
-    // console.log(canvas);
+// console.log('---- useEffect ----');
+// console.log(canvas);
     const context = canvas.getContext('2d');
     
-    console.log(context);
+//    console.log(context);
     context.beginPath();
     context.moveTo(10, 10);
     context.lineTo(10, 100);
@@ -194,7 +203,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
   };
 
   const moveY = (lop) => {
-    console.log('---- moveY ----');
+//    console.log('---- moveY ----');
     const disc = document.getElementById(lop.identifier);
     //    const disc = giveDisc({ identifier: lop.identifier });
     disc.dispatchEvent(
@@ -207,9 +216,22 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
   };
   
   const giveDisc = (lop) => {
-    console.log('---- giveDisc ----');
+//    console.log('---- giveDisc ----');
     return discsRef.current.find((disc) => disc.identifier === lop.identifier);
   };
+  
+  //
+  // I don't know why below code suceed.
+  //
+  let isFrom = false;
+  const rotate = (value) => {
+    ref.current.style.transform += value;
+    isFrom = !isFrom;
+    setIsFromNow(isFrom);
+  };
+  useEffect(() => {
+//    console.log('isFromNow: ', isFromNow);
+  }, [isFromNow]);
   
   const isReact = (disc) => {
     return (disc?.isReact) ? disc.isReact : false;
@@ -224,7 +246,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', top: `${top}px` }}>
       {
         props.foreCanvas && (<div style={{ position: 'absolute', backgroundColor: 'rgba(200, 200, 200, 0.1)', width: '50vw', height: '100vh', zIndex: 1000, left: 0, top: 0 }}>
           <canvas id='fore-canvas' width={width} height={height}></canvas>
@@ -250,6 +272,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
               return (
                 <Disc
                   identifier={disc.identifier}
+                  contents={disc.contents}
                   contentsForFrontInner={disc.contentsForFrontInner}
                   contentsForBottomInner={disc.contentsForBottomInner}
                   title={disc.title}
@@ -271,6 +294,8 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   msView={disc.msView}
                   topBorder={disc.topBorder}
                   bottomBorder={disc.bottomBorder}
+                  
+                  isFromNow={isFromNow}
                 />
               )
             } else if (disc.type === 'DiscForReadyMade') {
@@ -332,6 +357,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                 <Sail
                   key={disc.identifier}
                   identifier={disc.identifier}
+                  contents={disc.contents}
                   contentsForFrontInner={disc.contentsForFrontInner}
                   title={disc.title}
                   top={disc.top}
@@ -340,6 +366,9 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   width={disc.width}
                   z={disc.z}
                   transform={disc.transform}
+                  duration={disc.duration}
+                  
+                  isFromNow={isFromNow}
                 />
               )
             } else if (disc.type === 'Cube') {

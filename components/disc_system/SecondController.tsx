@@ -25,7 +25,7 @@ export default forwardRef((props, ref) => {
     "identifier": "id-",
     "left": 0,
     "top": 0,
-    "contentsForFrontInner": "subject"
+    "contentsForFrontInner": ""
   }
 ]
 `);
@@ -36,6 +36,12 @@ export default forwardRef((props, ref) => {
   
   const [left, setLeft] = useState('');
   const [top, setTop] = useState('');
+  
+  const [shouldSaveSlice, setShouldSaveSlice] = useState(false);
+  const [slices, setSlices] = useState([]);
+  const [tags, setTags] = useState([]);
+  
+  const [sliceIndex, setSliceIndex] = useState(0);
   
   useImperativeHandle(ref, () => ({
     fetch: () => {
@@ -49,7 +55,12 @@ export default forwardRef((props, ref) => {
   const apply = () => {
     try {
       const parsed = JSON.parse(textarea.current.value);
-      props.applyDiscs({ value: textarea.current.value });
+      if (1 <= parsed.length && Array.isArray(parsed[0])) {
+        const index = (sliceIndex <= parsed.length - 1) ? sliceIndex : 0;
+        props.applyDiscs({ value: JSON.stringify(parsed[index]) });
+      } else {
+        props.applyDiscs({ value: textarea.current.value });
+      }
       setDiscs(parsed);
     } catch {
       alert('JSON is invalid!');
@@ -74,25 +85,37 @@ export default forwardRef((props, ref) => {
   };
 
   const fetchFromServer = async () => {
-console.log('---- fetchFromServer begin ----');
+//console.log('---- fetchFromServer begin ----');
     let resourceName = 'sailing_ships';
     let response;
     
     if (isTableName(resource)) resourceName = resource;
-
-    if (resource === 'SailingShip') {
+    if (resource === 'SailingShip' || resourceName === 'sailing_ships') {
       response = await axios.get(`${props.api}${resourceName}/findById?id=${ id }`);
     } else {
       response = await axios.get(`${props.api}${resourceName}/findById?${resources[resource]}_id=${ id }&as=DiscSystem&dest=mysql`);
       response.data[0].json = JSON.parse(response.data[0].json);
-console.log(response);
-console.log('---- fetchFromServer end ----');
+//console.log(response);
+//console.log('---- fetchFromServer end ----');
     }
     
     setDiscs(response.data[0].json);
     setJson(JSON.stringify(response.data[0].json, null, 2));
     setName(response.data[0].name);
     if ('resource' in response.data[0]) setResource(response.data[0].resource);
+    
+    if (resource === 'SailingShip' || resourceName === 'sailing_ships') {
+      if (id !== -1) {
+        response = await axios.get(`${props.api}sailing_ship_slices/doListByJson?sailing_ship_id=${ id }`);
+      }
+      setSlices(response.data);
+      
+      if (id !== -1) {
+        response = await axios.get(`${props.api}tags/doListByResourceId?resource=sailing_ships&id=${ id }`);
+      }
+      setTags(response.data);
+    }
+    
     apply();
   };
   
@@ -102,6 +125,8 @@ console.log('---- fetchFromServer end ----');
     params.append('id', id);
     params.append('name', name);
     params.append('json', json);
+    params.append('should_save_slice', shouldSaveSlice);
+    tags.map(v => params.append('tags[]', v.id));
 
     try {
       JSON.parse(json);
@@ -115,6 +140,7 @@ console.log('---- fetchFromServer end ----');
     }
     const resourceName = (isTableName(resource)) ? resource : 'sailing_ships';   
     const response = await axios.post(`${props.api}${resourceName}/save`, params);
+    setId(response.data.updatedId);
     alert(JSON.stringify(response));
   };
 
@@ -159,8 +185,8 @@ console.log('---- fetchFromServer end ----');
       [
         {
           "type": "Disc",
-          "top": 90,
           "left": 0,
+          "top": 90,
           "isBottomOnly": true,
           "contentsForBottomInner": "rw"
         }
@@ -175,8 +201,8 @@ console.log('---- fetchFromServer end ----');
       default:
         value = ` {
     "type": "Disc",
-    "top": 0,
     "left": 0,
+    "top": 0,
     "isBottomOnly": true,
     "contentsForBottomInner": "dummy"
   }
@@ -228,6 +254,32 @@ console.log('---- fetchFromServer end ----');
     setResource('Sequence');
     setName('');
   };
+  
+  const loadSlice = () => {
+  };
+
+  const fetchSlice = async (sliceId) => {
+    let response;
+    response = await axios.get(`${props.api}sailing_ship_slices/findById?id=${ sliceId }`);
+    response.data[0].json = JSON.parse(response.data[0].json);
+    setDiscs(response.data[0].json);
+    setJson(JSON.stringify(response.data[0].json, null, 2));
+    setName(response.data[0].name);
+    if ('resource' in response.data[0]) setResource(response.data[0].resource);
+    apply();
+  };
+  
+  const addTag = async () => {
+    let response;
+    response = await axios.get(`${props.api}tags/retrieve?value=${document.getElementById('id-tag-you-will-add').value}`);
+    const nextTags = tags.map((v) => { return v });
+    nextTags.push(response.data[0]);
+    setTags(nextTags);
+    console.log(response);
+  };
+  const removeTag = async (tag) => {
+    setTags(tags.filter((v) => (v !== tag)));
+  };
 
   return (
     <div>
@@ -240,7 +292,9 @@ console.log('---- fetchFromServer end ----');
           <div>
             <input type='button' value='apply' onClick={ (e) => { apply(); } } />
             <input type='button' value='fetch' onClick={ (e) => { fetch(); } } />
-            <input type='button' value='stringify' onClick={ (e) => { stringify(); } } /><br />
+            <input type='button' value='stringify' onClick={ (e) => { stringify(); } } />
+<input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } />
+            <br />
             <div>
               <div style={{ width: '5rem' }}>id:&nbsp;</div><input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
             </div>
@@ -248,19 +302,63 @@ console.log('---- fetchFromServer end ----');
               <div style={{ width: '5rem' }}>name:&nbsp;</div><input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
             </div>
             <div>
-              <div style={{ width: '5rem' }}>resource:&nbsp;</div><input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
+              <div style={{ width: '5rem' }}><span title='Set table name when you want to access not sailing_ships.'>resource:&nbsp;</span></div><input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
             </div>
             <div style={{ display: 'flex' }}>
               <input type='button' value='save' onClick={ (e) => { save(); } } />
               <div style={{ width: '130px' }}></div>
               <input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } />
             </div>
-            <br />
-            <br />
+            <div><input type='checkbox' id='should-save-slice' value={shouldSaveSlice} onClick={() => { setShouldSaveSlice(!shouldSaveSlice); }}  /><label for='should-save-slice'>shouldSaveSlice</label></div>
+            <div>
+              <input type='button' value='reverse' onClick={ (e) => { props.reverse(); } } />
+            </div>
             <br />
             <input type='button' value='new Sequence' onClick={loadSequence} />
             <ToolBox api={props.api} />
-            <div style={{ height: '1vh' }}></div>
+            <div>
+              tags:
+              <div>
+                <input id='id-tag-you-will-add' type='text' />
+                <input type='button' value='add' onClick={ (e) => { addTag(); } } />
+              </div>
+              <div style={{ height: `${100}px`, overflow: 'scroll' }}>
+              {
+                tags.map((v) => {
+                  return (
+                    <div style={{ display: 'flex', border: '1px solid black', hight: '10px', width: '200px' }}>
+                      <div style={{ flex: 1 }}>{v.value}</div>
+                      <div style={{ marginRight: '0px' }} onClick={ () => { removeTag(v); }}>×</div>
+                    </div>
+                  )
+                })
+              }
+              </div>
+            </div>
+            <div style={{ position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.5)', left: `${900}px`, top: `${800}px`, zIndex: 1100 }}>
+              slices:
+              <div style={{ height: `${100}px`, overflow: 'scroll' }}>
+              {
+                (1 <= discs.length && Array.isArray(discs[0])) && discs.map((v, index) => {
+                  return (
+                    <div style={{ border: '1px solid black', hight: '10px', width: '200px' }} onClick={() => { setSliceIndex(index); props.applyDiscs({ value: JSON.stringify(discs[index]) }); }}>{index}</div>
+                  )
+                })
+              }
+              </div>
+            </div>
+            <div>
+              slices:
+              <div style={{ height: `${100}px`, overflow: 'scroll' }}>
+              {
+                slices.map((v) => {
+                  return (
+                    <div style={{ border: '1px solid black', hight: '10px', width: '200px' }} onClick={() => { fetchSlice(v.sailing_ship_slice_id); }}>{v.created_at}</div>
+                  )
+                })
+              }
+              </div>
+            </div>
           </div>
         </div>
         <div style={{ display: 'flex' }}>

@@ -7,6 +7,7 @@ import Sail from './Sail';
 import Cube from './Cube';
 import Carousel from './Carousel';
 import Cable from './Cable';
+import Ms from '../atoms/Ms';
 import Matrix from '../rz_uml/atoms/Matrix';
 import Cluster from '../rz_uml/atoms/Cluster';
 
@@ -106,6 +107,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                 console.log(disc);
                 return (
                   <Disc
+                    {...disc}
                     identifier={disc.identifier}
                     contentsForFrontInner={disc.contentsForFrontInner}
                     contentsForBottomInner={disc.contentsForBottomInner}

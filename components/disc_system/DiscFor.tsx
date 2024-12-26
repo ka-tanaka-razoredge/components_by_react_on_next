@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Dcoml from './Dcoml';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
@@ -32,6 +31,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
 
   const drawBottomInner = () => {
+    if (!props.views?.bottomInner) return;
+    return props.children;
+
     if (!props.contentsForBottomInner) {
       return '　';
       //      return props.contentsForFrontInner;
@@ -41,6 +43,16 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
 
   const drawFront = () => {
+    if (props.views?.frontInner) {
+      return (
+        <div
+          style={{ transform: 'rotateX(180deg)' }}
+        >
+          {props.children}
+        </div>
+      );
+    }
+    
     const buildTransform = () => {
       let reply = 'rotateX(-90deg) translateY(-25px) translateZ(-50px)';
       if (props.height && props.width) {
@@ -63,7 +75,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           }}
           title={t}
         >
-          <Dcoml aggregate={ props.dcoml } />
+          {props.contentsForFrontInner}
         </div>
       );
     } else {
@@ -78,7 +90,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       style={{
         transformStyle: 'preserve-3d',
         border: '1px solid orange',
-        height: (props.duration) ? props.duration : '1rem',
+        height: 10 + 'px',
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',

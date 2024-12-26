@@ -3,7 +3,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import Tank from './Tank';
 
-export default forwardRef((props, ref) => {
+export default forwardRef((props: {top}, ref) => {
   const tank = useRef();
   let timer;
   let counter = 0;

@@ -93,6 +93,16 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     }
   };
   
+  const buildTransform = () => {
+    if (props.z && !props.transform) {
+      return `translateZ(${props.z}px)`;
+    } else if (props.transform) {
+      return props.transform;
+    } else {
+      return '';
+    }
+  };
+  
   return (
     <div
       ref={base}
@@ -105,7 +115,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         top: props.top + 'px',
         left: props.left + 'px',
         position: 'absolute',
-        transform: (props.z) ? `translateZ(${props.z}px)` : ''
+        transform: buildTransform()
       }}
     >
       {drawBottomInner()}

@@ -1,8 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
+  const frontInner = useRef(null);
+  const [selected, setSelected] = useState(false);
 
   useEffect(() => {
     base.current.addEventListener('moveX', e => {
@@ -14,6 +16,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     base.current.addEventListener('moveZ', e => {
       moveY(e.detail.value);
     });
+    base.current.addEventListener('', (e) => {
+      frontInner.current.style.transform = 'rotateX(180deg) rotateY(180deg)';
+    });
 
     if (props.isBottomOnly) {
       base.current.style.border = null;
@@ -22,7 +27,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     if (props.rows) {
       props.parameterForGraphes.map((v) => {
         // ex: id-graph_0-
-        document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+        if (v.color) {
+          document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+        } else {
+          document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.border = v.border;
+        }
       });
     }
   }, []);
@@ -67,7 +76,13 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           reply += `<div style='display: flex; justify-content: center;'>`;
           reply += `<div style='display: flex;'>`;
           for (let j = 0; j <= columns - 1; j++) {
-            reply += `<div id='${props.idForGraph}${i}-${j}' style='border: 1px solid silver; width: 10px; height: 10px;'></div>`;
+            reply += `<div id='${props.idForGraph}${i}-${j}' style='border: 1px solid silver; width: 10px; height: 10px; background-color: white;'></div>`;
+            if (j === 0) {
+              reply += `<div style="border: 1px solid ${props.bottomBorder};"></div>`
+            }
+            if (j === columns - 2) {
+              reply += `<div style="border: 1px solid ${props.topBorder};"></div>`
+            }
           }
           reply += `</div>`;
           reply += `</div>`;
@@ -102,7 +117,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       return drawMs();
     }
   };
-
+  
   const drawFront = () => {
     const buildTransform = () => {
       let reply = 'rotateX(-90deg) translateY(-25px) translateZ(-50px)';
@@ -121,16 +136,41 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 
       if (('isReact' in props == false) || props?.isReact === false) {
         return (
-          <div
-            style={{
-              border: 'solid 1px lime',
-              width: (props.width) ? props.width + 'px' : 100 + 'px',
-              height: (props.height) ? props.height + 'px' : 50 + 'px',
-              transform: 'rotateX(180deg)'
-            }}
-            dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
-            title={t}
-          />
+          <>
+            <div
+              ref={frontInner}
+              className="front-inner"
+              style={{
+                border: 'solid 1px lime',
+                width: (props.width) ? props.width + 'px' : 100 + 'px',
+                height: (props.height) ? props.height + 'px' : 50 + 'px',
+
+                transform: (!props.isFromNow) ? 'rotateX(180deg)' : 'rotateX(180deg) rotateY(180deg)',
+                
+              }}
+              dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
+              title={t}
+            />
+{/*            
+            <div className="tool-box">園</div>
+*/}            
+{/*
+            <div
+              style={{
+                position: 'absolute',
+                zIndex: -1,
+                top: 0,
+                border: 'solid 1px lime',
+                backgroundColor: 'white',
+                width: (props.width) ? props.width + 'px' : 100 + 'px',
+                height: (props.height) ? props.height + 'px' : 50 + 'px',
+                transform: 'rotateX(180deg) rotateY(180deg)'
+              }}
+              dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
+              title={t}
+            />
+*/}            
+          </>
         );
       } else {
         console.log(props);
@@ -154,40 +194,73 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
   
   const buildTransform = () => {
-    console.log('---- buildTransform begin ----');
+//    console.log('---- buildTransform begin ----');
     let reply = '';
     if (props.z) reply += `translateZ(${props.z}px) `;
     if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
+    if (props.transform) reply += `${props.transform}`;
     console.log(reply);
     return reply;
   };
   
+  const onMouseOver = (e) => {
+    const previewWindow = document.getElementById('preview-window');
+    if (!previewWindow || !props.contents) return;
+    previewWindow.dispatchEvent(new CustomEvent('show', { detail: { value: (props.contents) ? props.contents : '' } }));
+  };
+  const onMouseLeave = (e) => {
+    const previewWindow = document.getElementById('preview-window');
+    if (!previewWindow|| !props.contents) return;
+    previewWindow.dispatchEvent(new CustomEvent('hide', { detail: { value: (props.contents) ? props.contents : '' } }));
+  };
+  
   return (
-    <div
-      ref={base}
-      id={props.identifier}
-      style={{
-        transformStyle: 'preserve-3d',
-        border: '1px solid orange',
-        height: (props.duration) ? props.duration : '1rem',
-        width: (props.width) ? props.width + 'px' : 100 + 'px',
-        top: props.top + 'px',
-        left: props.left + 'px',
-        position: 'absolute',
-        transform: buildTransform(),
-      }}
-    >
-      {drawBottomInner()}
+    <>
+      <style>
+      {
+        `
+          .tool-box-local {
+            position: absolute;
+            z-index: 1100;
+            background-color: rgba(0, 0, 0, 0.5);
+            top: 0px;
+            left: 0px;
+            transform: rotateX(180deg);
+            height: 100px;
+          }
+        `
+      }
+      </style>
       <div
+        ref={base}
+        id={props.identifier}
+        className="disc bottom-inner"
         style={{
-          position: 'absolute',
+          transformStyle: 'preserve-3d',
+          border: '1px solid orange',
+          height: (props.duration) ? props.duration : '1rem',
           width: (props.width) ? props.width + 'px' : 100 + 'px',
-          top: '0px',
-          height: '1px',
-          transform: 'rotateX(90deg)'
-        }}>
-          {drawFront()}
+          top: props.top + 'px',
+          left: props.left + 'px',
+          position: 'absolute',
+          transform: buildTransform(),
+        }}
+        onMouseOver={onMouseOver}
+        onMouseLeave={onMouseLeave}
+      >
+        {drawBottomInner()}
+        {/* shaft */}
+        <div
+          style={{
+            position: 'absolute',
+            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            top: '0px',
+            height: '1px',
+            transform: 'rotateX(90deg)'
+          }}>
+            {drawFront()}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
