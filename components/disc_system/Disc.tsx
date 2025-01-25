@@ -27,10 +27,13 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     if (props.rows) {
       props.parameterForGraphes.map((v) => {
         // ex: id-graph_0-
-        if (v.color) {
-          document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
-        } else {
-          document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.border = v.border;
+        try {
+          if (v.color) {
+            document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+          } else {
+            document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.border = v.border;
+          }
+        } catch (e) {
         }
       });
     }
@@ -117,7 +120,12 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       return drawMs();
     }
   };
-  
+  const drawBottomOuter = () => {
+    return (
+      <div class="bottle-outer" dangerouslySetInnerHTML={{ __html: props.contentsForBottomOuter || props.contentsForBottomInner }} />
+    );
+  };
+
   const drawFront = () => {
     const buildTransform = () => {
       let reply = 'rotateX(-90deg) translateY(-25px) translateZ(-50px)';
@@ -228,6 +236,14 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             transform: rotateX(180deg);
             height: 100px;
           }
+          
+          .bottle-outer {
+            position: relative;
+            boder: 1px solid rgb(0, 0, 0, 0.1);
+            transform: rotateX(180deg); translateY(32px);
+            top: -14px;
+          }
+          
         `
       }
       </style>
@@ -249,6 +265,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         onMouseLeave={onMouseLeave}
       >
         {drawBottomInner()}
+        {drawBottomOuter()}
         {/* shaft */}
         <div
           style={{

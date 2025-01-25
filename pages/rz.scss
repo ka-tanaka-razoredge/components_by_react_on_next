@@ -1,0 +1,79 @@
+.disc {
+  font-size: 10pt;
+  line-height: 1;
+  .bottom-inner {
+    color: red;
+  }
+  .front-inner {
+//    overflow: auto;
+  }
+}
+
+.pcsi {
+  line-height: 1;
+  &--part {
+    font-size: 64px;
+  }
+  &--chapter {
+    font-size: 48px;
+  }
+  &--section {
+    font-size: 32px;
+  }
+  &--item {
+    font-size: 24px;
+  }
+}
+
+.mat {
+  &--default {
+    color: white;
+    background: linear-gradient(90deg, rgba(200, 200, 200, 1.0), rgba(255, 255, 255, 0.5));
+    font-family: "Times new roman";
+//    font-size: 36px;
+//    height: 48px;
+  }
+}
+
+.flex {
+  display: flex;
+  &-horizontal {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.logue {
+  &.body {
+  }
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.var {
+  color: blue;
+}
+
+.tag {
+  color: white;
+  background: rgba(255, 192, 203, 1.0);
+}
+
+// channel-button
+.cb {
+  display: flex;
+
+  // &--hover
+  .h {
+    &:hover {
+      color: white;
+      background-color: rgba(0, 0, 255, 0.5);
+    }
+  }
+}
+
+.blank {
+  color: rgba(0, 0, 0, 0.1);
+}

@@ -97,3 +97,195 @@
 .Bogey {
     color: orange;
 }
+
+.rz-prism {
+    background-color: silver;
+}
+
+.code {
+    background-color: black;
+    color: lime;
+}
+
+.margin-1 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.margin-2 {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.margin-3 {
+    margin-left: 3rem;
+    margin-right: 3rem;
+}
+
+.margin-4 {
+    margin-left: 3rem;
+    margin-right: 3rem;
+}
+
+.margin-5 {
+    margin-left: 3rem;
+    margin-right: 3rem;
+}
+
+.margin-6 {
+    margin-left: 3rem;
+    margin-right: 3rem;
+}
+
+.virtical-separator-1 {
+    height: 1rem;
+}
+
+
+/**
+ * Glid Layout
+ */
+.container-for-character-designer {
+    display: grid;
+    grid-template-columns: 20rem 1fr;
+}
+
+.container-for-character-designer .key-region {
+    background-color: silver;
+    margin: 1px 1px;
+}
+
+.container-for-character-designer .value-region {
+    border: 1px solid black;
+    margin: 1px 1px;
+}
+
+.terminal {
+    color: lime;
+    background-color: black;
+}
+
+.sail {
+    position: relative;
+    z-index: 1;
+    text-align: left;
+    width: 100px;
+}
+
+.sail::before {
+    z-index: -1;
+    transform: skewX(-45deg);
+    content: "";
+    height: 1rem;
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background-color: #EEEEEE;
+}
+
+/*
+ * ProgressBar
+ */
+
+@keyframes drawLevel {
+    0% { opacity: 0; }
+    100% { opacity: 1;}
+}
+
+.level {
+    animation-name: drawLevel;
+    animation-duration: 2s;
+}
+
+.c-balloon {
+    align-content: flex-start;
+    display: flex;
+    justify-content: space-between;
+    position: relative
+}
+
+.-bln-left .c-balloon__body {
+    justify-content: flex-start
+}
+
+.c-balloon__text {
+    border-radius: 8px;
+    color: red;
+    line-height: 1.6;
+    max-width: 560px;
+    padding: 1em;
+    position: relative;
+    background: blue;
+    /*background: #f7f7f7;*/
+    border-color: blue;
+    /*border-color: #f7f7f7;*/
+}
+
+.c-balloon__shapes {
+    background-color: inherit;
+    border-color: inherit;
+    height: 0;
+    position: absolute;
+    top: 16px;
+    width: 0;
+    z-index: 1;
+}
+
+.c-balloon__after,.c-balloon__before {
+    border-color: transparent;
+    border-style: solid;
+    display: block;
+    height: 0;
+    position: absolute;
+    top: 0;
+    width: 0;
+}
+
+.-speaking .c-balloon__after,.-speaking .c-balloon__before {
+    border-width: 8px 10px 8px 0;
+    left: -24px;
+}
+
+.c-balloon__after {
+    border-right-color: inherit;
+    z-index: 2
+}
+
+.-speaking.-border-none .c-balloon__after {
+    display: none
+}
+
+.c-balloon__before {
+    z-index: 3
+}
+
+.-speaking.-border-on .c-balloon__before {
+    left: -8px
+}
+
+.-thinking .c-balloon__after,.-thinking .c-balloon__before {
+    background: inherit;
+    border-radius: 50%
+}
+
+.-thinking.-border-none .c-balloon__after,.-thinking.-border-none .c-balloon__before {
+    border: none
+}
+
+.-thinking.-border-on .c-balloon__after,.-thinking.-border-on .c-balloon__before {
+    border-color: inherit;
+    border-width: 1px
+}
+
+/**
+ * DiscSystem
+ */
+.tool-box {
+    position: relative;
+    z-index: 1100;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: -1rem;
+    margin: 0 0 0 auto;
+    transform: rotateX(180deg);
+    height: 1rem;
+    width: 1rem;
+}

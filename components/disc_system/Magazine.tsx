@@ -42,6 +42,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     });
 
     rotateX(0);
+    if (props.views) rotateX(90);
   }, []);
 
   const moveX = value => {
