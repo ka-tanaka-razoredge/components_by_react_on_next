@@ -120,6 +120,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       return drawMs();
     }
   };
+  
   const drawBottomOuter = () => {
     return (
       <div class="bottle-outer" dangerouslySetInnerHTML={{ __html: props.contentsForBottomOuter || props.contentsForBottomInner }} />
@@ -265,7 +266,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         onMouseLeave={onMouseLeave}
       >
         {drawBottomInner()}
-        {drawBottomOuter()}
+        {/* drawBottomOuter() */}
         {/* shaft */}
         <div
           style={{
