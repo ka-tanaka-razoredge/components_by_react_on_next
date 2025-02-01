@@ -49,6 +49,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     rotateX(0);
     if (props.views) {
       rotateX(90);
+//      joint.current.style.transform = 'rotateX(-90deg) translateY(-400px)';
       setVertical(true);
     }
   }, []);
@@ -150,7 +151,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             {props.discs?.map((line, index) => {
               return line.map((disc, index) => {
                 if ('type' in disc === false || disc.type === 'Disc') {
-                  console.log(disc);
+//console.log(disc);
                   return (
                     <Disc
                       {...disc}

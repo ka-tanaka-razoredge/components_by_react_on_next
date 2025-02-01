@@ -74,12 +74,13 @@ export default forwardRef((props, ref) => {
   };
   
   const isTableName = (candidate) => {
-    const tableNames = ['bottles', 'sports', 'soms'];
+    const tableNames = ['bottles', 'bumps', 'sports', 'soms'];
     return tableNames.find(tableName => tableName === resource);
   };
   
   const resources = {
     'bottles': 'bottle',
+    'bumps': 'bump',
     'sports': 'sport',
     'soms': 'som',
   };
