@@ -1,4 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
+
+import useDiscFactory from '@/hooks/disc_system/disc_factory';
+
 import Disc from './Disc';
 import DiscFor from './DiscFor';
 import MetalTape from './MetalTape';
@@ -7,9 +10,6 @@ import Sail from './Sail';
 import Cube from './Cube';
 import Carousel from './Carousel';
 import Cable from './Cable';
-import Ms from '../atoms/Ms';
-import Matrix from '../rz_uml/atoms/Matrix';
-import Cluster from '../rz_uml/atoms/Cluster';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
@@ -21,6 +21,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   const [vertical, setVertical] = useState(false);
 //DEL  let { tense, setTense } = useState(false);
   let t = false;
+  
+  const { createDisc } = useDiscFactory();
 
   useEffect(() => {
     base.current.addEventListener('moveX', e => {
@@ -49,6 +51,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     rotateX(0);
     if (props.views) {
       rotateX(90);
+//      joint.current.style.transform = 'rotateX(-90deg) translateY(-400px)';
       setVertical(true);
     }
   }, []);
@@ -142,7 +145,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
               position: 'absolute',
 
               width: props.width + 'px',
-              height: props.height + 'px',
+              height: `${props.height}px`,
               top: 0 + 'px',
               left: 0 + 'px',
             }}
@@ -150,7 +153,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             {props.discs?.map((line, index) => {
               return line.map((disc, index) => {
                 if ('type' in disc === false || disc.type === 'Disc') {
-                  console.log(disc);
+//console.log(disc);
                   return (
                     <Disc
                       {...disc}
@@ -176,38 +179,6 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                       topBorder={disc.topBorder}
                       bottomBorder={disc.bottomBorder}
                     />
-                  )
-                } else if (disc.type === 'DiscForReadyMade') {
-                  let doms = [];
-                  if (disc.subType === 'Ms') {
-                    doms.push(<Ms {...disc.ms} />);
-                  } else if (disc.subType === 'Matrix') {
-                    doms.push(<Matrix {...disc.matrix} />);
-                  } else if (disc.subType === 'Cluster') {
-                    doms.push(<Cluster {...disc.cluster} />);
-                  }
-                  
-                  return (
-                    <DiscFor
-                      identifier={disc.identifier}
-                      contentsForFrontInner={disc.contentsForFrontInner}
-                      contentsForBottomInner={disc.contentsForBottomInner}
-                      title={disc.title}
-                      height={disc.height}
-                      width={disc.width}
-                      left={disc.left}
-                      top={disc.top}
-                      isReact={false}
-  //                    isReact={isReact(disc)}
-                      doIt={disc.doIt}
-                      isBottomOnly={disc.isBottomOnly}
-                      z={disc.z}
-                      rotateY={disc.rotateY}
-                      duration={disc.duration}
-                      views={disc.views}
-                    >
-                      {doms||props.children}
-                    </DiscFor>
                   )
                 } else if (disc.type === 'Magazine') {
                   return (
@@ -299,9 +270,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     />
                   )
                 } else {
-                  return (
-                    <div></div>
-                  )
+                  return createDisc(disc)
                 }
               })
             })}
@@ -326,9 +295,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                         <div
                           className="dot"
                           style={{
+                            transformStyle: 'preserve-3d',
                             top: v.top,
                             left: v.left,
-                            width: `${100}px`
+                            width: `${100}px`,
+                            transform: (!v.z) ? '' : `translateX(${v.z * 0.25}px) translateY(${ (v.z) / 100 * 8 }px)`
                           }}
                           dangerouslySetInnerHTML={{ __html: v.contentsForBottomOuter }}
                         >

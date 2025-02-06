@@ -83,6 +83,14 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     }
   };
   
+  const buildTransform = () => {
+    let reply = '';
+    if (props.z) reply += `translateZ(${props.z}px) `;
+    if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
+    if (props.transform) reply += `${props.transform}`;
+    return reply;
+  };
+
   return (
     <div
       ref={base}
@@ -94,7 +102,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
-        position: 'absolute'
+        position: 'absolute',
+        transform: buildTransform(),
       }}
     >
       {drawBottomInner()}

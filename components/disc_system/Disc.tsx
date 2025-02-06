@@ -1,12 +1,27 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
+import useLongTap from '@/hooks/disc_system/long_tap';
+import ContextMenu from '@/components/disc_system/molecules/ContextMenu/for_disc';
+
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
   const frontInner = useRef(null);
+  const contextMenu = useRef(null);
   const [selected, setSelected] = useState(false);
+  const {executeLongTap: execLt4ContextMenu} = useLongTap({
+    refs: {
+      client: base,
+    },
+    callBack: () => {
+      contextMenu.current.show();
+    },
+    duration: 500,
+  });
 
   useEffect(() => {
+    execLt4ContextMenu();
+    
     base.current.addEventListener('moveX', e => {
       moveX(e.detail.value);
     });
@@ -29,7 +44,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         // ex: id-graph_0-
         try {
           if (v.color) {
-            document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+            if (v.color.indexOf('linear-gradient') !== -1) {
+              document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.background = v.color;
+            } else {
+              document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+            }
           } else {
             document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.border = v.border;
           }
@@ -208,7 +227,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     if (props.z) reply += `translateZ(${props.z}px) `;
     if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
     if (props.transform) reply += `${props.transform}`;
-    console.log(reply);
+console.log(reply);
     return reply;
   };
   
@@ -222,6 +241,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     if (!previewWindow|| !props.contents) return;
     previewWindow.dispatchEvent(new CustomEvent('hide', { detail: { value: (props.contents) ? props.contents : '' } }));
   };
+  
+  
   
   return (
     <>
@@ -244,7 +265,6 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             transform: rotateX(180deg); translateY(32px);
             top: -14px;
           }
-          
         `
       }
       </style>
@@ -278,6 +298,12 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           }}>
             {drawFront()}
         </div>
+        <ContextMenu
+          ref={contextMenu}
+          base={base}
+          frontInner={frontInner}
+          width={props.width}
+        />
       </div>
     </>
   );
