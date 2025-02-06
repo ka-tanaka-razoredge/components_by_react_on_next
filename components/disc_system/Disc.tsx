@@ -44,7 +44,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         // ex: id-graph_0-
         try {
           if (v.color) {
-            document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+            if (v.color.indexOf('linear-gradient') !== -1) {
+              document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.background = v.color;
+            } else {
+              document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.backgroundColor = v.color;
+            }
           } else {
             document.getElementById(`${props.idForGraph}${v.row}-${v.column}`).style.border = v.border;
           }

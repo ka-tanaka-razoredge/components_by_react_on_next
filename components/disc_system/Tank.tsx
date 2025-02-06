@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import React, { useState, useRef, useEffect } from 'react';
+import useDiscFactory from '@/hooks/disc_system/disc_factory'
 
 import Disc from './Disc';
 import DiscFor from './DiscFor';
@@ -44,6 +45,8 @@ console.log(discs);
   let top = (props?.top) ? props.top : 0;
   
   const [isFromNow, setIsFromNow] = useState(false);
+  
+  const { createDisc, } = useDiscFactory();
   
   useEffect(() => {
     if ('discs' in props && 1 <= props.discs.length) setDiscEx(props.discs);
@@ -298,37 +301,6 @@ console.log(discs);
                   isFromNow={isFromNow}
                 />
               )
-            } else if (disc.type === 'DiscForReadyMade') {
-              let doms = [];
-              if (disc.subType === 'Ms') {
-                doms.push(<Ms {...disc.ms} />);
-              } else if (disc.subType === 'Matrix') {
-                doms.push(<Matrix {...disc.matrix} />);
-              } else if (disc.subType === 'Cluster') {
-                doms.push(<Cluster {...disc.cluster} />);
-              }
-              
-              return (
-                <DiscFor
-                  identifier={disc.identifier}
-                  contentsForFrontInner={disc.contentsForFrontInner}
-                  contentsForBottomInner={disc.contentsForBottomInner}
-                  title={disc.title}
-                  height={disc.height}
-                  width={disc.width}
-                  left={disc.left}
-                  top={disc.top}
-                  isReact={isReact(disc)}
-                  doIt={disc.doIt}
-                  isBottomOnly={disc.isBottomOnly}
-                  z={disc.z}
-                  rotateY={disc.rotateY}
-                  duration={disc.duration}
-                  views={disc.views}
-                >
-                  {doms||props.children}
-                </DiscFor>
-              )
             } else if (disc.type === 'Cable') {
               return (
                 <Cable
@@ -499,20 +471,7 @@ console.log(discs);
                 />
               )
             } else {
-              return (
-                <Magazine
-                  ref={loRef[index]}
-                  identifier={disc.identifier}
-                  contentsForFrontInner={disc.contentsForFrontInner}
-                  contentsForBottomInner={disc.contentsForBottomInner}
-                  top={disc.top}
-                  left={disc.left}
-                  height={disc.height}
-                  width={disc.width}
-                  views={disc.views}
-                  discs={disc.discs}
-                />
-              );
+              return createDisc(disc, loRef[index])
             }
           }
         })}

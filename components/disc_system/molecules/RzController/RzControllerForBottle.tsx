@@ -3,6 +3,7 @@
 import React, { forwardRef, useImperativeHandle, useState, useRef } from 'react';
 import axios from 'axios';
 import DiscPanel from '@/components/disc_system/molecules/RzController/DiscPanel';
+import ToolBox from '@/components/atoms/ToolBox';
 
 /**
  * 
@@ -10,7 +11,30 @@ import DiscPanel from '@/components/disc_system/molecules/RzController/DiscPanel
  * 
  */
 export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, ref) => {
-  const [json, setJson] = useState(props.json);
+  const defaultJson = JSON.stringify([
+    {
+      type: 'Magazine',
+      identifier: 'id-',
+      left: 0,
+      top: 0,
+      width: 20 + 20 + (100 * 3),
+      height: 400,
+      views: ['vertical'],
+      contentsForBottomInner: `luBottle_1`,
+      discs: [
+        [
+          {
+            type: `Disc`,
+            identifier: `id-`,
+            top: 0,
+            contentsForBottomOuter: `<div style='white-space: nowrap;'>意味ある他者に対する制裁</div>`,
+          }
+        ]
+      ]
+    },
+  ], null, '\t');
+
+  const [json, setJson] = useState(props.json || defaultJson);
 //  const [json, setJson] = useState((props.json) ? props.json : '');
   const [id, setId] = useState(-1);
   const [name, setName] = useState('');
@@ -288,11 +312,15 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
       {
         `
           .controller {
+            width: 500px;
             background-color: orange;
+            
             .panache {
             }
+
             .shandy-gaff {
-              width: 800px;
+              width: 492px;
+              margin: 4px;
               
               display: flex;
               flex-wrap: wrap;
@@ -302,26 +330,39 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
 
               background-color: rgba(255, 255, 255, 1.0);
             }
+
             .red-eye {
+            }
+
+            .mint-beer {
+              .json {
+                width: 492px;
+                height: 250px;
+                margin: 4px;
+                tab-size: 2;
+                font-size: 10pt;
+                line-height: 1.5;
             }
           }
         `
       }
       </style>
       <div className={`controller ${props.classes}`}>
-        JSON:<br />
-        <textarea ref={ textarea } cols='1000' rows='1000' style={{ margin: '4px', width: '800px', height: '250px', tabSize: '2' }} onChange={ (e) => { setJson(e.target.value);  } } onKeyDown={ (e) => { onTabKey(e); } } value={ json } onBlur={(e) => { apply(); }}></textarea><br />
-        <input type='button' value='apply' onClick={ (e) => { apply(); } } />
-        <input type='button' value='fetch' onClick={ (e) => { fetch(); } } />
-        <input type='button' value='stringify' onClick={ (e) => { stringify(); } } /><br />
-        id:&nbsp;<input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
-        name:&nbsp;<input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
-        resource:&nbsp;<input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
-        <button onClick={rotateTank}>Tank &gt;&gt;= rotate</button><br />
-        <br />
-        <div className="panache">
-          <div className="">
-            <input type='button' value='save' onClick={ (e) => { save(); } } /><br />
+        <div className="mint-beer">
+          JSON:<br />
+          <textarea ref={ textarea } className="json" cols='1000' rows='1000' onChange={ (e) => { setJson(e.target.value);  } } onKeyDown={ (e) => { onTabKey(e); } } value={ json } onBlur={(e) => { apply(); }}></textarea><br />
+          <input type='button' value='apply' onClick={ (e) => { apply(); } } />
+          <input type='button' value='fetch' onClick={ (e) => { fetch(); } } />
+          <input type='button' value='stringify' onClick={ (e) => { stringify(); } } /><br />
+          id:&nbsp;<input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
+          name:&nbsp;<input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
+          resource:&nbsp;<input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
+          <button onClick={rotateTank}>Tank &gt;&gt;= rotate</button><br />
+          <br />
+          <div className="panache">
+            <div className="">
+              <input type='button' value='save' onClick={ (e) => { save(); } } /><br />
+            </div>
           </div>
         </div>
         
@@ -342,6 +383,8 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
           <div className="">
             <input type='button' value='load' onClick={ (e) => { fetchFromServer(props.resource); } } />
           </div>
+          <ToolBox />
+{/*          
           <input type='button' value='Disc' onClick={ (e) => { setData({ value: 'Disc' }) } } />
           <input type='button' value='Disc bottom only' onClick={ (e) => { setData({ value: '' }) } } />
           <input type='button' value='isPastOrFuture' onClick={ (e) => { setData({ value: 'isPastOrFuture' }) } } />
@@ -349,6 +392,7 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
           <input type='button' value='wide Sail' onClick={ (e) => { setData({ value: 'wideSail' }) } } />
           <input type='button' value='Carousel' onClick={ (e) => { setData({ value: 'carousel' }) } } />
           <input type='button' value='Sail' onClick={ (e) => { setData({ value: 'sail' }) } } />
+*/}          
           <div onMouseOver={onMouseOver} style={{ width: `${2}rem` }}>
             「領域」
             <DiscPanel ref={discPanel} id={`discPanel`} top={100} left={100}  />
