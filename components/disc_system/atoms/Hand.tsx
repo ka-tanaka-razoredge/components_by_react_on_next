@@ -142,7 +142,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   
   const drawBottomOuter = () => {
     return (
-      <div class="bottom-outer" dangerouslySetInnerHTML={{ __html: props.contentsForBottomOuter || props.contentsForBottomInner }} />
+      <div class="bottle-outer" dangerouslySetInnerHTML={{ __html: props.contentsForBottomOuter || props.contentsForBottomInner }} />
     );
   };
 
@@ -221,6 +221,25 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     }
   };
   
+  const drawFrontOuter = () => {
+    return (
+      <div
+        ref={frontInner}
+        className="front-inner"
+        style={{
+          position: 'absolute',
+          top: `${0}px`,
+          border: 'solid 1px silver',
+          width: (props.width) ? props.width + 'px' : 100 + 'px',
+          height: (props.height) ? props.height + 'px' : 50 + 'px',
+          transform: 'rotateX(180deg) rotateY(180deg)',
+          
+        }}
+        dangerouslySetInnerHTML={{ __html: props.contentsForFrontOuter }}
+      />
+    );
+  };
+  
   const buildTransform = () => {
 //    console.log('---- buildTransform begin ----');
     let reply = '';
@@ -259,11 +278,15 @@ console.log(reply);
             height: 100px;
           }
           
-          .bottom-outer {
+          .bottle-outer {
             position: relative;
             boder: 1px solid rgb(0, 0, 0, 0.1);
             transform: rotateX(180deg); translateY(32px);
             top: -14px;
+          }
+          
+          .bottom-inner {
+            border-right: 1px solid orange;
           }
         `
       }
@@ -271,17 +294,15 @@ console.log(reply);
       <div
         ref={base}
         id={props.identifier}
-        className="disc"
+        className="disc bottom-inner"
         style={{
           transformStyle: 'preserve-3d',
-          border: '1px solid orange',
           height: (props.duration) ? props.duration : '1rem',
           width: (props.width) ? props.width + 'px' : 100 + 'px',
           top: props.top + 'px',
           left: props.left + 'px',
           position: 'absolute',
-          transform: buildTransform(),
-          boxShadow: (props.isShadow) ? '10px 5px 5px rgba(0, 0, 0, 0.1)' : '',
+          transform: 'rotateZ(-180deg)',
         }}
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
@@ -296,9 +317,9 @@ console.log(reply);
             top: '0px',
             height: '1px',
             transform: 'rotateX(90deg)'
-          }}
-        >
-          {drawFront()}
+          }}>
+            {drawFront()}
+            {drawFrontOuter()}
         </div>
         <ContextMenu
           ref={contextMenu}

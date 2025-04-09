@@ -299,6 +299,8 @@ console.log(discs);
                   bottomBorder={disc.bottomBorder}
                   
                   isFromNow={isFromNow}
+                  
+                  isShadow={disc.isShadow}
                 />
               )
             } else if (disc.type === 'Cable') {

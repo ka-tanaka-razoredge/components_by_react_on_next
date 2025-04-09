@@ -53,10 +53,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 //      console.log('props: ', props);
       return (
         <div
+          className="sail__front-inner"
           style={{
-            //            transformStyle: 'preserve-3d',
+//            transformStyle: 'preserve-3d',
             border: 'solid 1px rgba(0, 0, 0, 0.5)',
-            //            position: 'absolute',
+//            position: 'absolute',
             width: props.width + 'px',
             height: props.height + 'px',
             transform: buildTransform(),
@@ -83,33 +84,43 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
 
   return (
-    <div
-      ref={base}
-      id={props.identifier}
-      style={{
-        transformStyle: 'preserve-3d',
-        border: '0.5px solid blue',
-        height: `${(props.duration) ? props.duration : 1}px`,
-        width: `${(props.width) ? props.width : 100}px`,
-        top: props.top + 'px',
-        left: props.left + 'px',
-        position: 'absolute',
-        transform: (props.z) ? `translateZ(${props.z}px)` : ''
-      }}
-      onMouseOver={onMouseOver}
-      onMouseLeave={onMouseLeave}
-    >
-      {drawBottom()}
+    <>
+      <style>
+      {
+        `
+          .sail__front-inner {
+            font-size: 10pt;
+            line-height: 1;
+          }
+        `
+      }
+      </style>
       <div
+        ref={base}
+        id={props.identifier}
         style={{
-//border: '1px solid red',
-          height: 1 + 'px',
-          transform: `rotateX(-90deg)`,
-//          transform: 'rotateX(90deg)',
+          transformStyle: 'preserve-3d',
+          border: '0.5px solid blue',
+          height: `${(props.duration) ? props.duration : 1}px`,
+          width: `${(props.width) ? props.width : 100}px`,
+          top: props.top + 'px',
+          left: props.left + 'px',
+          position: 'absolute',
+          transform: (props.z) ? `translateZ(${props.z}px)` : ''
         }}
+        onMouseOver={onMouseOver}
+        onMouseLeave={onMouseLeave}
       >
-        {drawFront()}
+        {drawBottom()}
+        <div
+          style={{
+            height: 1 + 'px',
+            transform: `rotateX(-90deg)`,
+          }}
+        >
+          {drawFront()}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

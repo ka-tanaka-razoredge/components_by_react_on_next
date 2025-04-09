@@ -73,20 +73,22 @@ export default forwardRef((props, ref) => {
     setJson(JSON.stringify(props.getDiscs(), null, 2));
   };
   
-  const isTableName = (candidate) => {
-    const tableNames = ['bottles', 'bumps', 'sports', 'soms'];
-    return tableNames.find(tableName => tableName === resource);
-  };
   
   const resources = {
     'bottles': 'bottle',
     'bumps': 'bump',
     'sports': 'sport',
     'soms': 'som',
+    'sailing_ship_slices': 'sailing_ship_slice',
+  };
+
+  const isTableName = (candidate) => {
+    const tableNames = Object.keys(resources);
+    return tableNames.find(tableName => tableName === candidate);
   };
 
   const fetchFromServer = async () => {
-//console.log('---- fetchFromServer begin ----');
+console.log('---- fetchFromServer begin ----');
     let resourceName = 'sailing_ships';
     let response;
     
@@ -95,9 +97,9 @@ export default forwardRef((props, ref) => {
       response = await axios.get(`${props.api}${resourceName}/findById?id=${ id }`);
     } else {
       response = await axios.get(`${props.api}${resourceName}/findById?${resources[resource]}_id=${ id }&as=DiscSystem&dest=mysql`);
+console.log(response);
       response.data[0].json = JSON.parse(response.data[0].json);
-//console.log(response);
-//console.log('---- fetchFromServer end ----');
+console.log('---- fetchFromServer end ----');
     }
     
     setDiscs(response.data[0].json);
@@ -139,7 +141,7 @@ export default forwardRef((props, ref) => {
     if (id !== -1) {
       if (!window.confirm('Do you want to update?')) return;
     }
-    const resourceName = (isTableName(resource)) ? resource : 'sailing_ships';   
+    const resourceName = (isTableName(resource)) ? resource : 'sailing_ships';
     const response = await axios.post(`${props.api}${resourceName}/save`, params);
     setId(response.data.updatedId);
     alert(JSON.stringify(response));

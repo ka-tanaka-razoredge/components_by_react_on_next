@@ -98,7 +98,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       style={{
         transformStyle: 'preserve-3d',
         border: '1px solid orange',
-        height: 10 + 'px',
+        height: (props.duration) ? props.duration : '1rem',
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',

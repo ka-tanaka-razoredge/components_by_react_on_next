@@ -10,6 +10,8 @@ import DiscForDcoml from '@/components/disc_system/DiscForDcoml';
 import Ms from '@/components/atoms/Ms';
 import Matrix from '@/components/rz_uml/atoms/Matrix';
 import Cluster from '@/components/rz_uml/atoms/Cluster';
+import Hand from '@/components/disc_system/atoms/Hand'
+import FullDisc from '@/components/disc_system/atoms/FullDisc';
 
 const useDiscFactory = (lop: { [key: string]: any }) => {
   const createDisc = (disc, ref=undefined) => {
@@ -74,12 +76,36 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             identifier={disc.identifier}
             contentsForFrontInner={disc.contentsForFrontInner}
             contentsForBottomInner={disc.contentsForBottomInner}
+            contentsForBottomOuter={disc.contentsForBottomOuter}
             top={disc.top}
             left={disc.left}
             height={disc.height}
             width={disc.width}
             views={disc.views}
             discs={disc.discs}
+            transformForTheJoint={disc.transformForTheJoint}
+          />
+        );
+        break;
+      case 'Hand':
+        reply = (
+          <Hand
+            ref={ref}
+            indentifier={disc.identifier}
+            contentsForFrontOuter={disc.contentsForFrontOuter}
+            contentsForBottomInner={disc.contentsForBottomInner}
+            height={disc.height}
+            width={disc.width}
+            left={disc.left}
+            top={disc.top}
+          />
+        );
+        break;
+      case 'FullDisc':
+        reply = (
+          <FullDisc
+            ref={ref}
+            {...disc}
           />
         );
         break;

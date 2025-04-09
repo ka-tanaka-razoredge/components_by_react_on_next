@@ -61,9 +61,11 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   const moveX = value => {
     base.current.style.left = value + 'px';
   };
+
   const moveY = value => {
     base.current.style.top = value + 'px';
   };
+
   const moveZ = value => {
     base.current.style.transform = `translateZ(${value} + 'px')`;
   };
@@ -147,78 +149,74 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
 
   const drawFront = () => {
-    const buildTransform = () => {
-      let reply = 'rotateX(-90deg) translateY(-25px) translateZ(-50px)';
-      if (props.height && props.width) {
-        if (props.width === 400 && props.height === 225) reply = 'rotateX(-90deg) translateX(20px) translateY(-100px) translateZ(-160px)';
-      }
-      return reply;
-    };
+    return (
+      <>
+        <style>
+        {
+          `
+          `
+        }
+        </style>
+        <div
+          ref={frontInner}
+          className="front-inner"
+          style={{
+            border: 'solid 1px silver',
+            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            height: (props.height) ? props.height + 'px' : 50 + 'px',
 
-    if (!props.isBottomOnly) {
-      let t = 'title' in props ? props.title : '';
-      
-      if (props?.msView === 'frontInner') {
-        return drawMs();
-      }
+            transform: (!props.isFromNow) ? 'rotateX(180deg)' : 'rotateX(180deg) rotateY(180deg)',
+            
+          }}
+          dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
+          title={props.t}
+        />
+      </>
+    );
+  };
 
-      if (('isReact' in props == false) || props?.isReact === false) {
-        return (
-          <>
-            <div
-              ref={frontInner}
-              className="front-inner"
-              style={{
-                border: 'solid 1px lime',
-                width: (props.width) ? props.width + 'px' : 100 + 'px',
-                height: (props.height) ? props.height + 'px' : 50 + 'px',
+  const drawBack = () => {
+    return (
+      <>
+        <style>
+        {
+          `
+            .back {
+              position: absolute;
+            }
+            
+            .back--inner {
+              border: solid 1px silver;
+              transform: rotateX(180deg) rotateY(180deg); 
+            }
 
-                transform: (!props.isFromNow) ? 'rotateX(180deg)' : 'rotateX(180deg) rotateY(180deg)',
-                
-              }}
-              dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
-              title={t}
-            />
-{/*            
-            <div className="tool-box">園</div>
-*/}            
-{/*
-            <div
-              style={{
-                position: 'absolute',
-                zIndex: -1,
-                top: 0,
-                border: 'solid 1px lime',
-                backgroundColor: 'white',
-                width: (props.width) ? props.width + 'px' : 100 + 'px',
-                height: (props.height) ? props.height + 'px' : 50 + 'px',
-                transform: 'rotateX(180deg) rotateY(180deg)'
-              }}
-              dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
-              title={t}
-            />
-*/}            
-          </>
-        );
-      } else {
-        console.log(props);
-        return(
-          <div
-            style={{
-              border: 'solid 1px red',
-              width: (props.width) ? props.width + 'px' : 100 + 'px',
-              height: (props.height) ? props.height + 'px' : 50 + 'px',
-              transform: 'rotateX(180deg)'
-            }}
-            title={t}
-          >
-            { props.doIt() }
-          </div>
-        );        
-      }
-    } else {
-      return null;
-    }
+            .back--outer {
+              border: solid 1px silver;
+              transform: rotateX(180deg); 
+            }
+          `
+        }
+        </style>
+        <div
+          className="back back--inner"
+          style={{
+            width: `${props.width||100}px`,
+            height: `${props.height||50}px`,
+            top: `${props.duration||100}px}`,
+          }}
+          dangerouslySetInnerHTML={{ __html: props.contentsForBackInner }}
+        />
+        <div
+          className="back back--outer"
+          style={{
+            width: `${props.width||100}px`,
+            height: `${props.height||50}px`,
+            top: `${props.duration||100}px}`,
+          }}
+          dangerouslySetInnerHTML={{ __html: props.contentsForBackOuter }}
+        />
+      </>
+    );
   };
   
   const buildTransform = () => {
@@ -236,14 +234,13 @@ console.log(reply);
     if (!previewWindow || !props.contents) return;
     previewWindow.dispatchEvent(new CustomEvent('show', { detail: { value: (props.contents) ? props.contents : '' } }));
   };
+
   const onMouseLeave = (e) => {
     const previewWindow = document.getElementById('preview-window');
     if (!previewWindow|| !props.contents) return;
     previewWindow.dispatchEvent(new CustomEvent('hide', { detail: { value: (props.contents) ? props.contents : '' } }));
   };
-  
-  
-  
+
   return (
     <>
       <style>
@@ -265,6 +262,14 @@ console.log(reply);
             transform: rotateX(180deg); translateY(32px);
             top: -14px;
           }
+          
+          .ceiling-outer {
+            position: absolute;
+            border: 1px solid silver;
+          }
+          
+          .left-side {
+          }
         `
       }
       </style>
@@ -274,21 +279,36 @@ console.log(reply);
         className="disc"
         style={{
           transformStyle: 'preserve-3d',
-          border: '1px solid orange',
+          border: '1px solid silver',
           height: (props.duration) ? props.duration : '1rem',
           width: (props.width) ? props.width + 'px' : 100 + 'px',
           top: props.top + 'px',
           left: props.left + 'px',
           position: 'absolute',
           transform: buildTransform(),
-          boxShadow: (props.isShadow) ? '10px 5px 5px rgba(0, 0, 0, 0.1)' : '',
+          pointerEvents: 'none',
+          boxShadow: (props.isShadow) ? '10px 10px 5px rgba(0, 0, 0, 0.1)' : '',
         }}
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
       >
         {drawBottomInner()}
         {/* drawBottomOuter() */}
-        {/* shaft */}
+        
+        {/* ceiling */}
+        <div
+          className="ceiling-outer"
+          style={{
+            width: `${props.width}px`,
+            height: `${props.duration}px`,
+            top: 0,
+            transform: `translateZ(${props.height}px)`,
+          }}
+          dangerouslySetInnerHTML={{ __html: props.contentsForCeilingOuter }}
+        >
+        </div>
+
+        {/* shaft of bottom-front */}
         <div
           style={{
             position: 'absolute',
@@ -300,6 +320,67 @@ console.log(reply);
         >
           {drawFront()}
         </div>
+
+        {/* shaft of bottom-back */}
+        <div
+          style={{
+            position: 'absolute',
+            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            top: `${props.duration}px`,
+            height: 0,
+            transform: 'rotateX(90deg)'
+          }}
+        >
+          {drawBack()}
+        </div>
+        
+        {/* shaft of bottom-left */}
+        
+        <div
+          style={{
+            position: 'absolute',
+            width: `${props.height}px`,
+            top: 0,
+            left: 0,
+            height: 0,
+            transformOrigin: 'left top',
+            transform: 'rotateX(90deg) rotateY(90deg)'
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              width: `${props.height}px`,
+              height: `${props.height}px`,
+              transform: 'rotateX(-180deg)'
+            }}
+          >
+          </div>
+        </div>
+
+        {/* shaft of bottom-right */}
+        <div
+          style={{
+            position: 'absolute',
+            width: `${props.height}px`,
+            top: 0,
+            left: `${props.width}px`,
+            height: 0,
+            transformOrigin: 'left top',
+            transform: 'rotateX(90deg)  rotateY(90deg)'
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              width: `${props.height}px`,
+              height: `${props.height}px`,
+              transform: 'rotateX(180deg)'
+            }}
+          >
+          </div>
+        </div>
+        
         <ContextMenu
           ref={contextMenu}
           base={base}

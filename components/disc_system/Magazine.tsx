@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import useDiscFactory from '@/hooks/disc_system/disc_factory';
 
@@ -54,6 +54,10 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 //      joint.current.style.transform = 'rotateX(-90deg) translateY(-400px)';
       setVertical(true);
     }
+
+    if (props.transformForTheJoint) {
+      joint.current.style.transform = props.transformForTheJoint;
+    }
   }, []);
 
   const moveX = value => {
@@ -72,7 +76,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         <div dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}>
         </div>
       );
-  }
+  };
   
   useEffect(() => {
     if (vertical) {
@@ -81,6 +85,53 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       back.current.style.zIndex = 1000;
     }
   }, [vertical]);
+  
+  function measureElementSize(html: string) {
+    const tempElement = document.createElement("div");
+    tempElement.style.position = "absolute"; // DOMに影響を与えない
+    tempElement.style.visibility = "hidden"; // 見えないようにする
+    tempElement.style.width = "auto";
+    tempElement.style.height = "auto";
+    tempElement.style.whiteSpace = "nowrap"; // 折り返しなしで測る
+  
+    tempElement.innerHTML = html;
+  
+    document.documentElement.appendChild(tempElement); // `body` ではなく `documentElement` に追加
+    const size = tempElement.getBoundingClientRect();
+    tempElement.remove(); // すぐに削除
+  
+    return { width: size.width, height: size.height };
+  };
+
+  const buildL = (html) => {
+    let reply = {
+      source: '',
+      width: `20px`,
+      width: `20px`,
+      rep: '',
+    };
+    if (!html) return reply;
+
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    let rep = doc.body.textContent.substr(0, 1);
+    let width = measureElementSize(rep);
+    
+    reply = {
+      source: doc.body.textContent,
+      ...measureElementSize(doc.body.textContent),
+      rep: rep,
+    }
+    return reply;
+  };
+  
+  const toggleStrap = (id) => {
+    const element = document.getElementById(id);  
+    if (element.style.transform === 'rotateY(-90deg)') {
+      element.style.transform = `rotateY(0deg)`;
+    } else {
+      element.style.transform = `rotateY(-90deg)`;
+    }
+  };
 
   return (
     <>
@@ -88,9 +139,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       {
         `
           .back {
-            background-color: rgba(255, 0, 0, 1.0),
+            // background-color: rgba(255, 0, 0, 1.0),
           }
-
+          
           .abdomen {
             position: relative;
             background-color: rgba(255, 255, 255, 1.0);
@@ -103,6 +154,39 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             .dot {
               position: absolute;
 //              border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+          }
+          
+          .form-L {
+            perspective: 800px;
+            perspective-origin: -300px -300px;
+            
+            .representer {
+              border: 1px solid black;
+              width: 20px;
+              height: 20px;
+              display: flex;
+              text-align: center;
+              justify-content: center;
+              align-items: center;
+            }
+
+            .shaft {
+              height: 20px;
+              width: 1px;
+              background-color: red;
+              transform: rotateY(-90deg);
+            }
+
+            .strap {
+              height: 1rem;
+              width: 200px;
+              height: 20px;
+              display: flex;
+              text-align: center;
+              justify-content: center;
+              align-items: center;
+//              background-color: white;
             }
           }
         `
@@ -129,8 +213,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             border: 'solid 1px red',
             position: 'absolute',
             top: 0 + 'px',
-            height: 0 + 'px',
-            transform: 'rotateX(0deg)'
+            height: `${1}px`,
           }}
         >
           {/*
@@ -138,13 +221,13 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           */}
           <div
             ref={back}
+            className="ba"
             style={{
               transformStyle: 'preserve-3d',
-              border: 'solid 1px green',
+              border: 'solid 4px green',
               backgroundColor: 'rgba(255, 255, 255, 1.0)',
               position: 'absolute',
-
-              width: props.width + 'px',
+              width: `${props.width}px`,
               height: `${props.height}px`,
               top: 0 + 'px',
               left: 0 + 'px',
@@ -180,6 +263,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                       bottomBorder={disc.bottomBorder}
                     />
                   )
+/*                  
                 } else if (disc.type === 'Magazine') {
                   return (
                     <Magazine
@@ -192,6 +276,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                       width={disc.width}
                     />
                   )
+*/
                 } else if (disc.type === 'MetalTape') {
                   return (
                     <MetalTape
@@ -203,7 +288,6 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                     />
                   )
                 } else if (disc.type === 'Sail') {
-                  console.log('disc: ', disc);
                   return (
                     <Sail
                       key={disc.identifier}
@@ -291,18 +375,41 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                   <div className="line">
                   {
                     line.map((v, j) => {
+                      let l = buildL(v.contentsForBottomOuter)
                       return (
                         <div
-                          className="dot"
-                          style={{
-                            transformStyle: 'preserve-3d',
-                            top: v.top,
-                            left: v.left,
-                            width: `${100}px`,
-                            transform: (!v.z) ? '' : `translateX(${v.z * 0.25}px) translateY(${ (v.z) / 100 * 8 }px)`
-                          }}
-                          dangerouslySetInnerHTML={{ __html: v.contentsForBottomOuter }}
+                          className="form-L"
                         >
+                          <div
+                            className="dot"
+                            style={{
+                              transformStyle: 'preserve-3d',
+                              top: v.top,
+                              left: v.left,
+                              width: `${100}px`,
+                              transform: (!v.z) ? '' : `translateX(${v.z * 0.25}px) translateY(${ (v.z) / 100 * 8 }px)`,
+                              display: 'flex',
+                            }}
+                          >
+                            <div
+                              className="representer"
+                              onClick={(e) => { toggleStrap(`${v.identifier}-starp-${i}-${j}`); }}
+                              dangerouslySetInnerHTML={{ __html: l.rep }}
+                            >
+                            </div>
+                            <div
+                              key={`${v.identifier}-${i}-${j}`}
+                              id={`${v.identifier}-starp-${i}-${j}`}
+                              className="shaft"
+                              style={{
+                                transform: 'rotateY(-90deg)'
+                              }}
+                            >
+                              <div className="strap" style={{ width: `${l.width}px` }}>
+                                <div dangerouslySetInnerHTML={{ __html: v.contentsForBottomOuter }}></div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       )
                     })
