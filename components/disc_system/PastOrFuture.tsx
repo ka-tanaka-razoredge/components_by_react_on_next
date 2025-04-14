@@ -1,4 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
+
+import useDiscFactory from '@/hooks/disc_system/disc_factory';
+
 import Disc from './Disc';
 import MetalTape from './MetalTape';
 import Magazine from './Magazine';
@@ -12,6 +15,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   const [discs, setDiscs] = useState([]);
 //DEL  let { tense, setTense } = useState(false);
   let t = false;
+  
+  const { createDisc } = useDiscFactory();
 
   useEffect(() => {
     base.current.addEventListener('moveX', e => {
@@ -38,7 +43,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     rotateX(0);
     
     if (props.isPast) {
-      base.current.style.transform = 'rotateZ(-180deg)';
+      base.current.style.transform = `rotateZ(-180deg) ${buildTransform()}`;
 // NG      base.current.style.transform = 'rotateZ(180deg)';
     }
   }, []);
@@ -199,9 +204,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                   />
                 );
               } else {
-                return (
-                  <div></div>
-                );
+                disc.transform = (disc.transform) ? disc.transfrom + ' rotateZ(180deg)' : 'none';
+                return createDisc(disc)
               }
             });
           })}

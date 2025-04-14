@@ -3,6 +3,7 @@
  */
 import DiscFor from '@/components/disc_system/DiscFor';
 import Magazine from '@/components/disc_system/Magazine';
+import PastOrFuture from '@/components/disc_system/PastOrFuture';
 
 import Bottle from '@/components/disc_system/atoms/Bottle';
 
@@ -25,6 +26,7 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             width={disc.width}
             left={disc.left}
             top={disc.top}
+            duration={disc.duration}
             dcoml={disc.dcoml}
           />
         );
@@ -83,7 +85,27 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             width={disc.width}
             views={disc.views}
             discs={disc.discs}
+            transform={disc.transform}
             transformForTheJoint={disc.transformForTheJoint}
+          />
+        );
+        break;
+      case 'PastOrFuture':
+        reply = (
+          <PastOrFuture
+            ref={ref}
+            identifier={disc.identifier}
+            contentsForFrontInner={disc.contentsForFrontInner}
+            contentsForBottomInner={disc.contentsForBottomInner}
+            discs={disc.discs}
+            top={disc.top}
+            left={disc.left}
+            height={disc.height}
+            width={disc.width}
+            isPast={disc.isPast}
+            z={disc.z}
+            rotateY={disc.rotateY}
+            tail={disc.tail}
           />
         );
         break;
@@ -98,6 +120,7 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             width={disc.width}
             left={disc.left}
             top={disc.top}
+            transform={disc.transform||''}
           />
         );
         break;

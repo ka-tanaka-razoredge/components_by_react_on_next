@@ -302,7 +302,7 @@ console.log(reply);
           top: props.top + 'px',
           left: props.left + 'px',
           position: 'absolute',
-          transform: 'rotateZ(-180deg)',
+          transform: (props.transform||'rotateZ(-180deg)'),
         }}
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}

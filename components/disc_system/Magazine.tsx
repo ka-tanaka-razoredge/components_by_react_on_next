@@ -202,7 +202,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           width: 100 + 'px',
           top: props.top + 'px',
           left: props.left + 'px',
-          position: 'absolute'
+          position: 'absolute',
+          transform: (props.transform || '')
         }}
       >
         { props.contentsForBottomInner && (props.contentsForBottomInner) }

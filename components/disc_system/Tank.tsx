@@ -389,6 +389,7 @@ console.log(discs);
                   height={disc.height}
                 />
               );
+{/*              
             } else if (disc.type === 'DiscForDcoml') {
               return (
                 <DiscForDcoml
@@ -400,6 +401,7 @@ console.log(discs);
                   dcoml={disc.dcoml}
                 />
               )
+*/}
             } else if (disc.type === 'DiscForDcosml') {
               return (
                 <DiscForDcosml
@@ -443,6 +445,7 @@ console.log(discs);
                   contents={disc.contents}
                 />
               )
+/*              
             } else if (disc.type === 'PastOrFuture') {
               return (
                 <PastOrFuture
@@ -461,6 +464,7 @@ console.log(discs);
                   tail={disc.tail}
                 />
               )
+*/
             } else if (disc.type === 'Wings') {
               return (
                 <Wings

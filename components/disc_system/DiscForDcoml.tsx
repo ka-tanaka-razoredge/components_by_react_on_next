@@ -82,7 +82,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
-        position: 'absolute'
+        position: 'absolute',
       }}
     >
       {drawBottomInner()}
