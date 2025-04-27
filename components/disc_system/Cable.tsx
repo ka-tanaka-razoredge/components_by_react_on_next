@@ -19,12 +19,113 @@ export default (props, ref) => {
   let context;
   
   const { 'isBottomVisible': isBottomVisible = false } = props;
+  
+  const calcDiagonalAndAngle = (w, h) => {
+    const diagonal = Math.sqrt(w * w + h * h);      // 対角線の長さ
+    const radian = Math.atan(h / w);                // ラジアンで角度
+    const degree = radian * (180 / Math.PI);         // 度に変換
+    return { diagonal, degree };
+  };
+  
+  const calcVector = (source, degree) => {
+    const radians = ((90 - degree) * Math.PI) / 180; // 度をラジアンに変換
+    const sin = Math.sin(radians);
+    const cos = Math.cos(radians);
+  
+    const x = source.x * cos - source.y * sin;
+    const y = source.x * sin + source.y * cos;
+  
+    return { x, y };
+  };
+
+  function rotateAroundT(t, l, r, angle) {
+    // t を原点にして l と r を回転させる
+    const lRel = { x: l.x - t.x, y: l.y - t.y };
+    const rRel = { x: r.x - t.x, y: r.y - t.y };
+  
+    // l と r を回転
+    const lRot = calcVector(lRel, angle);
+    const rRot = calcVector(rRel, angle);
+  
+    // 回転後, t を加えて元の座標に戻す
+    const lNew = { x: lRot.x + t.x, y: lRot.y + t.y };
+    const rNew = { x: rRot.x + t.x, y: rRot.y + t.y };
+  
+    return {l: lNew, r: rNew};
+  };
 
   useEffect(() => {
-console.log(isBottomVisible);
     context = canvas.current.getContext('2d');
     context.clearRect(0, 0, props.width, props.height);
-    
+
+
+    let bp, ep, ex1: Vector;
+    let allow: { top: Vector, l: Vector, r: Vector }; 
+
+    switch (props.subType) {
+      case 'gliss.':
+        const diagonalAndDegree = calcDiagonalAndAngle(props.width, props.height);
+
+        bp = { x: 0, y: props.height };
+        ep = { x: props.width, y: 0 };
+        ex1 = { x: bp.x, y: bp.y };
+        
+        const memento = rotateAroundT({ x: 0, y: props.height }, { x: -3, y: props.height - 10 }, { x: 3, y: props.height - 10 }, diagonalAndDegree.degree);
+
+        allow = {
+          top: {
+            x: 0,
+            y: props.height
+          },
+          l: {
+            ...memento.l
+          },
+          r: {
+            ...memento.r
+          }
+        }
+        
+        context.beginPath();
+        context.arc(bp.x, bp.y, 2, 0, 2 * Math.PI);
+        context.fillStyle = 'red';
+        context.closePath();
+        context.fill();
+
+        context.setLineDash([2, 2]);
+        context.beginPath();
+        context.moveTo(bp.x, bp.y);
+        
+        context.quadraticCurveTo(ex1.x, ex1.y, ep.x, ep.y);
+        context.stroke();
+        context.closePath();
+        context.setLineDash([]);
+        
+        context.beginPath();
+        context.arc(allow.top.x, allow.top.y, 4, 0, 4 * Math.PI);
+        context.fillStyle = 'red';
+        context.closePath();
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(allow.top.x, allow.top.y);
+        context.lineTo(allow.l.x, allow.l.y);
+        
+        context.moveTo(allow.top.x, allow.top.y);
+        context.lineTo(allow.r.x, allow.r.y);
+//        context.lineTo(allow.l.x, allow.l.y);
+        
+        context.fillStyle = 'rgb(255, 255, 255)';
+        context.fill();
+        context.stroke();
+        context.closePath();
+        
+        if (!isBottomVisible) {
+          base.current.style.border = null;
+        }
+        frontInner.current.style.transform = ``;
+        break;
+      default:
+console.log(isBottomVisible);
 context.beginPath();
 context.arc(props.bp.x, props.bp.y, 2, 0, 2 * Math.PI);
 context.fillStyle = 'red';
@@ -61,6 +162,17 @@ context.fill();
     context.stroke();
     context.closePath();
     
+    if (!isBottomVisible) {
+      base.current.style.border = null;
+    }
+    
+    if (props.leans) {
+      frontInner.current.style.transform += `${props.leans} translateY(-100px)`;
+    }
+    
+      break;
+    }
+    
     base.current.addEventListener('moveX', e => {
       moveX(e.detail.value);
     });
@@ -70,14 +182,6 @@ context.fill();
     base.current.addEventListener('moveZ', e => {
       moveY(e.detail.value);
     });
-
-    if (!isBottomVisible) {
-      base.current.style.border = null;
-    }
-    
-    if (props.leans) {
-      frontInner.current.style.transform += `${props.leans} translateY(-100px)`;
-    }
   }, []);
 
   const moveX = value => {
@@ -169,10 +273,10 @@ context.fill();
       style={{
         transformStyle: 'preserve-3d',
         border: '1px solid orange',
-        height: 10 + 'px',
-        width: (props.width) ? props.width + 'px' : 100 + 'px',
-        top: props.top + 'px',
-        left: props.left + 'px',
+        height: `${10}px`,
+        width: (props.width) ? `${props.width}px` : `${100}px`,
+        top: `${props.top}px`,
+        left: `${props.left}px`,
         position: 'absolute',
         transform: (props.z) ? `translateZ(${props.z}px)` : ''
       }}
@@ -183,12 +287,12 @@ context.fill();
         style={{
 //border: '1px solid green',
           position: 'absolute',
-          width: (props.width) ? props.width + 'px' : 100 + 'px',
+          width: (props.width) ? `${props.width}px` : `${100}px`,
           top: `${0}px`,
           height: `${1}px`,
           transform: 'rotateX(90deg)'
         }}>
-        <canvas ref={canvas} /* style={{ border: '1px solid black' }} */ width={props.width + 'px'} height={props.height + 'px'} />
+        <canvas ref={canvas} /* style={{ border: '1px solid black' }} */ width={`${props.width}px`} height={`${props.height}px`} />
       </div>
     </div>
   );

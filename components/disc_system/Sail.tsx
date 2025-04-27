@@ -114,7 +114,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         {drawBottom()}
         <div
           style={{
-            height: 1 + 'px',
+            height: `${1}px`,
             transform: `rotateX(-90deg)`,
           }}
         >

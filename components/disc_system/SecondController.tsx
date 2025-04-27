@@ -42,6 +42,7 @@ export default forwardRef((props, ref) => {
   const [tags, setTags] = useState([]);
   
   const [sliceIndex, setSliceIndex] = useState(0);
+  const [discIndex, setDiscIndex] = useState(0);
   
   useImperativeHandle(ref, () => ({
     fetch: () => {
@@ -56,8 +57,7 @@ export default forwardRef((props, ref) => {
     try {
       const parsed = JSON.parse(textarea.current.value);
       if (1 <= parsed.length && Array.isArray(parsed[0])) {
-        const index = (sliceIndex <= parsed.length - 1) ? sliceIndex : 0;
-        props.applyDiscs({ value: JSON.stringify(parsed[index]) });
+        props.applyDiscs({ value: JSON.stringify(parsed[discIndex]) });
       } else {
         props.applyDiscs({ value: textarea.current.value });
       }
@@ -117,6 +117,7 @@ console.log('---- fetchFromServer end ----');
         response = await axios.get(`${props.api}tags/doListByResourceId?resource=sailing_ships&id=${ id }`);
       }
       setTags(response.data);
+      setDiscIndex(0);
     }
     
     apply();
@@ -283,6 +284,10 @@ console.log('---- fetchFromServer end ----');
   const removeTag = async (tag) => {
     setTags(tags.filter((v) => (v !== tag)));
   };
+  
+  useEffect(() => {
+    apply();
+  }, [discIndex]);
 
   return (
     <div>
@@ -296,8 +301,16 @@ console.log('---- fetchFromServer end ----');
             <input type='button' value='apply' onClick={ (e) => { apply(); } } />
             <input type='button' value='fetch' onClick={ (e) => { fetch(); } } />
             <input type='button' value='stringify' onClick={ (e) => { stringify(); } } />
-<input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } />
-            <br />
+<input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } /><br />
+            <select id="select-disc-index" onChange={(e) => { setDiscIndex(document.getElementById("select-disc-index").value); } }>
+            {
+              discs.map((v, index) => {
+                return (Array.isArray(v) || index === 0) ? (
+                  <option key={index} value={index}>{index}</option>
+                ) : ''
+              })
+            }
+            </select>
             <div>
               <div style={{ width: '5rem' }}>id:&nbsp;</div><input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
             </div>

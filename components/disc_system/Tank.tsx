@@ -303,6 +303,7 @@ console.log(discs);
                   isShadow={disc.isShadow}
                 />
               )
+{/*              
             } else if (disc.type === 'Cable') {
               return (
                 <Cable
@@ -389,6 +390,7 @@ console.log(discs);
                   height={disc.height}
                 />
               );
+*/}
 {/*              
             } else if (disc.type === 'DiscForDcoml') {
               return (
