@@ -2,6 +2,7 @@
  *
  */
 import Sail from '@/components/disc_system/Sail';
+import Disc from '@/components/disc_system/Disc';
 import DiscFor from '@/components/disc_system/DiscFor';
 import Magazine from '@/components/disc_system/Magazine';
 import PastOrFuture from '@/components/disc_system/PastOrFuture';
@@ -16,6 +17,7 @@ import Hand from '@/components/disc_system/atoms/Hand'
 import MetalTape from '@/components/disc_system/MetalTape';
 import FullDisc from '@/components/disc_system/atoms/FullDisc';
 import Cable from '@/components/disc_system/Cable';
+import Foundation from '@/components/disc_system/atoms/Foundation';
 
 const useDiscFactory = (lop: { [key: string]: any }) => {
   const isReact = (disc) => {
@@ -42,6 +44,22 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             duration={disc.duration}
             
 //            isFromNow={isFromNow}
+          />
+        );
+        break;
+      case 'Disc':
+        reply = (
+          <Disc
+            key={disc.identifier}
+            identifier={disc.identifier}
+            contents={disc.contents}
+            contentsForFrontInner={disc.contentsForFrontInner}
+            top={disc.top}
+            left={disc.left}
+            height={disc.height}
+            width={disc.width}
+            z={disc.z}
+            duration={disc.duration}
           />
         );
         break;
@@ -196,6 +214,14 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             leans={disc.leans}
           />
         )
+        break;
+      case 'Foundation':
+        reply = (
+          <Foundation
+            ref={ref}
+            {...disc}
+          />
+        );
         break;
     }
     return reply;
