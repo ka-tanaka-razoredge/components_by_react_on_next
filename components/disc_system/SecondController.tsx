@@ -144,6 +144,9 @@ console.log('---- fetchFromServer end ----');
     }
     const resourceName = (isTableName(resource)) ? resource : 'sailing_ships';
     const response = await axios.post(`${props.api}${resourceName}/save`, params);
+    
+    console.log('response.data.updatedId: ', response.data.updatedId);
+    
     setId(response.data.updatedId);
     alert(JSON.stringify(response));
   };
@@ -295,6 +298,10 @@ console.log('---- fetchFromServer end ----');
       {
         `
           .controller {
+            .separator-1 {
+              height: 4px;
+            }
+
             .json {
               width: 500px;
               height: 775px;
@@ -307,6 +314,25 @@ console.log('---- fetchFromServer end ----');
               
               margin-left: 4px;
             }
+
+            .second-column {
+              margin: 4px;
+
+              .save-and-load {
+                display: flex;
+                width: 220px;
+
+                .save {
+                }
+
+                .spare {
+                  flex-grow: 1;
+                }
+
+                .load {
+                }
+              }
+            }
           }
         `
       }
@@ -318,7 +344,7 @@ console.log('---- fetchFromServer end ----');
               <div onClick={toggleTextarea}>JSON:</div>
               <textarea ref={ textarea } className="json" cols='1000' rows='1000' onChange={ (e) => { setJson(e.target.value);  } } onKeyDown={ (e) => { onTabKey(e); } } value={ json } onBlur={(e) => { apply(); }}></textarea><br />
             </div>
-            <div>
+            <div className="second-column">
               <input type='button' value='apply' onClick={ (e) => { apply(); } } />
               <input type='button' value='fetch' onClick={ (e) => { fetch(); } } />
               <input type='button' value='stringify' onClick={ (e) => { stringify(); } } />
@@ -333,17 +359,21 @@ console.log('---- fetchFromServer end ----');
               }
               </select>
               <div>
-                <div style={{ width: '5rem' }}>id:&nbsp;</div><input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
+                <div style={{ width: '5rem' }}>id:&nbsp;</div>
+                <input type='text' onChange={ (e) => { console.log('e.target.value: ', e.target.value); setId(e.target.value); } } value={ id } />
               </div>
               <div>
-                <div style={{ width: '5rem' }}>name:&nbsp;</div><input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
+                <div style={{ width: '5rem' }}>name:&nbsp;</div>
+                <input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
               </div>
               <div>
-                <div style={{ width: '5rem' }}><span title='Set table name when you want to access not sailing_ships.'>resource:&nbsp;</span></div><input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
+                <div style={{ width: '5rem' }}><span title='Set table name when you want to access not sailing_ships.'>resource:&nbsp;</span></div>
+                <input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
               </div>
-              <div style={{ display: 'flex' }}>
+              <div className="separator-1"></div>
+              <div className="save-and-load">
                 <input type='button' value='save' onClick={ (e) => { save(); } } />
-                <div style={{ width: '130px' }}></div>
+                <div className="spare"></div>
                 <input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } />
               </div>
               <div><input type='checkbox' id='should-save-slice' value={shouldSaveSlice} onClick={() => { setShouldSaveSlice(!shouldSaveSlice); }}  /><label for='should-save-slice'>shouldSaveSlice</label></div>

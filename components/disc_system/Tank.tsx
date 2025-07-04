@@ -274,6 +274,7 @@ console.log(discs);
             if ('type' in disc === false || disc.type === 'Disc') {
               return (
                 <Disc
+                  key={index}
                   identifier={disc.identifier}
                   contents={disc.contents}
                   contentsForFrontInner={disc.contentsForFrontInner}
@@ -301,6 +302,7 @@ console.log(discs);
                   isFromNow={isFromNow}
                   
                   isShadow={disc.isShadow}
+                  isFrontOnly={disc.isFrontOnly}
                 />
               )
 {/*              
@@ -407,6 +409,7 @@ console.log(discs);
             } else if (disc.type === 'DiscForDcosml') {
               return (
                 <DiscForDcosml
+                  key={index}
                   identifier={disc.identifier}
                   height={disc.height}
                   width={disc.width}
@@ -418,6 +421,7 @@ console.log(discs);
             } else if (disc.type === 'MutableSail') {
               return (
                 <MutableSail
+                  key={index}
                   identifier={disc.identifier}
                   height={disc.height}
                   width={disc.width}
@@ -432,6 +436,7 @@ console.log(discs);
             } else if (disc.type === 'Carousel') {
               return (
                 <Carousel
+                  key={index}
                   identifier={disc.identifier}
                   contentsForFrontInner={disc.contentsForFrontInner}
                   contentsForBottomInner={disc.contentsForBottomInner}
@@ -470,6 +475,7 @@ console.log(discs);
             } else if (disc.type === 'Wings') {
               return (
                 <Wings
+                  key={index}
                   ref={loRef[index]}
                   identifier={disc.identifier}
                   top={disc.top}

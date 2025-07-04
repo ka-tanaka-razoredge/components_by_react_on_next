@@ -44,7 +44,7 @@ export default (props) => {
       }
       </style>
       <div className="ofar">
-        <div onClick={toggle}>{props.name}</div>
+        <div onClick={(e) => { toggle(); props.onClick(); }}>{props.name}</div>
         {/* styleを設定しないと初回が空振り */}
         <div ref={body} className="ofar__body" style={{ visibility: 'collapse', height: 0 }}  onClick={props.onClick}>
           <div style={{ position: 'relative', width: '480px', height: '250px', border: '1px solid red', margin: '0 4px', left: 0, top: `${0}px`, zIndex: 1000 }}>
@@ -53,7 +53,7 @@ export default (props) => {
             <div style={{ position: 'absolute', left: '4rem', top: '8rem' }} dangerouslySetInnerHTML={{ __html: props.rw }} />
             <div className="rig" dangerouslySetInnerHTML={{ __html: props.rig }} />
           </div>
-          <div style={{ position: 'absolute', left: 0, top: `${-10}px`, zIndex: 900, marginTop: '22px', padding: `${8}px` }}>
+          <div style={{ position: 'absolute', left: 0, top: `${-20}px`, zIndex: 900, marginTop: '22px', padding: `${8}px` }}>
             <img src='/next/sengine/oil_field.png' />
           </div>
         </div>

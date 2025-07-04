@@ -1,6 +1,7 @@
 /**
  *
  */
+import Sail from '@/components/disc_system/Sail';
 import DiscFor from '@/components/disc_system/DiscFor';
 import Magazine from '@/components/disc_system/Magazine';
 import PastOrFuture from '@/components/disc_system/PastOrFuture';
@@ -12,12 +13,38 @@ import Ms from '@/components/atoms/Ms';
 import Matrix from '@/components/rz_uml/atoms/Matrix';
 import Cluster from '@/components/rz_uml/atoms/Cluster';
 import Hand from '@/components/disc_system/atoms/Hand'
+import MetalTape from '@/components/disc_system/MetalTape';
 import FullDisc from '@/components/disc_system/atoms/FullDisc';
+import Cable from '@/components/disc_system/Cable';
 
 const useDiscFactory = (lop: { [key: string]: any }) => {
+  const isReact = (disc) => {
+    return (disc?.isReact) ? disc.isReact : false;
+  };
+
   const createDisc = (disc, ref=undefined) => {
     let reply;
     switch (disc.type) {
+      case 'Sail':
+        reply = (
+          <Sail
+            key={disc.identifier}
+            identifier={disc.identifier}
+            contents={disc.contents}
+            contentsForFrontInner={disc.contentsForFrontInner}
+            title={disc.title}
+            top={disc.top}
+            left={disc.left}
+            height={disc.height}
+            width={disc.width}
+            z={disc.z}
+            transform={disc.transform}
+            duration={disc.duration}
+            
+//            isFromNow={isFromNow}
+          />
+        );
+        break;
       case 'DiscForDcoml':
         reply = (
           <DiscForDcoml
@@ -75,6 +102,7 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
         reply = (
           <Magazine
             ref={ref}
+            key={disc.identifier}
             identifier={disc.identifier}
             contentsForFrontInner={disc.contentsForFrontInner}
             contentsForBottomInner={disc.contentsForBottomInner}
@@ -124,6 +152,18 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
           />
         );
         break;
+      case 'MetalTape':
+        reply = (
+          <MetalTape
+            ref={ref}
+            identifier={disc.identifier}
+            contentsForFrontInner={disc.contentsForFrontInner}
+            top={disc.top}
+            left={disc.left}
+            height={disc.height}
+          />
+        );
+        break;
       case 'FullDisc':
         reply = (
           <FullDisc
@@ -131,6 +171,31 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             {...disc}
           />
         );
+        break;
+      case 'Cable':
+        reply = (
+          <Cable
+            identifier={disc.identifier}
+            subType={disc.subType}
+            contentsForFrontInner={disc.contentsForFrontInner}
+            contentsForBottomInner={disc.contentsForBottomInner}
+            title={disc.title}
+            height={disc.height}
+            width={disc.width}
+            left={disc.left}
+            top={disc.top}
+            isReact={isReact(disc)}
+            doIt={disc.doIt}
+            isBottomOnly={disc.isBottomOnly}
+            z={disc.z}
+            bp={disc.bp}
+            ep={disc.ep}
+            ex1={disc.ex1}
+            allow={disc.allow}
+            transform={disc.transform}
+            leans={disc.leans}
+          />
+        )
         break;
     }
     return reply;

@@ -6,7 +6,7 @@ export default (props) => {
   
   return (
     <div>
-      <table border='1'>
+      <table style={{ border: '1' }}>
         <tr>
         {
           props.subjects.map((subject, index) => {

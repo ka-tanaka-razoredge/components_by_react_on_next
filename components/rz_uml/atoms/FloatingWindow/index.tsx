@@ -6,7 +6,7 @@ export default (props: {
   top: string,
   left: string,
   height: string,
-  visibility: string,
+  visibility: 'visible' | 'hidden' | 'collapse',
   children: any,
 }) => {
   const toggle = () => {
@@ -14,7 +14,7 @@ export default (props: {
     body.style.visibility = (body.style.visibility === 'visible') ? 'collapse' : 'visible';
     
     let motherBoard = document.getElementById(`${props.id}`);
-    motherBoard.style.height = (motherBoard.style.height === props.height) ? 0 : props.height;
+    motherBoard.style.height = (motherBoard.style.height === props.height) ? '0' : props.height;
   };
   
   return (

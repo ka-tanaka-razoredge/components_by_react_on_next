@@ -18,7 +18,7 @@ export default (props) => {
   
   return (
     <div style={{ width: giveWidth() }}>
-      <div>{props.name}:</div>
+      <div>name: {props.name}</div>
       <div style={{ display: 'flex', width: giveWidth(), justifyContent: 'center' }}>
       {
         props.subjects.map((subject) => {
@@ -41,7 +41,7 @@ export default (props) => {
       {
         props.replies.map((reply) => {
           return (
-            <div style={{ width: width, border: '1px solid rgba(0, 0, 0, 1.0)' }}>{reply}</div>
+            <div style={{ width: width, border: '1px solid rgba(0, 0, 0, 1.0)' }}>{reply.join(', ')}</div>
           )
         })
       }

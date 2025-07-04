@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useState, useRef } from 'react';
 
 export default ({
@@ -35,14 +37,14 @@ export default ({
       }
       </style>
       <div className="represent" style={{ display: 'flex' }}>
-        <div style={{ whiteSpace: 'nowrap' }}><div dangerouslySetInnerHTML={{ __html: selectedOption }}></div></div><div onClick={toggle}>▼</div>
+        <div style={{ whiteSpace: 'nowrap' }}><div dangerouslySetInnerHTML={{ __html: selectedOption.value }}></div></div><div onClick={toggle}>▼</div>
       </div>
       <div ref={divForOptions} className="options" style={{ height: '0px',  }}>
       {
         options.map((option, index) => {
           return (
             <div key={index} onClick={onSelected}>
-              <div dangerouslySetInnerHTML={{ __html: option }}></div>
+              <div dangerouslySetInnerHTML={{ __html: option.value }}></div>
             </div>
           )
         })

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import useLongTap from '@/hooks/disc_system/long_tap';
 import ContextMenu from '@/components/disc_system/molecules/ContextMenu/for_disc';
@@ -56,6 +57,26 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         }
       });
     }
+    
+    // TODO: hook化する
+    let alphas = document.querySelectorAll('[component]');
+    console.log('Disc.useEffect: ', alphas);
+    alphas.forEach((v) => {
+      if (!v._reactRoot) v._reactRoot = createRoot(v);
+      if (v.getAttribute('component') === 'my-react-component') {
+        v._reactRoot.render(
+          <div style={{ color: v.dataset.color }}>
+            {v.innerHTML}
+          </div>
+        );
+      } else {
+        v._reactRoot.render(
+          <div style={{ color: 'white', backgroundColor: v.dataset.color }}>
+            {v.innerHTML}
+          </div>
+        );
+      }
+    });
   }, []);
 
   const moveX = value => {
@@ -116,12 +137,6 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     return (
       <div dangerouslySetInnerHTML={{ __html: buildContents(props.rows, props.columns) }} />
     );
-  };
-
-  const drawBottom = () => {
-    if (!props.isBottomOnly) {
-    } else {
-    }
   };
 
   const drawBottomInner = () => {
@@ -274,7 +289,7 @@ console.log(reply);
         className="disc"
         style={{
           transformStyle: 'preserve-3d',
-          border: '1px solid orange',
+          border: (!props.isFrontOnly) ? '1px solid orange' : '',
           height: (props.duration) ? props.duration : '1rem',
           width: (props.width) ? props.width + 'px' : 100 + 'px',
           top: props.top + 'px',

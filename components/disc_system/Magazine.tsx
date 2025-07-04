@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 
 import useDiscFactory from '@/hooks/disc_system/disc_factory';
 
 import Disc from './Disc';
 import DiscFor from './DiscFor';
 import MetalTape from './MetalTape';
-import Magazine from './Magazine';
 import Sail from './Sail';
 import Cube from './Cube';
 import Carousel from './Carousel';
 import Cable from './Cable';
 
-export default (props: { identifier: string, [key: string]: any }, ref) => {
+const Magazine = (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
   const joint = useRef(null);
   const back = useRef(null);
@@ -234,131 +233,139 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
               left: 0 + 'px',
             }}
           >
-            {props.discs?.map((line, index) => {
-              return line.map((disc, index) => {
-                if ('type' in disc === false || disc.type === 'Disc') {
-//console.log(disc);
-                  return (
-                    <Disc
-                      {...disc}
-                      identifier={disc.identifier}
-                      contentsForFrontInner={disc.contentsForFrontInner}
-                      contentsForBottomInner={disc.contentsForBottomInner}
-                      title={disc.title}
-                      height={disc.height}
-                      width={disc.width}
-                      left={disc.left}
-                      top={disc.top}
-                      doIt={disc.doIt}
-                      isBottomOnly={disc.isBottomOnly}
-                      z={disc.z}
-                      rotateY={disc.rotateY}
-                      duration={disc.duration}
-    
-                      rows={disc.rows}
-                      columns={disc.columns}
-                      idForGraph={disc.idForGraph}
-                      parameterForGraphes={disc.parameterForGraphes}
-                      msView={disc.msView}
-                      topBorder={disc.topBorder}
-                      bottomBorder={disc.bottomBorder}
-                    />
-                  )
-/*                  
-                } else if (disc.type === 'Magazine') {
-                  return (
-                    <Magazine
-                      identifier={disc.identifier}
-                      contentsForFrontInner={disc.contentsForFrontInner}
-                      discs={disc.discs}
-                      top={disc.top}
-                      left={disc.left}
-                      height={disc.height}
-                      width={disc.width}
-                    />
-                  )
-*/
-                } else if (disc.type === 'MetalTape') {
-                  return (
-                    <MetalTape
-                      identifier={disc.identifier}
-                      contentsForFrontInner={disc.contentsForFrontInner}
-                      top={disc.top}
-                      left={disc.left}
-                      height={disc.height}
-                    />
-                  )
-                } else if (disc.type === 'Sail') {
-                  return (
-                    <Sail
-                      key={disc.identifier}
-                      identifier={disc.identifier}
-                      contentsForFrontInner={disc.contentsForFrontInner}
-                      isBottomOnly={disc.isBottomOnly}
-                      top={disc.top}
-                      left={disc.left}
-                      width={disc.width}
-                      height={disc.height}
-                      title={disc.title}
-                      transform={disc.transform}
-                      z={disc.z}
-                    />
-                  )
-                } else if (disc.type === 'Cube') {
-                  return (
-                    <Cube
-                      identifier={disc.identifier}
-                      top={disc.top}
-                      left={disc.left}
-                      z={disc.z}
-                    />
-                  )
-                } else if (disc.type === 'Carousel') {
-                  return (
-                    <Carousel
-                      identifier={disc.identifier}
-                      contentsForFrontInner={disc.contentsForFrontInner}
-                      contentsForBottomInner={disc.contentsForBottomInner}
-                      title={disc.title}
-                      height={disc.height}
-                      width={disc.width}
-                      left={disc.left}
-                      top={disc.top}
-  //                    isReact={isReact(disc)}
-                      doIt={disc.doIt}
-                      isBottomOnly={disc.isBottomOnly}
-                      z={disc.z}
-                      contents={disc.contents}
-                    />
-                  )
-                } else if (disc.type === 'Cable') {
-                  return (
-                    <Cable
-                      identifier={disc.identifier}
-                      contentsForFrontInner={disc.contentsForFrontInner}
-                      contentsForBottomInner={disc.contentsForBottomInner}
-                      title={disc.title}
-                      height={disc.height}
-                      width={disc.width}
-                      left={disc.left}
-                      top={disc.top}
-  //                    isReact={isReact(disc)}
-                      doIt={disc.doIt}
-                      isBottomOnly={disc.isBottomOnly}
-                      z={disc.z}
-                      bp={disc.bp}
-                      ep={disc.ep}
-                      ex1={disc.ex1}
-                      allow={disc.allow}
-                      transform={disc.transform}
-                      leans={disc.leans}
-                    />
-                  )
-                } else {
-                  return createDisc(disc)
-                }
+            {
+              props.discs?.map((line, h) => {
+                return line.map((disc, index) => {
+                  if ('type' in disc === false || disc.type === 'Disc') {
+  //console.log(disc);
+                    return (
+                      <Disc
+                        key={`${h}-${index}`}
+                        {...disc}
+                        identifier={disc.identifier}
+                        contentsForFrontInner={disc.contentsForFrontInner}
+                        contentsForBottomInner={disc.contentsForBottomInner}
+                        title={disc.title}
+                        height={disc.height}
+                        width={disc.width}
+                        left={disc.left}
+                        top={disc.top}
+                        doIt={disc.doIt}
+                        isBottomOnly={disc.isBottomOnly}
+                        z={disc.z}
+                        rotateY={disc.rotateY}
+                        duration={disc.duration}
+      
+                        rows={disc.rows}
+                        columns={disc.columns}
+                        idForGraph={disc.idForGraph}
+                        parameterForGraphes={disc.parameterForGraphes}
+                        msView={disc.msView}
+                        topBorder={disc.topBorder}
+                        bottomBorder={disc.bottomBorder}
+                      />
+                    )
+  /*                  
+                  } else if (disc.type === 'Magazine') {
+                    return (
+                      <Magazine
+                        key={`${h}-${index}`}
+                        identifier={disc.identifier}
+                        contentsForFrontInner={disc.contentsForFrontInner}
+                        discs={disc.discs}
+                        top={disc.top}
+                        left={disc.left}
+                        height={disc.height}
+                        width={disc.width}
+                      />
+                    )
+  */
+                  } else if (disc.type === 'MetalTape') {
+                    return (
+                      <MetalTape
+                        key={`${h}-${index}`}
+                        identifier={disc.identifier}
+                        contentsForFrontInner={disc.contentsForFrontInner}
+                        top={disc.top}
+                        left={disc.left}
+                        height={disc.height}
+                      />
+                    )
+                  } else if (disc.type === 'Sail') {
+                    return (
+                      <Sail
+                        key={`${h}-${index}`}
+                        identifier={disc.identifier}
+                        contentsForFrontInner={disc.contentsForFrontInner}
+                        isBottomOnly={disc.isBottomOnly}
+                        top={disc.top}
+                        left={disc.left}
+                        width={disc.width}
+                        height={disc.height}
+                        title={disc.title}
+                        transform={disc.transform}
+                        z={disc.z}
+                      />
+                    )
+                  } else if (disc.type === 'Cube') {
+                    return (
+                      <Cube
+                        key={`${h}-${index}`}
+                        identifier={disc.identifier}
+                        top={disc.top}
+                        left={disc.left}
+                        z={disc.z}
+                      />
+                    )
+                  } else if (disc.type === 'Carousel') {
+                    return (
+                      <Carousel
+                        key={`${h}-${index}`}
+                        identifier={disc.identifier}
+                        contentsForFrontInner={disc.contentsForFrontInner}
+                        contentsForBottomInner={disc.contentsForBottomInner}
+                        title={disc.title}
+                        height={disc.height}
+                        width={disc.width}
+                        left={disc.left}
+                        top={disc.top}
+    //                    isReact={isReact(disc)}
+                        doIt={disc.doIt}
+                        isBottomOnly={disc.isBottomOnly}
+                        z={disc.z}
+                        contents={disc.contents}
+                      />
+                    )
+                  } else if (disc.type === 'Cable') {
+                    return (
+                      <Cable
+                        key={`${h}-${index}`}
+                        identifier={disc.identifier}
+                        contentsForFrontInner={disc.contentsForFrontInner}
+                        contentsForBottomInner={disc.contentsForBottomInner}
+                        title={disc.title}
+                        height={disc.height}
+                        width={disc.width}
+                        left={disc.left}
+                        top={disc.top}
+    //                    isReact={isReact(disc)}
+                        doIt={disc.doIt}
+                        isBottomOnly={disc.isBottomOnly}
+                        z={disc.z}
+                        bp={disc.bp}
+                        ep={disc.ep}
+                        ex1={disc.ex1}
+                        allow={disc.allow}
+                        transform={disc.transform}
+                        leans={disc.leans}
+                      />
+                    )
+                  } else {
+                    return createDisc(disc)
+                  }
+                })
               })
-            })}
+            }
             { drawContentsForBack() }
           </div>
           <div
@@ -373,12 +380,16 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             {
               props.discs?.map((line, i) => {
                 return (
-                  <div className="line">
+                  <div
+                    key={i}
+                    className="line"
+                  >
                   {
                     line.map((v, j) => {
                       let l = buildL(v.contentsForBottomOuter)
                       return (
                         <div
+                          key={`${v.identifier}-${i}-${j}`}
                           className="form-L"
                         >
                           <div
@@ -399,7 +410,6 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                             >
                             </div>
                             <div
-                              key={`${v.identifier}-${i}-${j}`}
                               id={`${v.identifier}-starp-${i}-${j}`}
                               className="shaft"
                               style={{
@@ -426,3 +436,5 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     </>
   );
 };
+
+export default forwardRef(Magazine);
