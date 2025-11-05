@@ -286,7 +286,7 @@ console.log(reply);
           }
           
           .bottom-inner {
-            border-right: 1px solid orange;
+            border-right: 1px solid orange !important;
           }
         `
       }

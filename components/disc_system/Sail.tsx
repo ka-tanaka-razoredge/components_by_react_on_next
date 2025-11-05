@@ -49,21 +49,24 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 
     if (!props.isBottomOnly) {
       let t = 'title' in props ? props.title : '';
-//      console.log('---- Sail.drawFront begin-end ----');
-//      console.log('props: ', props);
+      
+      let contents;
+      if (props.contentsForFrontInner) {
+        contents = (!Array.isArray(props.contentsForFrontInner)) ? props.contentsForFrontInner : props.contentsForFrontInner.join('');
+      } else {
+        contents = props.title;
+      }
+
       return (
         <div
           className="sail__front-inner"
           style={{
-//            transformStyle: 'preserve-3d',
             border: 'solid 1px rgba(0, 0, 0, 0.5)',
-//            position: 'absolute',
             width: props.width + 'px',
             height: props.height + 'px',
             transform: buildTransform(),
-//            transform: (props.transform) ? props.transform : 'rotateX(180deg)',
           }}
-          dangerouslySetInnerHTML={{ __html: (props.contentsForFrontInner) ? props.contentsForFrontInner : props.title }}
+          dangerouslySetInnerHTML={{ __html: contents }}
           title={t}
         />
       );

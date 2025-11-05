@@ -69,6 +69,12 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             {v.innerHTML}
           </div>
         );
+      } else if (v.getAttribute('component') === 'my-react-component') {
+        v._reactRoot.render(
+          <div style={{ color: v.dataset.color }}>
+            {v.innerHTML}
+          </div>
+        );
       } else {
         v._reactRoot.render(
           <div style={{ color: 'white', backgroundColor: v.dataset.color }}>
@@ -148,7 +154,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     } else {
       if (!props.rows) {
         return (
-          <div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }} />
+          <div dangerouslySetInnerHTML={{ __html: (!Array.isArray(props.contentsForBottomInner)) ? props.contentsForBottomInner : props.contentsForBottomInner.join('') }} />
         );
       }
       return drawMs();
@@ -184,14 +190,14 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
               ref={frontInner}
               className="front-inner"
               style={{
-                border: 'solid 1px lime',
+                border: (props.style?.border) ? props.style.border : 'solid 1px lime',
                 width: (props.width) ? props.width + 'px' : 100 + 'px',
                 height: (props.height) ? props.height + 'px' : 50 + 'px',
 
                 transform: (!props.isFromNow) ? 'rotateX(180deg)' : 'rotateX(180deg) rotateY(180deg)',
                 
               }}
-              dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
+              dangerouslySetInnerHTML={{ __html: (!Array.isArray(props.contentsForFrontInner)) ? props.contentsForFrontInner : props.contentsForFrontInner.join('') }}
               title={t}
             />
 {/*            
@@ -242,7 +248,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     if (props.z) reply += `translateZ(${props.z}px) `;
     if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
     if (props.transform) reply += `${props.transform}`;
-console.log(reply);
+//console.log(reply);
     return reply;
   };
   

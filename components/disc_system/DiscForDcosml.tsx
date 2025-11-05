@@ -53,6 +53,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       let t = 'title' in props ? props.title : '';
       return (
         <div
+          className="front-inner"
           style={{
 //            transformStyle: 'preserve-3d',
             border: 'solid 1px lime',
@@ -72,30 +73,42 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
   
   return (
-    <div
-      ref={base}
-      id={props.identifier}
-      style={{
-        transformStyle: 'preserve-3d',
-        border: '1px solid orange',
-        height: 10 + 'px',
-        width: (props.width) ? props.width + 'px' : 100 + 'px',
-        top: props.top + 'px',
-        left: props.left + 'px',
-        position: 'absolute'
-      }}
-    >
-      {drawBottomInner()}
+    <>
+      <style>
+      {
+        `
+          .front-inner {
+            display: flex;
+          }
+        `
+      }
+      </style>
       <div
+        ref={base}
+        id={props.identifier}
         style={{
-          position: 'absolute',
+          transformStyle: 'preserve-3d',
+          border: '1px solid orange',
+          height: `${props.duration}px` || `${10}px`,
           width: (props.width) ? props.width + 'px' : 100 + 'px',
-          top: '0px',
-          height: '1px',
-          transform: 'rotateX(90deg)'
-        }}>
-          {drawFront()}
+          top: props.top + 'px',
+          left: props.left + 'px',
+          position: 'absolute',
+          transform:  props.transform || ''
+        }}
+      >
+        {drawBottomInner()}
+        <div
+          style={{
+            position: 'absolute',
+            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            top: '0px',
+            height: '1px',
+            transform: 'rotateX(90deg)'
+          }}>
+            {drawFront()}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

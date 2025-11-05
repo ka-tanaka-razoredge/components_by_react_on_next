@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
 export default (props) => {
-  const [width, setWidth] = useState((props.singleton.width) ? `auto` : `1rem`);
+  const defaultWidth = `${0.9}rem`;
+  const [width, setWidth] = useState((props.singleton.width) ? `auto` : defaultWidth);
   const [overflow, setOverflow] = useState((props.singleton.width) ? `visible` : `hidden`);
 
   const showListenerView = () => {
@@ -14,7 +15,7 @@ export default (props) => {
 
   const toggle = () => {
     if (width === 'auto') {
-      setWidth(`1rem`);
+      setWidth(defaultWidth);
       setOverflow(`hidden`);
       hideListenerView();
     } else {
@@ -32,11 +33,44 @@ export default (props) => {
   };
 
   return (
-    <div style={{ position: 'absolute', top: props.singleton.top, left: props.singleton.left, border: 'solid 1px black', height: '22px', width: width, overflow: overflow, opacity: fetchOpacity() }}>
-      <div><span style={ props.singleton.style } onClick={ (e) => { toggle(); } }>{ props.singleton.alias }</span>: &#123; {drawM()}{ props.singleton.m }, <span onMouseEnter={ (e) => { showListenerView();  } }>l</span> &#125;</div>
-      <div id={ props.singleton.id } style={{ position: 'relative', color: 'lime', backgroundColor: 'rgba(0, 0, 0, 1.0)', visibility: 'collapse', top: '-25px', left: props.singleton.m.length + 3.5 + 'rem', width: '500px', zIndex: 1100 }} onClick={ (e) => { hideListenerView(); } }>
-        <div dangerouslySetInnerHTML={{ __html: props.singleton.l }}></div>
+    <>
+      <style>
+      {
+        `
+          .message-listener {
+            position: absolute;
+            border: solid 1px black;
+          }
+
+          .nowrap {
+            white-space: nowrap;
+display: flex;
+          }
+          
+          .alias-and-ml {
+            display: flex;
+            line-height: 1;
+          }
+        `
+      }
+      </style>
+      <div
+        className="message-listener"
+        style={{ top: props.singleton.top, left: props.singleton.left, height: `${1}rem`, width: width, overflow: overflow, opacity: fetchOpacity() }}
+      >
+        <div className="alias-and-ml">
+          <div className="nowrap">
+            <span style={ props.singleton.style } onClick={ (e) => { toggle(); } }>{ `${props.singleton.alias}` }</span>: &#123; {drawM()}{ props.singleton.m }, <span onMouseEnter={ (e) => { showListenerView();  } }>l</span>&nbsp;&#125;
+          </div>
+          <div
+            id={ props.singleton.id }
+            style={{ position: 'relative', color: 'lime', backgroundColor: 'rgba(0, 0, 0, 1.0)', visibility: 'collapse', left: `${3.5}rem`, width: '500px', zIndex: 1100 }}
+            onClick={ (e) => { hideListenerView(); } }
+          >
+            <div dangerouslySetInnerHTML={{ __html: props.singleton.l }}></div>
+          </div>
+        </div>
       </div>
-    </div>
-  )
+    </>
+  );
 }

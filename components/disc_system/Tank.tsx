@@ -1,7 +1,8 @@
 // @ts-nocheck
 
 import React, { useState, useRef, useEffect } from 'react';
-import useDiscFactory from '@/hooks/disc_system/disc_factory'
+import useDiscFactory from '@/hooks/disc_system/disc_factory';
+import json5 from 'json5';
 
 import Disc from './Disc';
 import DiscFor from './DiscFor';
@@ -33,7 +34,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
    * discsはstateにつき非同期であるため，Refオブジェクトを用いている
    */
   const setDiscEx = (discs) => {
-console.log(discs);
+//console.log(discs);
     discsRef.current = discs;
     setDiscs(discs);
   };
@@ -54,7 +55,6 @@ console.log(discs);
     // TODO: removeEventListener
     ref.current.addEventListener('pushDisc', (e) => {
       pushDisc(e.detail);
-      console.log(e.detail);
 
       context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
       context.beginPath();
@@ -76,6 +76,11 @@ console.log(discs);
     ref.current.addEventListener('moveY', (e) => {
       return moveY(e.detail);
     });
+    
+    ref.current.addEventListener('disc resized', (e) => {
+//console.log(e);
+      ref.current.shiftXThemEx({left: e.detail.left, value: e.detail.value, width: e.detail.width});
+    });
 
     //--------------------------------------------------------------------------------
     // begin ooRef provider only
@@ -92,7 +97,7 @@ console.log(discs);
     };
     
     ref.current.setAllDiscs = (lop) => {
-      console.log(JSON.parse(lop.value, null, 2));
+//      console.log(JSON.parse(lop.value, null, 2));
       setDiscEx(JSON.parse(lop.value));
     };
     
@@ -110,6 +115,17 @@ console.log(discs);
       });
       setDiscEx(discs);
     };
+    
+    ref.current.shiftXThemEx = (lop) => {
+      const discs = discsRef.current.map((disc) => {
+        if (lop.left < parseInt(disc.left)) {
+          // TODO: 400
+          disc.left = (parseInt(lop.value) !== 0) ? (disc.left + lop.value) : (parseInt(disc.left) - 400);
+        }
+        return disc;
+      });
+      setDiscEx(discs);
+    };  
 
     ref.current.quadraticCurveTo = (lop: { beginVector: Vector, imaginaryVectorFirst: Vector, endVector: Vector }) => {
 //      console.log('---- quadraticCurveTo begin ----');
@@ -178,29 +194,35 @@ console.log(discs);
   const pushDisc = (lop = { identifier }) => {
     setDiscEx(discsRef.current.concat(lop));
     setTimeout(() => {
-      document.getElementById(lop.identifier).dispatchEvent(
-        new CustomEvent('moveX', {
-          detail: {
-            value: lop.left,
-          },
-        })
-      );
-      document.getElementById(lop.identifier).dispatchEvent(
-        new CustomEvent('moveY', {
-          detail: {
-            value: lop.top,
-          },
-        })
-      );
-
-      if ('z' in lop) {
+      try {
         document.getElementById(lop.identifier).dispatchEvent(
-          new CustomEvent('moveZ', {
+          new CustomEvent('moveX', {
             detail: {
-              value: lop.z,
+              value: lop.left,
             },
           })
         );
+        document.getElementById(lop.identifier).dispatchEvent(
+          new CustomEvent('moveY', {
+            detail: {
+              value: lop.top,
+            },
+          })
+        );
+  
+        if ('z' in lop) {
+          document.getElementById(lop.identifier).dispatchEvent(
+            new CustomEvent('moveZ', {
+              detail: {
+                value: lop.z,
+              },
+            })
+          );
+        }
+      } catch (e) {
+        console.log(e);
+        console.log('Tank.pushDisc: ', lop);
+        console.log(discsRef.current);
       }
     }, 1);
   };
@@ -415,7 +437,11 @@ console.log(discs);
                   width={disc.width}
                   left={disc.left}
                   top={disc.top}
+                  contentsForBottomInner={disc.contentsForBottomInner}
                   dcoml={disc.dcoml}
+                  
+                  transform={disc.transform}
+                  duration={disc.duration}
                 />
               )
             } else if (disc.type === 'MutableSail') {

@@ -33,9 +33,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             position: 'absolute',
             width: 100 + 'px',
             height: 1 + 'px',
-            top: `${props.height - 10}px`,
-            transform:
-              'translateY(-20px) rotateX(-90deg) translateY(-30px) translateX(28px)'
+            transform: `rotateY(180deg) rotateZ(180deg)`,
           }}
         >
           <Carousel { ...props.carousel } />
@@ -44,42 +42,71 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     } else {
       return (
         <div
+          className="nowrap"
           style={{
             transformStyle: 'preserve-3d',
             border: 'solid 1px lime',
             position: 'absolute',
-            width: 100 + 'px',
-            height: 50 + 'px',
-            top: `${props.height}px`,
-            transform:
-              'translateY(-20px) rotateX(-90deg) translateY(-30px) translateX(-5px)'
+            width: `${100}px`,
+            transform: `rotateY(180deg) rotateZ(180deg)`,
           }}
+          dangerouslySetInnerHTML={{ __html: (!Array.isArray(props.contentsForFrontInner)) ? props.contentsForFrontInner : props.contentsForFrontInner.join('') }}
         >
-          <div
-            dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}
-          />
         </div>
       );
     }   
   };
 
+  const buildTransform = () => {
+//    console.log('---- buildTransform begin ----');
+    let reply = '';
+    if (props.z) reply += `translateZ(${props.z}px) `;
+    if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
+    if (props.transform) reply += `${props.transform}`;
+//console.log(reply);
+    return reply;
+  };
+
   return (
-    <div
-      ref={base}
-      id={props.identifier}
-      style={{
-        transformStyle: 'preserve-3d',
-        backgroundColor: 'orange',
-        height: props.height + 'px',
-        width: 2 + 'px',
-        top: props.top + 'px',
-        left: props.left + 'px',
-        position: 'absolute'
-      }}
-    >
-    {
-      draw()
-    }
-    </div>
+    <>
+      <style>
+      {
+        `
+          .shaft {
+            transform-style: preserve-3d;
+            position: absolute;
+            height: 1px;
+            transform: rotateX(90deg);
+          }
+        `
+      }
+      </style>
+      <div
+        ref={base}
+        id={props.identifier}
+        style={{
+          transformStyle: 'preserve-3d',
+          backgroundColor: 'orange',
+          height: props.height + 'px',
+          width: 2 + 'px',
+          top: props.top + 'px',
+          left: props.left + 'px',
+          position: 'absolute',
+          transform: buildTransform(),
+        }}
+      >
+        <div
+          className="shaft"
+          style={{
+            top: `${props.height}px`,
+            width:(props.width) ? `${props.width}px` : `${100}px`,
+          }}
+        >
+        {
+          draw()
+        }
+        </div>
+      </div>
+    </>
   );
 };

@@ -205,7 +205,7 @@ const Magazine = (props: { identifier: string, [key: string]: any }, ref) => {
           transform: (props.transform || '')
         }}
       >
-        { props.contentsForBottomInner && (props.contentsForBottomInner) }
+        <div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner || '' }}></div>
         <div
           ref={joint}
           style={{

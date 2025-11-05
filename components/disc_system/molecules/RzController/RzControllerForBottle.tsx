@@ -2,6 +2,9 @@
 
 import React, { forwardRef, useImperativeHandle, useState, useRef } from 'react';
 import axios from 'axios';
+
+import Editor from "@monaco-editor/react";
+
 import DiscPanel from '@/components/disc_system/molecules/RzController/DiscPanel';
 import ToolBox from '@/components/atoms/ToolBox';
 
@@ -11,6 +14,14 @@ import ToolBox from '@/components/atoms/ToolBox';
  * 
  */
 export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, ref) => {
+  const [editorInstance, setEditorInstance] = useState(null);
+  const onEditorMount = (editor, monaco) => {
+    editor.onDidBlurEditorText(() => {
+      apply(editor.getValue());
+    });
+    setEditorInstance(editor);
+  };
+
   const defaultJson = JSON.stringify([
     {
       type: 'Magazine',
@@ -76,7 +87,21 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
     }
   }));
 
-  const apply = () => {
+  const apply = (parsable='[]') => {
+//  const apply = () => {
+    try {
+      const parsed = JSON.parse(parsable);
+      if (1 <= parsed.length && Array.isArray(parsed[0])) {
+        props.applyDiscs({ value: JSON.stringify(parsed[discIndex]) });
+      } else {
+        props.applyDiscs({ value: parsable });
+      }
+    } catch (e) {
+      console.log(e);
+      alert('JSON is invalid!');
+      return;
+    }
+/*
     try {
       JSON.parse(textarea.current.value);
     } catch {
@@ -84,7 +109,8 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
       return;
     }
     props.applyDiscs({ value: textarea.current.value });
-  }
+*/
+  };
 
   const fetch = () => {
     console.log(props.getDiscs());
@@ -312,8 +338,13 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
       {
         `
           .controller {
-            width: 500px;
+            width: 700px;
+            padding: 0.25rem;
             background-color: orange;
+            
+            .vs--separator {
+              height: 0.25rem;
+            }
             
             .panache {
             }
@@ -350,10 +381,29 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
       <div className={`controller ${props.classes}`}>
         <div className="mint-beer">
           JSON:<br />
+{/*          
           <textarea ref={ textarea } className="json" cols='1000' rows='1000' onChange={ (e) => { setJson(e.target.value);  } } onKeyDown={ (e) => { onTabKey(e); } } value={ json } onBlur={(e) => { apply(); }}></textarea><br />
+*/}          
+          <div style={{ height: `${500}px`, width: `100%` }}>
+            <Editor
+              ref={textarea}
+              height="100%"
+              defaultLanguage="javascript"
+              value={json}
+              onMount={onEditorMount}
+              onChange={(value) => setJson(value ?? "")}
+              options={{
+                folding: true,          // 折り畳み有効
+                lineNumbers: "on",      // 行番号表示
+                minimap: { enabled: false }, // ミニマップ非表示
+              }}
+            />
+          </div>
+          <div className="vs--separator"></div>
           <input type='button' value='apply' onClick={ (e) => { apply(); } } />
           <input type='button' value='fetch' onClick={ (e) => { fetch(); } } />
           <input type='button' value='stringify' onClick={ (e) => { stringify(); } } /><br />
+          <div className="vs--separator"></div>
           id:&nbsp;<input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
           name:&nbsp;<input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
           resource:&nbsp;<input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
