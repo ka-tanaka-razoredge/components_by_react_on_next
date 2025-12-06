@@ -17,7 +17,10 @@ import Hand from '@/components/disc_system/atoms/Hand'
 import MetalTape from '@/components/disc_system/MetalTape';
 import FullDisc from '@/components/disc_system/atoms/FullDisc';
 import Cable from '@/components/disc_system/Cable';
+import DiscForDcosml from '@/components/disc_system/DiscForDcosml';
 import Foundation from '@/components/disc_system/atoms/Foundation';
+import Cube from '@/components/disc_system/Cube';
+import Reel from '@/components/disc_system/atoms/Reel';
 
 const useDiscFactory = (lop: { [key: string]: any }) => {
   const isReact = (disc) => {
@@ -50,29 +53,15 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
       case 'Disc':
         reply = (
           <Disc
+            {...disc}
             key={disc.identifier}
-            identifier={disc.identifier}
-            contents={disc.contents}
-            contentsForFrontInner={disc.contentsForFrontInner}
-            top={disc.top}
-            left={disc.left}
-            height={disc.height}
-            width={disc.width}
-            z={disc.z}
-            duration={disc.duration}
           />
         );
         break;
       case 'DiscForDcoml':
         reply = (
           <DiscForDcoml
-            identifier={disc.identifier}
-            height={disc.height}
-            width={disc.width}
-            left={disc.left}
-            top={disc.top}
-            duration={disc.duration}
-            dcoml={disc.dcoml}
+            {...disc}
           />
         );
         break;
@@ -80,13 +69,15 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
         let doms = [];
         
         if (disc.subType === 'Ms') {
-          doms.push(<Ms {...disc.ms} />);
+          doms.push(<Ms { ...disc.ms } />);
         } else if (disc.subType === 'Matrix') {
-          doms.push(<Matrix {...disc.matrix} />);
+          doms.push(<Matrix { ...disc.matrix } />);
         } else if (disc.subType === 'Cluster') {
-          doms.push(<Cluster {...disc.cluster} />);
+          doms.push(<Cluster { ...disc.cluster } />);
         } else if (disc.subType === 'Bottle') {
-          doms.push(<Bottle {...disc.bottle}/>);
+          doms.push(<Bottle { ...disc.bottle } />);
+        } else if (disc.subType === 'Reel') {
+          doms.push(<Reel { ...disc.reel } />);
         }
 
         reply = (
@@ -166,6 +157,7 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             width={disc.width}
             left={disc.left}
             top={disc.top}
+            duration={disc.duration}
             transform={disc.transform||''}
           />
         );
@@ -179,6 +171,7 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             top={disc.top}
             left={disc.left}
             height={disc.height}
+            z={disc.z}
           />
         );
         break;
@@ -213,12 +206,35 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             transform={disc.transform}
             leans={disc.leans}
           />
-        )
+        );
+        break;
+      case 'DiscForDcosml':
+        reply = (
+          <DiscForDcosml
+            identifier={disc.identifier}
+            height={disc.height}
+            width={disc.width}
+            left={disc.left}
+            top={disc.top}
+            contentsForBottomInner={disc.contentsForBottomInner}
+            dcoml={disc.dcoml}
+            
+            transform={disc.transform}
+            duration={disc.duration}
+          />
+        );
         break;
       case 'Foundation':
         reply = (
           <Foundation
             ref={ref}
+            {...disc}
+          />
+        );
+        break;
+      case 'Cube':
+        reply = (
+          <Cube
             {...disc}
           />
         );
