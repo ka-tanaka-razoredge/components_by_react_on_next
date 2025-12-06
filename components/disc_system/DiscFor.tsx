@@ -44,13 +44,23 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 
   const drawFront = () => {
     if (props.views?.frontInner) {
-      return (
-        <div
-          style={{ transform: 'rotateX(180deg)' }}
-        >
-          {props.children}
-        </div>
-      );
+      if (props.subType === 'SailingShip') {
+        return (
+          <div
+            style={{ transform: 'rotateX(180deg)', backgroundColor: 'rgba(255, 255, 255, 1.0)', border: `${1}px solid black`, height: `${props.height}px` }}
+          >
+            {props.children}
+          </div>
+        );
+      } else {
+        return (
+          <div
+            style={{ transform: 'rotateX(180deg)' }}
+          >
+            {props.children}
+          </div>
+        );
+      }
     }
     
     const buildTransform = () => {
@@ -98,7 +108,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       style={{
         transformStyle: 'preserve-3d',
         border: '1px solid orange',
-        height: (props.duration) ? props.duration : '1rem',
+        height: (props.duration) ? props.duration : `${1}rem`,
         width: (props.width) ? props.width + 'px' : 100 + 'px',
         top: props.top + 'px',
         left: props.left + 'px',
@@ -110,9 +120,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       <div
         style={{
           position: 'absolute',
-          width: (props.width) ? props.width + 'px' : 100 + 'px',
-          top: '0px',
-          height: '1px',
+          width: (props.width) ? `${props.width}px` : `${100}px`,
+          top: `${0}px`,
+          height: `${1}px`,
           transform: 'rotateX(90deg)'
         }}>
           {drawFront()}

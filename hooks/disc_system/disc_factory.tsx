@@ -22,6 +22,8 @@ import Foundation from '@/components/disc_system/atoms/Foundation';
 import Cube from '@/components/disc_system/Cube';
 import Reel from '@/components/disc_system/atoms/Reel';
 
+import Tank from '@/components/disc_system/molecules/Tank';
+
 const useDiscFactory = (lop: { [key: string]: any }) => {
   const isReact = (disc) => {
     return (disc?.isReact) ? disc.isReact : false;
@@ -78,6 +80,8 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
           doms.push(<Bottle { ...disc.bottle } />);
         } else if (disc.subType === 'Reel') {
           doms.push(<Reel { ...disc.reel } />);
+        } else if (disc.subType === 'SailingShip') {
+          doms.push(<Tank ref={ref} { ...disc.sailingShip } />);
         }
 
         reply = (
