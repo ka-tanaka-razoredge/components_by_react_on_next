@@ -3,14 +3,16 @@ import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 
 import useLongTap from '@/hooks/disc_system/long_tap';
+import useComponentsRenderer from '@/hooks/disc_system/components_renderer';
 import ContextMenu from '@/components/disc_system/molecules/ContextMenu/for_disc';
+
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
   const frontInner = useRef(null);
   const contextMenu = useRef(null);
   const [selected, setSelected] = useState(false);
-  const {executeLongTap: execLt4ContextMenu} = useLongTap({
+  const { executeLongTap: execLt4ContextMenu } = useLongTap({
     refs: {
       client: base,
     },
@@ -19,6 +21,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     },
     duration: 500,
   });
+  const { renderComponents } = useComponentsRenderer();
 
   useEffect(() => {
     execLt4ContextMenu();
@@ -58,6 +61,9 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       });
     }
     
+    
+    renderComponents();
+/*    
     // TODO: hook化する
     let alphas = document.querySelectorAll('[component]');
     console.log('Disc.useEffect: ', alphas);
@@ -83,6 +89,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         );
       }
     });
+*/
   }, []);
 
   const moveX = value => {

@@ -131,6 +131,13 @@ const Magazine = (props: { identifier: string, [key: string]: any }, ref) => {
       element.style.transform = `rotateY(-90deg)`;
     }
   };
+  
+  const drawContentsForBottomInner = () => {
+    if (!props.contentsForBottomInner) {
+      return '';
+    }
+    return (!Array.isArray(props.contentsForBottomInner)) ? props.contentsForBottomInner : props.contentsForBottomInner.join('');
+  };
 
   return (
     <>
@@ -205,7 +212,7 @@ const Magazine = (props: { identifier: string, [key: string]: any }, ref) => {
           transform: (props.transform || '')
         }}
       >
-        <div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner || '' }}></div>
+        <div dangerouslySetInnerHTML={{ __html: drawContentsForBottomInner() }}></div>
         <div
           ref={joint}
           style={{

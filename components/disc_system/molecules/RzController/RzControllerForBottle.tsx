@@ -21,6 +21,7 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
     });
     setEditorInstance(editor);
   };
+  const [expanded, setExpanded] = useState(false);
 
   const defaultJson = JSON.stringify([
     {
@@ -333,12 +334,13 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
   };
 
   return (
-    <div>
+    <>
       <style>
       {
         `
           .controller {
-            width: 700px;
+            display: flex;
+            width: 35vw;
             padding: 0.25rem;
             background-color: orange;
             
@@ -350,7 +352,7 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
             }
 
             .shandy-gaff {
-              width: 492px;
+//              width: 492px;
               margin: 4px;
               
               display: flex;
@@ -366,25 +368,47 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
             }
 
             .mint-beer {
+              font-size: 8pt;
               .json {
-                width: 492px;
+//                width: 492px;
                 height: 250px;
                 margin: 4px;
                 tab-size: 2;
                 font-size: 10pt;
                 line-height: 1.5;
             }
+
+            .input-for-id {
+              width: 3rem;
+            }
           }
         `
       }
       </style>
       <div className={`controller ${props.classes}`}>
-        <div className="mint-beer">
-          JSON:<br />
-{/*          
-          <textarea ref={ textarea } className="json" cols='1000' rows='1000' onChange={ (e) => { setJson(e.target.value);  } } onKeyDown={ (e) => { onTabKey(e); } } value={ json } onBlur={(e) => { apply(); }}></textarea><br />
-*/}          
-          <div style={{ height: `${500}px`, width: `100%` }}>
+        <div>
+          <div style={{ display: 'flex', gap: `${0.25}rem`, marginBottom:`${0.25}rem` }}>
+            <div>
+              id:
+            </div>
+            <div>
+              <input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } style={{ width: '3rem'}} />
+            </div>
+            <div>
+              name:
+            </div>
+            <div>
+              <input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
+            </div>
+            <div>
+              resource:
+            </div>
+            <div>
+              <input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } style={{ width: '3.5rem'}} />
+            </div>
+          </div>
+
+          <div style={{ height: `${79}vh` }}>
             <Editor
               ref={textarea}
               height="100%"
@@ -399,56 +423,51 @@ export default forwardRef((props: { api, applyDiscs, json, resource, rotate }, r
               }}
             />
           </div>
-          <div className="vs--separator"></div>
-          <input type='button' value='apply' onClick={ (e) => { apply(); } } />
-          <input type='button' value='fetch' onClick={ (e) => { fetch(); } } />
-          <input type='button' value='stringify' onClick={ (e) => { stringify(); } } /><br />
-          <div className="vs--separator"></div>
-          id:&nbsp;<input type='text' onChange={ (e) => { setId(e.target.value); } } value={ id } />
-          name:&nbsp;<input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
-          resource:&nbsp;<input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
-          <button onClick={rotateTank}>Tank &gt;&gt;= rotate</button><br />
-          <br />
-          <div className="panache">
-            <div className="">
-              <input type='button' value='save' onClick={ (e) => { save(); } } /><br />
-            </div>
-          </div>
-        </div>
-        
-        <div className="shandy-gaff">
-        {
-          emojis.map((v, i) => {
-            return (
-              <div key={i} style={{ display: 'flex' }}>
-                <div dangerouslySetInnerHTML={{ __html: v }}></div>
-                <div>{v}</div>
-              </div>
-            )
-          })
-        }
-        </div>
 
-        <div className="red-eye">
-          <div className="">
-            <input type='button' value='load' onClick={ (e) => { fetchFromServer(props.resource); } } />
+          <div onClick={() => { setExpanded(!expanded); }}>▼</div>
+          <div className="shandy-gaff" style={{ height: (expanded) ? 'auto' : `${0}` }}>
+          {
+            emojis.map((v, i) => {
+              return (
+                <div key={i} style={{ display: 'flex' }}>
+                  <div dangerouslySetInnerHTML={{ __html: v }}></div>
+                  <div>{v}</div>
+                </div>
+              )
+            })
+          }
           </div>
-          <ToolBox />
-{/*          
-          <input type='button' value='Disc' onClick={ (e) => { setData({ value: 'Disc' }) } } />
-          <input type='button' value='Disc bottom only' onClick={ (e) => { setData({ value: '' }) } } />
-          <input type='button' value='isPastOrFuture' onClick={ (e) => { setData({ value: 'isPastOrFuture' }) } } />
-          <input type='button' value='nowrap' onClick={ (e) => { setData({ value: 'nowrap' }) } } />
-          <input type='button' value='wide Sail' onClick={ (e) => { setData({ value: 'wideSail' }) } } />
-          <input type='button' value='Carousel' onClick={ (e) => { setData({ value: 'carousel' }) } } />
-          <input type='button' value='Sail' onClick={ (e) => { setData({ value: 'sail' }) } } />
-*/}          
-          <div onMouseOver={onMouseOver} style={{ width: `${2}rem` }}>
+          <div onMouseOver={onMouseOver}>
             「領域」
             <DiscPanel ref={discPanel} id={`discPanel`} top={100} left={100}  />
           </div>
         </div>
+
+        <div style={{ marginLeft: `${0.25}rem` }}>
+          <div className="mint-beer">
+            <div className="vs--separator"></div>
+            <div>
+              <div className="panache">
+                <div>
+                  <input type='button' value='save' onClick={ (e) => { save(); } } /><br />
+                </div>
+              </div>
+              <div className="vs--1" />
+              <input type='button' value='apply' onClick={ (e) => { apply(); } } /><br />
+              <input type='button' value='fetch' onClick={ (e) => { fetch(); } } /><br />
+              <input type='button' value='stringify' onClick={ (e) => { stringify(); } } /><br />
+              <button onClick={rotateTank}>Tank &gt;&gt;= rotate</button>
+              <input type='button' value='load' onClick={ (e) => { fetchFromServer(props.resource); } } />
+            </div>
+            <div className="vs--separator"></div>
+          </div>
+          
+          <div className="red-eye">
+            <ToolBox style={{ width: `${4}vw`, fontSize: `${8}pt` }} />
+          </div>
+       
+        </div>
       </div>
-    </div>
+    </>
   )
 })
