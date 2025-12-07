@@ -18,6 +18,8 @@ export default ({
   const onSelected = (e) => {
     console.log(e);
   };
+
+console.log('RzSelect: ', options);
   
   return (
     <div>
