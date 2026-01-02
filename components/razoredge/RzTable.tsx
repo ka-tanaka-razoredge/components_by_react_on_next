@@ -18,7 +18,7 @@ export const RzTable = (props: RzTableParameters) => {
       <tr>
       {
         header.map((v, i) => {
-          return (<td>{ v }</td>)
+          return (<td key={i}>{ v }</td>)
         })
       }
       </tr>
@@ -31,7 +31,7 @@ export const RzTable = (props: RzTableParameters) => {
         <td dangerouslySetInnerHTML={{ __html: verticalKeys[index] }}></td>
         {
           headlesses.map((v, i) => {
-            return (<td dangerouslySetInnerHTML={{ __html: v }}></td>)
+            return (<td key={i} dangerouslySetInnerHTML={{ __html: v }}></td>)
           })
         }
       </tr>
@@ -42,7 +42,7 @@ export const RzTable = (props: RzTableParameters) => {
     <div>
       <table>
         { drawHeader(props.horizontalKeys) }
-        { verticalKeys.map((v, i) => drawRecord(records[i], i)) }
+        { verticalKeys.map((v, i) => <React.Fragment key={i}>{drawRecord(records[i], i)}</React.Fragment>) }
       </table>
     </div>
   );

@@ -97,7 +97,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           transform:  props.transform || ''
         }}
       >
-        {drawBottomInner()}
+        <div dangerouslySetInnerHTML={{  __html: drawBottomInner() }}></div>
         <div
           style={{
             position: 'absolute',

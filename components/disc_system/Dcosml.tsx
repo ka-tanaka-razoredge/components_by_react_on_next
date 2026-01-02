@@ -22,7 +22,6 @@ export default (props) => {
 //console.log('Dcosml.drawCells: ', cells);
     const doms = [];
     for (let i = 0; i <= cells.length - 1; i++) {
-      
       if (cells.indexes && cells.indexes.length >= 1 && typeof cells.indexes[0] !== 'object') {
         if (!(cells.indexes && (cells.indexes.find((v) => v === i) !== undefined))) {
           doms.push(<div>{cells.character}</div>);
@@ -39,7 +38,11 @@ export default (props) => {
             const cssClass = `${indexObject.class}`;
             doms.push(<div className={cssClass}>{indexObject.alias||''}</div>);
           } else {
-            doms.push(<div style={{ backgroundColor: indexObject.backgroundColor||'', color: indexObject.color||''  }}>{indexObject.alias||''}</div>);
+            if ('alias' in indexObject) {
+              doms.push(<div style={{ backgroundColor: indexObject.backgroundColor||'', color: indexObject.color||''  }}>{indexObject.alias||''}</div>);
+            } else {
+              doms.push(<div style={{ display: 'flex', margin: `0 ${1}px 0 ${1}px` }}><div style={{ background: indexObject.background||'', color: indexObject.color||'',  height: `${0.5}rem`, width: `${0.5}rem` }}></div></div>);
+            }
           }
         }
       }
