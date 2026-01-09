@@ -427,7 +427,6 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   dcoml={disc.dcoml}
                 />
               )
-*/}
             } else if (disc.type === 'DiscForDcosml') {
               return (
                 <DiscForDcosml
@@ -444,6 +443,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   duration={disc.duration}
                 />
               )
+*/}
             } else if (disc.type === 'MutableSail') {
               return (
                 <MutableSail

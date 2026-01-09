@@ -60,11 +60,19 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             //          position: 'relative',
             width: (props.width) ? props.width + 'px' : 100 + 'px',
             height: (props.height) ? props.height + 'px' : 50 + 'px',
+            backgroundColor: 'white',
             transform: 'rotateX(180deg)'
           }}
           title={t}
         >
-          <Dcosml aggregate={ props.dcoml } />
+          <Dcosml
+            aggregate={ props.dcoml }
+            name={(props.name) ? props.name : null}
+            color={(props.color) ? props.color : null}
+            alias={(props.alias) ? props.alias : null}
+            background={(props.background) ? props.background : null}
+            border={(props.border) ? props.border : null}
+          />
         </div>
       );
     } else {

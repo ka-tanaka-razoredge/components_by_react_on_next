@@ -225,6 +225,12 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             
             transform={disc.transform}
             duration={disc.duration}
+
+            name={disc.name}
+            color={disc.color}
+            alias={disc.alias}
+            background={disc.background}
+            border={disc.border}
           />
         );
         break;
