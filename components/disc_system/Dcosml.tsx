@@ -168,28 +168,32 @@ export default (props) => {
         width: `${0.5}rem`
       };
 
-      let done = false;
+      let overrider = false;
+      let indexObject;
       if (cells.indexes && cells.indexes.length >= 1) {
         // indexesが定義されていてそれが配列だったら
         if (typeof cells.indexes[0] !== 'object') {
           if (cells.indexes && (cells.indexes.find((v) => v === i) !== undefined)) {
-            done = true;
-            const indexObject = cells.indexes.find((v) => v === i);
-            style.background =cells.colorForIndexes||indexObject.background||indexObject.backgroundColor||indexObject.color||'';
-            style.color = indexObject.color||'',
-            doms.push(<div style={style}>{indexObject.alias||''}</div>);
+            overrider = true;
+            indexObject = cells.indexes.find((v) => v === i);
+            style.background = cells.colorForIndexes||indexObject.background||indexObject.backgroundColor||indexObject.color||'';
+            style.color = indexObject.color||'';
           }
         } else {
           if (cells.indexes && (cells.indexes?.find(obj => obj.index === i) !== undefined)) {
-            done = true;
-            const indexObject = cells.indexes?.find(obj => obj.index === i);
+            overrider = true;
+            indexObject = cells.indexes?.find(obj => obj.index === i);
             style.background = indexObject.background||indexObject.backgroundColor||indexObject.color||'';
             style.color = indexObject.color||'';
-            doms.push(<div style={style}>{indexObject.alias||''}</div>);
           }
         }
       }
-      if (!done) doms.push(<div style={{ margin, border: cells.border||'', background: cells.background||cells.backgroundColor||cells.color||'', color: cells.color||'', height: `${0.5}rem`, width: `${0.5}rem` }}>{cells.character||''}</div>);
+
+      if (!overrider) {
+        doms.push(<div style={{ margin, border: cells.border||'', background: cells.background||cells.backgroundColor||cells.color||'', color: cells.color||'', height: `${0.5}rem`, width: `${0.5}rem` }}>{cells.character||''}</div>);
+      } else {
+        doms.push(<div style={style}>{indexObject.alias||''}</div>);
+      }
     }
 
     if (cells.length === 0) doms.push(<div>{cells.character}</div>);
