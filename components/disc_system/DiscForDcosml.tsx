@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import Dcosml from './Dcosml';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
+  const [width] = useState((props.width) ? props.width : 110);
 
   useEffect(() => {
     base.current.addEventListener('moveX', e => {
@@ -58,7 +59,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
 //            transformStyle: 'preserve-3d',
             border: 'solid 1px lime',
             //          position: 'relative',
-            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            width: `${width}px`,
             height: (props.height) ? props.height + 'px' : 50 + 'px',
             backgroundColor: 'white',
             transform: 'rotateX(180deg)'
@@ -98,7 +99,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           transformStyle: 'preserve-3d',
           border: '1px solid orange',
           height: `${props.duration}px` || `${10}px`,
-          width: (props.width) ? props.width + 'px' : 100 + 'px',
+          width: `${width}px`,
           top: props.top + 'px',
           left: props.left + 'px',
           position: 'absolute',
@@ -109,7 +110,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         <div
           style={{
             position: 'absolute',
-            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            width: `${width}px`,
             top: '0px',
             height: '1px',
             transform: 'rotateX(90deg)'
