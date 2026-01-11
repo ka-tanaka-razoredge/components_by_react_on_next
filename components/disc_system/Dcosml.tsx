@@ -25,6 +25,7 @@ export default (props) => {
               length: 11,
               color,
               background,
+              border: (props.border) ? props.border : '',
           };
         default:
           return {}
@@ -131,7 +132,6 @@ export default (props) => {
         }
       }
     }
-    console.log('Dcosml.fetchByName: ', reply);
     return reply;
   };
 
@@ -165,7 +165,7 @@ export default (props) => {
         background: ``,
         color: ``,
         height: `${0.5}rem`,
-        width: `${0.5}rem`
+        width: `${0.5}rem`,
       };
 
       let overrider = false;
@@ -178,6 +178,7 @@ export default (props) => {
             indexObject = cells.indexes.find((v) => v === i);
             style.background = cells.colorForIndexes||indexObject.background||indexObject.backgroundColor||indexObject.color||'';
             style.color = indexObject.color||'';
+            style.border = indexObject.border||'';
           }
         } else {
           if (cells.indexes && (cells.indexes?.find(obj => obj.index === i) !== undefined)) {
@@ -185,6 +186,7 @@ export default (props) => {
             indexObject = cells.indexes?.find(obj => obj.index === i);
             style.background = indexObject.background||indexObject.backgroundColor||indexObject.color||'';
             style.color = indexObject.color||'';
+            style.border = indexObject.border||'';
           }
         }
       }
@@ -302,6 +304,7 @@ console.log('case 6: ', cells);
             display: flex;
             font-size: 12px;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+//            font-family: monospace;
           }
         `
       }
