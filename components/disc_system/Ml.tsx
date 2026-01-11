@@ -51,6 +51,10 @@ display: flex;
             display: flex;
             line-height: 1;
           }
+          
+          .alias {
+            font-size: 11pt;
+          }
         `
       }
       </style>
@@ -60,7 +64,7 @@ display: flex;
       >
         <div className="alias-and-ml">
           <div className="nowrap">
-            <span style={ props.singleton.style } onClick={ (e) => { toggle(); } }>{ `${props.singleton.alias}` }</span>: &#123; {drawM()}{ props.singleton.m }, <span onMouseEnter={ (e) => { showListenerView();  } }>l</span>&nbsp;&#125;
+            <span className="alias" style={ props.singleton.style } onClick={ (e) => { toggle(); } }>{ `${props.singleton.alias}` }</span>: &#123; {drawM()}{ props.singleton.m }, <span onMouseEnter={ (e) => { showListenerView();  } }>l</span>&nbsp;&#125;
           </div>
           <div
             id={ props.singleton.id }
