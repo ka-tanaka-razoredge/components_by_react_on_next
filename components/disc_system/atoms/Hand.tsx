@@ -233,9 +233,8 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           width: (props.width) ? props.width + 'px' : 100 + 'px',
           height: (props.height) ? props.height + 'px' : 50 + 'px',
           transform: 'rotateX(180deg) rotateY(180deg)',
-          
         }}
-        dangerouslySetInnerHTML={{ __html: props.contentsForFrontOuter }}
+        dangerouslySetInnerHTML={{ __html: (!Array.isArray(props.contentsForFrontOuter)) ? props.contentsForFrontOuter : props.contentsForFrontOuter.join('') }}
       />
     );
   };

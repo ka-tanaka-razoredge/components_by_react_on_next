@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export default (props) => {
+  const listener = useRef(null);
   const defaultWidth = `${0.9}rem`;
   const [width, setWidth] = useState((props.singleton.width) ? `auto` : defaultWidth);
   const [overflow, setOverflow] = useState((props.singleton.width) ? `visible` : `hidden`);
 
   const showListenerView = () => {
-    document.getElementById(props.singleton.id).style.visibility = 'visible';
+    listener.current.style.visibility = 'visible';
   };
   
   const hideListenerView = () => {
-    document.getElementById(props.singleton.id).style.visibility = 'collapse';
+    listener.current.style.visibility = 'collapse';
   };
 
   const toggle = () => {
@@ -54,6 +55,7 @@ display: flex;
           
           .alias {
             font-size: 11pt;
+            line-height: 1.1;
           }
         `
       }
@@ -67,8 +69,8 @@ display: flex;
             <span className="alias" style={ props.singleton.style } onClick={ (e) => { toggle(); } }>{ `${props.singleton.alias}` }</span>: &#123; {drawM()}{ props.singleton.m }, <span onMouseEnter={ (e) => { showListenerView();  } }>l</span>&nbsp;&#125;
           </div>
           <div
-            id={ props.singleton.id }
-            style={{ position: 'relative', color: 'lime', backgroundColor: 'rgba(0, 0, 0, 1.0)', visibility: 'collapse', left: `${3.5}rem`, width: '500px', zIndex: 1100 }}
+            ref={listener}
+            style={{ position: 'relative', color: 'lime', backgroundColor: 'rgba(0, 0, 0, 1.0)', visibility: props.singleton.visibilityOfListener||'collapse', left: `${3.5}rem`, width: '500px', zIndex: 1100 }}
             onClick={ (e) => { hideListenerView(); } }
           >
             <div dangerouslySetInnerHTML={{ __html: props.singleton.l }}></div>

@@ -328,6 +328,32 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         >
           {drawFront()}
         </div>
+        {/* shaft */}
+        <div
+          style={{
+            position: 'absolute',
+            width: (props.width) ? props.width + 'px' : 100 + 'px',
+            bottom: '0px',
+            height: '1px',
+            transform: 'rotateX(90deg)'
+          }}
+        >
+          {/* backInner */}
+          {
+            props.contentsForBackOuter && (
+              <div
+                style={{
+                  border: '1px solid lime',
+                  width: `${props.width||100}px`,
+                  height: `${props.height||50}px`,
+                  transform: 'rotateX(180deg)'
+                }}
+              >
+                <div dangerouslySetInnerHTML={{ __html: (!Array.isArray(props.contentsForBackOuter)) ? props.contentsForBackOuter : props.contentsForBackOuter.join('') }} />
+              </div>
+            )
+          }
+        </div>
         <ContextMenu
           ref={contextMenu}
           base={base}

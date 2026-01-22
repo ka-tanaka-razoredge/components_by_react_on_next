@@ -293,7 +293,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
         <canvas id="tank-canvas" width={width} height={height}></canvas>
         {discsRef.current.map((disc: { identifier }, index) => {
           if (discsRef.current.indexOf(disc.identifier) == -1) {
-            if ('type' in disc === false || disc.type === 'Disc') {
+            if ('type' in disc === false || disc.type === 'MD') {
               return (
                 <Disc
                   key={index}
