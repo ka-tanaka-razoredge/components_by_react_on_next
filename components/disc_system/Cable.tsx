@@ -54,6 +54,16 @@ export default (props, ref) => {
     return {l: lNew, r: rNew};
   };
 
+  const buildTransform = () => {
+//    console.log('---- buildTransform begin ----');
+    let reply = '';
+    if (props.z) reply += `translateZ(${props.z}px) `;
+    if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
+    if (props.transform) reply += `${props.transform}`;
+//console.log(reply);
+    return reply;
+  };
+
   useEffect(() => {
     context = canvas.current.getContext('2d');
     context.clearRect(0, 0, props.width, props.height);
@@ -278,7 +288,7 @@ context.fill();
         top: `${props.top}px`,
         left: `${props.left}px`,
         position: 'absolute',
-        transform: (props.z) ? `translateZ(${props.z}px)` : ''
+        transform: buildTransform()
       }}
     >
       {drawBottomInner()}

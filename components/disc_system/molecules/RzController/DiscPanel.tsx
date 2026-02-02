@@ -119,6 +119,51 @@ export default ({
           ]
         }, null, '\t');
         break;
+      case 'ms':
+        value = JSON.stringify({
+          type: "Disc",
+          left: 60,
+          top: 0,
+          z: 0,
+          duration: 1,
+          transform: "rotateZ(90deg) translateX(50px)",
+          contentsForFrontInner: [
+            "<div>",
+            "  <div style='display: flex;'>",
+            "    <div style='display: flex; height: 8px; width: 100px;'>",
+            "      <div style='position: absolute; line-height: 0; top: 0; right: 1px; border: 1px solid lime; lime; width: 8px; height: 8px;'></div>",
+            "    </div>",
+            "  </div>",
+            "  <div style='display: flex;'>",
+            "    <div style='height: 1px; width: 100px; background-color: lime;'></div>",
+            "  </div>",
+            "  <div style='display: flex;'>",
+            "    <div style='position: relative; height: 28px; width: 100px;'>",
+            "      <div style='position: absolute; line-height: 0; top: 20px; left: 0; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 16px; left: 8px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 12px; left: 16px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 8px; left: 24px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 8px; left: 32px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 8px; left: 40px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 8px; left: 48px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 8px; left: 56px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 8px; left: 62px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: 4px; left: 70px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "      <div style='position: absolute; line-height: 0; top: px; left: 78px; border: 1px solid black; width: 8px; height: 8px;'></div>",
+            "    </div>",
+            "  </div>",
+            "  <div style='display: flex;'>",
+            "    <div style='height: 1px; width: 100px; background-color: red;'></div>",
+            "  </div>",
+            "  <div style='display: flex;'>",
+            "    <div style='position: relative; display: flex; height: 8px; width: 100px;'>",
+            "      <div id='red' style='position: absolute; line-height: 0p; top: 1px; right: 1px; width: 8px; height: 8px; border: 1px solid red;'></div>",
+            "    </div>",
+            "  </div>",
+            "</div>"
+          ]
+        }, null, '\t');
+        break;
     }
     await global.navigator.clipboard.writeText(value);
   }

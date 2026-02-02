@@ -21,6 +21,7 @@ import DiscForDcosml from '@/components/disc_system/DiscForDcosml';
 import Foundation from '@/components/disc_system/atoms/Foundation';
 import Cube from '@/components/disc_system/Cube';
 import Reel from '@/components/disc_system/atoms/Reel';
+import Ml from '@/components/disc_system/molecules/Ml';
 
 import Tank from '@/components/disc_system/molecules/Tank';
 
@@ -245,6 +246,13 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
       case 'Cube':
         reply = (
           <Cube
+            {...disc}
+          />
+        );
+        break;
+      case 'Ml':
+        reply = (
+          <Ml
             {...disc}
           />
         );

@@ -270,8 +270,6 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     previewWindow.dispatchEvent(new CustomEvent('hide', { detail: { value: (props.contents) ? props.contents : '' } }));
   };
   
-  
-  
   return (
     <>
       <style>
