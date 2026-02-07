@@ -12,40 +12,77 @@ export default (props) => {
   };
 
   const drawBottomInner = () => {
-    return (
-      <>
-        <Disc
-          left={0}
-          contentsForFrontInner={props.alias}
-          duration={props.duration}
-          width={16}
-          height={props.height}
-          style={{
-            padding: `${4}px`,
-            border: 'none'
-          }}
-        />
-        <Disc
-          left={16}
-          width={200}
-          height={props.height}
-          contentsForFrontInner={props.contentsForFrontInner}
-          duration={1}
-          style={{
-            border: `${1}px solid silver`
-          }}
-        />
-        <Disc
-          left={16 + 200 + 4}
-          duration={1}
-          height={props.height}
-          contentsForFrontInner={props.message}
-          style={{
-            border: 'none'
-          }}
-        />
-      </>
-    );
+    if (!props.modifier || props.modifier === 'alm') {
+      return (
+        <>
+          <Disc
+            left={0}
+            contentsForFrontInner={props.alias}
+            duration={props.duration}
+            width={16}
+            height={props.height}
+            style={{
+              padding: `${4}px`,
+              border: 'none'
+            }}
+          />
+          <Disc
+            left={16}
+            width={200}
+            height={props.height}
+            contentsForFrontInner={props.contentsForFrontInner}
+            duration={1}
+            style={{
+              border: `${1}px solid silver`
+            }}
+          />
+          <Disc
+            left={16 + 200 + 4}
+            duration={1}
+            height={props.height}
+            contentsForFrontInner={props.message}
+            style={{
+              border: 'none'
+            }}
+          />
+        </>
+      );
+    } else if (props.modifier === 'aml') {
+      return (
+        <>
+          <Disc
+            left={0}
+            contentsForFrontInner={props.alias}
+            duration={props.duration}
+            width={16}
+            height={props.height}
+            style={{
+              padding: `${4}px`,
+              border: 'none'
+            }}
+          />
+          <Disc
+            left={16 + 4}
+            duration={1}
+            height={props.height}
+            contentsForFrontInner={props.message}
+            style={{
+              border: 'none'
+            }}
+          />
+          <Disc
+            left={16 + 4 + 100 + 4}
+            width={200}
+            height={props.height}
+            contentsForFrontInner={props.contentsForFrontInner}
+            duration={1}
+            style={{
+              border: `${1}px solid silver`
+            }}
+          />
+        </>
+      );
+    }
   };
 
   const drawFrontInner = () => {
