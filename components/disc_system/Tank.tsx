@@ -1,39 +1,24 @@
 // @ts-nocheck
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { createRef, useMemo, useEffect, useRef, useState } from 'react';
 import useDiscFactory from '@/hooks/disc_system/disc_factory';
 import json5 from 'json5';
 
 import Disc from './Disc';
-import DiscFor from './DiscFor';
-import MetalTape from './MetalTape';
-import Magazine from './Magazine';
-//import MagazineB from './Magazine_b';
-import Sail from './Sail';
-import Cube from './Cube';
-import Pyramid from './Pyramid';
-import Timecode from './Timecode';
-import DiscForDcoml from './DiscForDcoml';
-import DiscForDcosml from './DiscForDcosml';
 import MutableSail from './MutableSail';
-import Cable from './Cable';
 import Carousel from './Carousel';
-import PastOrFuture from './PastOrFuture';
 import Wings from './molecules/Wings';
-import Ms from '../atoms/Ms';
-import Matrix from '../rz_uml/atoms/Matrix';
-import Cluster from '../rz_uml/atoms/Cluster';
 
 export default React.forwardRef((props: { identifier: string, [key: string]: any }, ref) => {
   const [initialized, setInitialized] = useState(false);
   const [discs, setDiscs] = useState([]);
   const discsRef = useRef([]);
-  const loRef = [];
+  const loRef = useMemo(() => Array.from({ length: 100}), () => createRef(), []);
   
   /**
    * discsはstateにつき非同期であるため，Refオブジェクトを用いている
    */
-  const setDiscEx = (discs) => {
+  const setDiscsEx = (discs) => {
 //console.log(discs);
     discsRef.current = discs;
     setDiscs(discs);
@@ -50,9 +35,11 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
   const { createDisc, } = useDiscFactory();
   
   useEffect(() => {
-    if ('discs' in props && 1 <= props.discs.length) setDiscEx(props.discs);
+    const controller = new AbortController();
+    const signal = controller.signal;
 
-    // TODO: removeEventListener
+    if ('discs' in props && 1 <= props.discs.length) setDiscsEx(props.discs);
+
     ref.current.addEventListener('pushDisc', (e) => {
       pushDisc(e.detail);
 
@@ -67,20 +54,20 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
       context.lineTo(e.detail.left + e.detail.width, width);
       context.stroke();
       context.closePath();
-    }, []);
+    }, { signal });
     
     ref.current.addEventListener('forwardCurrentIndex', (e) => {
       forwardCurrentIndex(e.detail);
-    });
+    }, { signal });
 
     ref.current.addEventListener('moveY', (e) => {
       return moveY(e.detail);
-    });
+    }, { signal });
     
     ref.current.addEventListener('disc resized', (e) => {
 //console.log(e);
       ref.current.shiftXThemEx({left: e.detail.left, value: e.detail.value, width: e.detail.width});
-    });
+    }, { signal });
 
     //--------------------------------------------------------------------------------
     // begin ooRef provider only
@@ -93,17 +80,17 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     };
     
     ref.current.clearAllDiscs = () => {
-      setDiscEx([]);
+      setDiscsEx([]);
     };
     
     ref.current.setAllDiscs = (lop) => {
 //      console.log(JSON.parse(lop.value, null, 2));
-      setDiscEx(JSON.parse(lop.value));
+      setDiscsEx(JSON.parse(lop.value));
     };
     
     ref.current.removeDisc = (identifier) => {
       const discsToSet = discsRef.current.filter((v) => { if (v.identifier !== identifier) { return v; } });
-      setDiscEx(discsToSet);
+      setDiscsEx(discsToSet);
     };
 
     ref.current.shiftXThem = (lop) => {
@@ -113,7 +100,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
         }
         return disc;
       });
-      setDiscEx(discs);
+      setDiscsEx(discs);
     };
     
     ref.current.shiftXThemEx = (lop) => {
@@ -124,7 +111,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
         }
         return disc;
       });
-      setDiscEx(discs);
+      setDiscsEx(discs);
     };  
 
     ref.current.quadraticCurveTo = (lop: { beginVector: Vector, imaginaryVectorFirst: Vector, endVector: Vector }) => {
@@ -189,10 +176,12 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     
     setContext(context);
 //    ref.current.style.transform = `rotateZ(${180}deg) rotateX(${60}deg) rotateY(${180}deg)`;
+
+    return () => controller.abort();
   }, []);
 
   const pushDisc = (lop = { identifier }) => {
-    setDiscEx(discsRef.current.concat(lop));
+    setDiscsEx(discsRef.current.concat(lop));
     setTimeout(() => {
       try {
         document.getElementById(lop.identifier).dispatchEvent(
@@ -266,10 +255,6 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     loRef[0].current.forwardCurrentIndex(lop.value);
   };
 
-  for (let i = 0; i <= 100 - 1; i++) {
-    loRef.push(useRef(null));
-  }
-
   return (
     <div style={{ position: 'relative', top: `${top}px` }}>
       {
@@ -327,123 +312,6 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   isFrontOnly={disc.isFrontOnly}
                 />
               )
-{/*              
-            } else if (disc.type === 'Cable') {
-              return (
-                <Cable
-                  identifier={disc.identifier}
-                  contentsForFrontInner={disc.contentsForFrontInner}
-                  contentsForBottomInner={disc.contentsForBottomInner}
-                  title={disc.title}
-                  height={disc.height}
-                  width={disc.width}
-                  left={disc.left}
-                  top={disc.top}
-                  isReact={isReact(disc)}
-                  doIt={disc.doIt}
-                  isBottomOnly={disc.isBottomOnly}
-                  z={disc.z}
-                  bp={disc.bp}
-                  ep={disc.ep}
-                  ex1={disc.ex1}
-                  allow={disc.allow}
-                  transform={disc.transform}
-                  leans={disc.leans}
-                />
-              )
-            } else if (disc.type === 'Sail') {
-              return (
-                <Sail
-                  key={disc.identifier}
-                  identifier={disc.identifier}
-                  contents={disc.contents}
-                  contentsForFrontInner={disc.contentsForFrontInner}
-                  title={disc.title}
-                  top={disc.top}
-                  left={disc.left}
-                  height={disc.height}
-                  width={disc.width}
-                  z={disc.z}
-                  transform={disc.transform}
-                  duration={disc.duration}
-                  
-                  isFromNow={isFromNow}
-                />
-              )
-            } else if (disc.type === 'Cube') {
-              return (
-                <Cube
-                  key={disc.identifier}
-                  identifier={disc.identifier}
-                  //                contentsForFrontInner={disc.contentsForFrontInner}
-                  //                title={disc.title}
-                  top={disc.top}
-                  left={disc.left}
-                  z={disc.z}
-                />
-              )
-            } else if (disc.type === 'Pyramid') {
-              return (
-                <Pyramid
-                  key={disc.identifier}
-                  identifier={disc.identifier}
-                  transform={disc.transform}
-                  top={disc.top}
-                  left={disc.left}
-                  z={disc.z}
-                />
-              )
-            } else if (disc.type === 'MetalTape') {
-              return (
-                <MetalTape
-                  identifier={disc.identifier}
-                  contentsForFrontInner={disc.contentsForFrontInner}
-                  top={disc.top}
-                  left={disc.left}
-                  height={disc.height}
-                  carousel={disc.carousel}
-                />
-              )
-            } else if (disc.type === 'Timecode') {
-              return (
-                <Timecode
-                  identifier={disc.identifier}
-                  contentsForBottomInner={disc.contentsForBottomInner}
-                  top={disc.top}
-                  left={disc.left}
-                  height={disc.height}
-                />
-              );
-*/}
-{/*              
-            } else if (disc.type === 'DiscForDcoml') {
-              return (
-                <DiscForDcoml
-                  identifier={disc.identifier}
-                  height={disc.height}
-                  width={disc.width}
-                  left={disc.left}
-                  top={disc.top}
-                  dcoml={disc.dcoml}
-                />
-              )
-            } else if (disc.type === 'DiscForDcosml') {
-              return (
-                <DiscForDcosml
-                  key={index}
-                  identifier={disc.identifier}
-                  height={disc.height}
-                  width={disc.width}
-                  left={disc.left}
-                  top={disc.top}
-                  contentsForBottomInner={disc.contentsForBottomInner}
-                  dcoml={disc.dcoml}
-                  
-                  transform={disc.transform}
-                  duration={disc.duration}
-                />
-              )
-*/}
             } else if (disc.type === 'MutableSail') {
               return (
                 <MutableSail

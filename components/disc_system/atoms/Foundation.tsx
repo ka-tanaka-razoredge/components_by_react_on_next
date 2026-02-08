@@ -15,15 +15,20 @@ const refsForNested = useRef([]);
 //  useEffect(() => { console.log('Foundation.useEffect'); }, [ref.current?.children?.map(v => v.style.width).join(",")]);
   
   useEffect(() => {
+    if (!ref?.current) {
+      console.warn('Foundation: ref.current is null');
+      return;
+    }
+
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         try {
           const target = entry.target as HTMLElement;
           const dataInDiscs = props.discs.find(v => v.identifier === target.parentNode.parentNode.id);
           
-          const w = (dataInDiscs.width) ? parseInt(dataInDiscs.width) : 100;
+          const w = (dataInDiscs?.width) ? parseInt(dataInDiscs.width) : 100;
 console.log(`${w} vs. ${target.style.width}`);
-          if (initialized) {
+          if (initialized && ref.current?.parentNode) {
 //          if (dataInDiscs && w !== parseInt(target.style.width)) {
 //console.log(dataInDiscs);
             ref.current.parentNode.dispatchEvent(new CustomEvent('disc resized', { detail: {
@@ -33,15 +38,14 @@ console.log(`${w} vs. ${target.style.width}`);
             }}));
           }
         } catch (e) {
+          console.error('Foundation ResizeObserver error:', e);
         }
       }
     });
 
-    if (ref.current) {
-      ref.current
-        .querySelectorAll<HTMLElement>(".front-inner")
-        .forEach((el) => resizeObserver.observe(el));
-    }
+    ref.current
+      .querySelectorAll<HTMLElement>(".front-inner")
+      .forEach((el) => resizeObserver.observe(el));
       
     setTimeout(() => { initialized = true; }, 1000);
 
