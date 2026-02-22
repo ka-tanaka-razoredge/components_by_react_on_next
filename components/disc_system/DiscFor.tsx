@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 export default (props: { identifier: string, [key: string]: any }, ref) => {
   const base = useRef(null);
+console.log('DiscFor.props: ', props);
 
   useEffect(() => {
     base.current.addEventListener('moveX', e => {
@@ -53,9 +54,10 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           </div>
         );
       } else {
+console.log('DiscFor.drawFront: ', props);
         return (
           <div
-            style={{ transform: 'rotateX(180deg)' }}
+            style={{ transform: 'rotateX(180deg)', backgroundColor: 'rgba(255, 255, 255, 1.0)', border: props.border||'none', height: (props.height) ? props.height : 'auto' }}
           >
             {props.children}
           </div>

@@ -51,6 +51,7 @@ display: flex;
           .alias-and-ml {
             display: flex;
             line-height: 1;
+            background-color: rgba(255, 255, 255, 0.9);
           }
           
           .alias {
@@ -66,14 +67,14 @@ display: flex;
       >
         <div className="alias-and-ml">
           <div className="nowrap">
-            <span className="alias" style={ props.singleton.style } onClick={ (e) => { toggle(); } }>{ `${props.singleton.alias}` }</span>: &#123; {drawM()}{ props.singleton.m }, <span onMouseEnter={ (e) => { showListenerView();  } }>l</span>&nbsp;&#125;
+            <span className="alias" style={ props.singleton.style } onClick={ (e) => { toggle(); } }>{ `${props.singleton.alias}` }</span>: &#123; {drawM()}{ props.singleton.m },&nbsp;<span onMouseEnter={ (e) => { showListenerView();  } }>l</span>&nbsp;&#125;
           </div>
           <div
             ref={listener}
             style={{ position: 'relative', color: 'lime', backgroundColor: 'rgba(0, 0, 0, 1.0)', visibility: props.singleton.visibilityOfListener||'collapse', left: `${3.5}rem`, width: '500px', zIndex: 1100 }}
             onClick={ (e) => { hideListenerView(); } }
           >
-            <div dangerouslySetInnerHTML={{ __html: props.singleton.l }}></div>
+            <div dangerouslySetInnerHTML={{ __html: (!Array.isArray(props.singleton.l)) ? props.singleton.l : props.singleton.l.join('') }}></div>
           </div>
         </div>
       </div>

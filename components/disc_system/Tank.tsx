@@ -84,7 +84,6 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
     };
     
     ref.current.setAllDiscs = (lop) => {
-//      console.log(JSON.parse(lop.value, null, 2));
       setDiscsEx(JSON.parse(lop.value));
     };
     

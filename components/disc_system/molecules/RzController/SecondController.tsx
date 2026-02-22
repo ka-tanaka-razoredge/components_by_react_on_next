@@ -17,10 +17,10 @@ import ToolBox from '@/components/atoms/ToolBox';
 
 export default forwardRef((props, ref) => {
   const [editorInstance, setEditorInstance] = useState(null);
+  const applyRef = useRef<(parsable?: string) => void>(null);
   const onEditorMount = (editor, monaco) => {
     editor.onDidBlurEditorText(() => {
-console.log(editor.getValue());
-      apply(editor.getValue());
+      applyRef.current(editor.getValue());
     });
     setEditorInstance(editor);
   };
@@ -73,24 +73,21 @@ console.log(editor.getValue());
   }, [discs]);
 
   const apply = (parsable='[]') => {
-//  const apply = () => {
     try {
       const parsed = JSON.parse(parsable);
-//      const parsed = json5.parse(parsable);
-//      const parsed = JSON.parse(textarea.current.value);
       if (1 <= parsed.length && Array.isArray(parsed[0])) {
         props.applyDiscs({ value: JSON.stringify(parsed[discIndex]) });
       } else {
         props.applyDiscs({ value: parsable });
-//        props.applyDiscs({ value: textarea.current.value });
       }
-      setDiscs(parsed);
+//MUTE      setDiscs(parsed);
     } catch (e) {
       console.log(e);
       alert('JSON is invalid!');
       return;
     }
   }
+  applyRef.current = apply;
 
   const fetch = () => {
     setDiscs(props.getDiscs());
@@ -179,7 +176,14 @@ console.log(editor.getValue());
     
     console.log('response.data.updatedId: ', response.data.updatedId);
     
-    setId(response.data.updatedId);
+    if (response.data.updatedId) {
+      setId(response.data.updatedId);
+    } else {
+      const singular = resources[resource];
+      const capitalized = singular.charAt(0).toUpperCase() + singular.slice(1);
+      setId(response.data[capitalized][`${singular}_id`]); // response.data.Som.som_id
+    }
+
     alert(JSON.stringify(response));
   };
 
@@ -321,7 +325,7 @@ console.log(editor.getValue());
   };
   
   useEffect(() => {
-    apply();
+    applyRef.current(JSON.stringify(discs[discIndex]));
   }, [discIndex]);
 
   return (

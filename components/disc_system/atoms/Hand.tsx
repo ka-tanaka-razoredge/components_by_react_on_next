@@ -240,12 +240,12 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
   };
   
   const buildTransform = () => {
-//    console.log('---- buildTransform begin ----');
+//console.log('---- buildTransform begin ----');
     let reply = '';
     if (props.z) reply += `translateZ(${props.z}px) `;
     if (props.rotateY) reply += `rotateZ(${props.rotateY}deg) `;
     if (props.transform) reply += `${props.transform}`;
-console.log(reply);
+    reply += ` rotateZ(${-180}deg)`;
     return reply;
   };
   
@@ -259,8 +259,6 @@ console.log(reply);
     if (!previewWindow|| !props.contents) return;
     previewWindow.dispatchEvent(new CustomEvent('hide', { detail: { value: (props.contents) ? props.contents : '' } }));
   };
-  
-  
   
   return (
     <>
@@ -301,7 +299,7 @@ console.log(reply);
           top: props.top + 'px',
           left: props.left + 'px',
           position: 'absolute',
-          transform: (props.transform||'rotateZ(-180deg)'),
+          transform: buildTransform(),
         }}
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}

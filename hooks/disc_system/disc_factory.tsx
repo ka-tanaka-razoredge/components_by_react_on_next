@@ -22,6 +22,7 @@ import Foundation from '@/components/disc_system/atoms/Foundation';
 import Cube from '@/components/disc_system/Cube';
 import Reel from '@/components/disc_system/atoms/Reel';
 import Ml from '@/components/disc_system/molecules/Ml';
+import JohariWindow from '@/components/disc_system/molecules/JohariWindow';
 
 import Tank from '@/components/disc_system/molecules/Tank';
 
@@ -162,6 +163,7 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             width={disc.width}
             left={disc.left}
             top={disc.top}
+            z={disc.z}
             duration={disc.duration}
             transform={disc.transform||''}
           />
@@ -253,6 +255,13 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
       case 'Ml':
         reply = (
           <Ml
+            {...disc}
+          />
+        );
+        break;
+      case 'JohariWindow':
+        reply = (
+          <JohariWindow
             {...disc}
           />
         );
