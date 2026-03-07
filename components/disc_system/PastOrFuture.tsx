@@ -80,12 +80,12 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
       return (
         <div
           style={{ transform: `rotateZ(180deg) translateY(10px)` }}
-          dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }}
+          dangerouslySetInnerHTML={{ __html: Array.isArray(props.contentsForBottomInner) ? props.contentsForBottomInner.join('') : props.contentsForBottomInner }}
         >
         </div>
       );
     } else {
-      return (<div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }}></div>);
+      return (<div dangerouslySetInnerHTML={{ __html: Array.isArray(props.contentsForBottomInner) ? props.contentsForBottomInner.join('') : props.contentsForBottomInner }}></div>);
     }
   };
 
