@@ -291,6 +291,10 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
             transform: rotateX(180deg); translateY(32px);
             top: -14px;
           }
+          
+          .disc-bottom {
+            display: flex;
+          }
         `
       }
       </style>
@@ -326,6 +330,42 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
         >
           {drawFront()}
         </div>
+        {/* shaft */}
+{/*        
+        <div
+          style={{
+            position: 'absolute',
+            backgroundColor: 'red',
+            left: 0,
+            width: `${1}rem`,
+            height: `${1}px`,
+            transform: `rotateZ(${90}deg) translateX(-0.3rem) translateY(0.3rem) rotateX(90deg)`
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              height: `${50}px`,
+              border: `${1}px solid rgba(0, 0, 0, 1)`,
+              width: `${100}px`,
+              transform: `rotateZ(180deg)`
+            }}
+          >
+            inner
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              height: `${50}px`,
+              border: `${1}px solid rgba(0, 0, 0, 1)`,
+              width: `${100}px`,
+              transform: `rotateZ(180deg) rotateY(180deg)`
+            }}
+          >
+            outer
+          </div>
+        </div>
+*/}        
         {/* shaft */}
         <div
           style={{

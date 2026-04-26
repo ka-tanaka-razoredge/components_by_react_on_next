@@ -72,7 +72,7 @@ const Magazine = (props: { identifier: string, [key: string]: any }, ref) => {
   
   const drawContentsForBack = () => {
       return (
-        <div dangerouslySetInnerHTML={{ __html: props.contentsForFrontInner }}>
+        <div dangerouslySetInnerHTML={{ __html: Array.isArray(props.contentsForFrontInner) ?  props.contentsForFrontInner.join('') : props.contentsForFrontInner }}>
         </div>
       );
   };
@@ -250,8 +250,8 @@ const Magazine = (props: { identifier: string, [key: string]: any }, ref) => {
                         key={`${h}-${index}`}
                         {...disc}
                         identifier={disc.identifier}
-                        contentsForFrontInner={disc.contentsForFrontInner}
-                        contentsForBottomInner={disc.contentsForBottomInner}
+                        contentsForFrontInner={Array.isArray(disc.contentsForFrontInner) ? disc.contentsForFrontInner.join('') : disc.contentsForFrontInner}
+                        contentsForBottomInner={Array.isArray(disc.contentsForBottomInner) ? disc.contentsForBottomInner.join('') : disc.contentsForBottomInner}
                         title={disc.title}
                         height={disc.height}
                         width={disc.width}

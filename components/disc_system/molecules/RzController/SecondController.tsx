@@ -42,7 +42,11 @@ export default forwardRef((props, ref) => {
         "identifier": "id-",
         "left": 0,
         "top": 0,
-        "contentsForFrontInner": ""
+        "contentsForFrontInner": [
+          "<div style=\\"white-space: nowrap;\\">",
+          "  <div></div>",
+          "</div>"
+        ]
       }
     ]
   }
@@ -62,6 +66,10 @@ export default forwardRef((props, ref) => {
   
   const [sliceIndex, setSliceIndex] = useState(0);
   const [discIndex, setDiscIndex] = useState(0);
+
+  const [rotateX, setRotateX] = useState(60);
+  const [rotateY, setRotateY] = useState(40);
+  const [rotateZ, setRotateZ] = useState(0);
   
   useImperativeHandle(ref, () => ({
     fetch: () => {
@@ -323,6 +331,10 @@ export default forwardRef((props, ref) => {
   const removeTag = async (tag) => {
     setTags(tags.filter((v) => (v !== tag)));
   };
+
+  const zapView = () => {
+    props.zapView({ rotateX, rotateY, rotateZ });
+  };
   
   useEffect(() => {
     applyRef.current(JSON.stringify(discs[discIndex]));
@@ -433,11 +445,18 @@ export default forwardRef((props, ref) => {
                 <input type='button' value='load' onClick={ (e) => { fetchFromServer(); } } />
               </div>
               <div><input type='checkbox' id='should-save-slice' value={shouldSaveSlice} onClick={() => { setShouldSaveSlice(!shouldSaveSlice); }}  /><label for='should-save-slice'>shouldSaveSlice</label></div>
-              <div>
-                <input type='button' value='reverse' onClick={ (e) => { props.reverse(); } } />
+              <div style={{ display: 'flex', width: `${10}rem` }}>
+                <button onClick={zapView}>trigger</button>
+                <button onClick={props.resetView}>↺</button>
+                <input type='number' style={{ width: `${3}rem`}} onChange={(e) => { setRotateX(e.target.value); }} value={rotateX} />
+                <input type='number' style={{ width: `${3}rem`}} onChange={(e) => { setRotateY(e.target.value); }}value={rotateY} />
+                <input type='number' style={{ width: `${3}rem`}} onChange={(e) => { setRotateZ(e.target.value); }}value={rotateZ} />
               </div>
+              {/* <div>
+                <input type='button' value='reverse' onClick={ (e) => { props.reverse(); } } />
+              </div> */}
               <br />
-              <input type='button' value='new Sequence' onClick={loadSequence} />
+              {/* <input type='button' value='new Sequence' onClick={loadSequence} /> */}
               <ToolBox api={props.api} />
               <div>
                 tags:
