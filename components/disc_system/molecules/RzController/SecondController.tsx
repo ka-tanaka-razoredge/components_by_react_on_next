@@ -432,7 +432,19 @@ export default forwardRef((props, ref) => {
               </div>
               <div>
                 <div style={{ width: '5rem' }}>name:&nbsp;</div>
-                <input type='text' onChange={ (e) => { setName(e.target.value); } } value={ name } />
+                <textarea
+                  style={{
+                    width: `${100}%`,
+                  }}
+                  onChange={
+                    (e) => {
+                      setName(e.target.value);
+                      e.target.style.height = 'auto';
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }
+                  }
+                  value={name}
+                />
               </div>
               <div>
                 <div style={{ width: '5rem' }}><span title='Set table name when you want to access not sailing_ships.'>resource:&nbsp;</span></div>

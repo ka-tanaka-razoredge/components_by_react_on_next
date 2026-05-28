@@ -41,6 +41,13 @@
     background-position: left bottom;
     background-size: 100% 50%;
   }
+
+  &--neutral {
+    background: linear-gradient(to right, #BFDFFF, rgba(255, 165, 0, 0) 100%);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 100% 50%;
+  }
 }
 
 .pcsi {
@@ -156,3 +163,15 @@
   }
 }
 
+.channel-button {
+    display: flex;
+    overflow: hidden;
+}
+
+.channel-button::after {
+}
+
+.channel-button:hover {
+    color: white;
+    background-color: rgba(0, 0, 255, 0.5);
+}
