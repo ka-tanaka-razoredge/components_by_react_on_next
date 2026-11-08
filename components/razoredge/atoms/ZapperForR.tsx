@@ -46,35 +46,46 @@ export default (props) => {
     (async() => {
       
       setPageNumber(parseInt(router.query.page as string));
-      const response = await axios.get(`https://razor-edge.net/gold/${router.query.controller}/doListByJson?page=${router.query.page}&limit=${router.query.limit||limit}&resource=${router.query.resource}&dest=${router.query.dest||'file'}`,
+      const response = await axios.get(`https://razor-edge.net/gold/${router.query.controller}/doListByJson?page=${router.query.page}&limit=${limit}&resource=${router.query.resource}&dest=file`,
         {
           headers: {
           }
         }
       );
-
       const memento = response.data.map((value) => {
         return value;
       });
-
       setAggregate(memento);
     })();
     
   }, [router.query.page, router.query.resource, router.query.controller]);
   
+  const reloadAggregate = (pageNumber) => {
+    (async() => {
+      const response = await axios.get(`https://razor-edge.net/gold/${router.query.controller}/doListByJson?page=${pageNumber}&limit=${limit}&resource=${router.query.resource}&dest=file`,
+        {
+          headers: {
+          }
+        }
+      );
+//      if (response.data.length >= 1) {
+      const memento = response.data.map((value) => {
+        return (value.Bottle) ? value.Bottle : value;
+      });
+      setAggregate(memento);
+//      }
+    })();
+  };
+  
   const goToNext = (e) => {
-    const next = pageNumber + 1;
-    router.push({
-      query: { ...router.query, page: next },
-    });
+    reloadAggregate(pageNumber + 1);
+    setPageNumber(pageNumber + 1);
   };
 
   const goToPrevious = (e) => {
-    if (pageNumber <= 1) return;
-    const prev = pageNumber - 1;
-    router.push({
-      query: { ...router.query, page: prev },
-    });
+    if (pageNumber == 1) return;
+    reloadAggregate(pageNumber - 1);
+    setPageNumber(pageNumber - 1);
   };
   
   const drawIdl = (value) => {
@@ -99,7 +110,7 @@ export default (props) => {
       
         <div style={{}}>
         
-          <div style={{ display: 'flex', position: 'sticky' }}>
+          <div style={{ display: 'flex' }}>
             <div style={{ border: '1px solid silver' }} onClick={ (e) => { goToPrevious(e); } }>＜</div><div>{`page ${pageNumber}/n`}</div><div style={{ border: '1px solid silver' }} onClick={ (e) => { goToNext(e); } }>＞</div>
           </div>
     
@@ -107,18 +118,10 @@ export default (props) => {
           {
             aggregate.map((v) => {
               return (
-                <>
-                {
-                  (props.bo !== 'bumps') ? (<div style={{ border: '1px solid black', margin: '2px 4px' }} onClick={(e) => {}}>
-                    {v.id}&emsp;{v.category}
-                    {drawIdl(v)}
-                  </div>) : (
-                    <div style={{ display: 'flex', gap: `${0.25}rem` }} onClick={(e) => { props.zap(e, v); }}>
-                      <div>{v.bump_id}</div><div dangerouslySetInnerHTML = {{ __html: v.name }} />
-                    </div>
-                  )
-                }
-                </>
+                <div style={{ border: '1px solid black', margin: '2px 4px' }} onClick={(e) => {}}>
+                  {v.id}&emsp;{v.category}
+                  {drawIdl(v)}
+                </div>
               )
             })
           }

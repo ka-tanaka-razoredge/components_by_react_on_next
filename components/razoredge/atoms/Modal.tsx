@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 const Modal = (props) => {
-  const [visible, setVisible] = useState(false);
   const onClick = () => {
-    setVisible(!visible);
-    props.setVisible(!props.visible);
+    props.setVisible(false);
   };
-  
-  useEffect(() => {
-    setVisible(props.visible);
-  }, [props.visible]);
   
   return (
     <>
@@ -17,7 +11,7 @@ const Modal = (props) => {
       {
         `
           .modal {
-            position: absolute;
+            position: fixed;
             z-index: 11000;
             top: 0;
             left: 0;
@@ -34,10 +28,12 @@ const Modal = (props) => {
       </style>
       <div
         className="modal"
-        style={{ visibility: (visible) ? 'visible' : 'collapse' }}
+        style={{ visibility: props.visible ? 'visible' : 'collapse' }}
         onClick={onClick}
       >
-        {props.children}
+        <div onClick={(event) => event.stopPropagation()}>
+          {props.children}
+        </div>
       </div>
     </>
   );

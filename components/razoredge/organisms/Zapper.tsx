@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import Pager from '../../components/atoms/Pager';
+import Pager from '@/components/razoredge/atoms/Pager';
 
 export default (props) => {
   const [aggregate, setAggregate]  = useState(props.contents);
   const [currentPage, setCurrentPage] = useState(0);
   
   const doIt = (e, record) => {
-    props.zap(e, record.body);
+    if (('html' in record) === false) {
+      props.zap(e, record.body);
+    } else {
+      props.zap(e, record);
+    }
   };
   
   const draw = () => {
