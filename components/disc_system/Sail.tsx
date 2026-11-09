@@ -63,7 +63,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           style={{
             border: 'solid 1px rgba(0, 0, 0, 0.5)',
             width: props.width + 'px',
-            height: props.height + 'px',
+height: props.height + 'px',
             transform: buildTransform(),
           }}
           dangerouslySetInnerHTML={{ __html: contents }}

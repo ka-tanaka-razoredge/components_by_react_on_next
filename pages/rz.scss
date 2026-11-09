@@ -82,6 +82,15 @@
   &--1 {
     height: 1rem;
   }
+  &--three-quarter {
+    height: 0.75rem;
+  }
+  &--half {
+    height: 0.5rem;
+  }
+  &--quarter {
+    height: 0.25rem;
+  }
 }
 
 .mat {
@@ -174,4 +183,19 @@
 .channel-button:hover {
     color: white;
     background-color: rgba(0, 0, 255, 0.5);
+}
+
+.keywords-container {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+}
+
+.bottle {
+  &__wrapper {
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    background-color: rgba(255, 0, 0, 0.5);
+  }
 }

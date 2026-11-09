@@ -6,7 +6,7 @@ import axios from 'axios';
 import Editor from "@monaco-editor/react";
 
 import DiscPanel from '@/components/disc_system/molecules/RzController/DiscPanel';
-import ToolBox from '@/components/atoms/ToolBox';
+import ToolBox from '@/components/razoredge/atoms/ToolBoxEx';
 
 /**
  * 

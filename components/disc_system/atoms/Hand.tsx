@@ -133,7 +133,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
     } else {
       if (!props.rows) {
         return (
-          <div dangerouslySetInnerHTML={{ __html: props.contentsForBottomInner }} />
+          <div dangerouslySetInnerHTML={{ __html: Array.isArray(props.contentsForBottomInner) ? props.contentsForBottomInner.join(',') : props.contentsForBottomInner }} />
         );
       }
       return drawMs();
@@ -283,7 +283,16 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           }
           
           .bottom-inner {
-            border-right: 1px solid orange !important;
+            border-right: 4px solid orange !important;
+          }
+          .border-right-graduation {
+            border-right: 4px solid transparent !important;
+
+            background-image:
+              linear-gradient(#ffffff, #ffffff),
+              linear-gradient(to bottom, orange, transparent);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
           }
         `
       }

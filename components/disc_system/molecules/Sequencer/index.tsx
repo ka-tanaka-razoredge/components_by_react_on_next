@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import RzSelect from '@/components/atoms/RzSelect';
+import RzSelect from '@/components/razoredge/atoms/RzSelect';
 import Tank from '@/components/disc_system/Tank';
 
 const Sequencer = () => {

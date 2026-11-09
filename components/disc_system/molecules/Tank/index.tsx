@@ -288,7 +288,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
           height: height + 'px',
           position: 'relative',
           left: left + 'px',
-          transform: `rotateY(${40}deg) rotateX(60deg) translateX(-96px) translateY(50px)`,
+          transform: (props.transform) ? props.transform : `rotateY(${40}deg) rotateX(60deg) translateX(-96px) translateY(50px)`,
         }}
       >
         <canvas ref={canvas} width={width} height={height}></canvas>
@@ -301,6 +301,7 @@ export default React.forwardRef((props: { identifier: string, [key: string]: any
                   identifier={disc.identifier}
                   contents={disc.contents}
                   contentsForFrontInner={disc.contentsForFrontInner}
+                  contentsForFrontOuter={disc.contentsForFrontOuter}
                   contentsForBottomInner={disc.contentsForBottomInner}
                   title={disc.title}
                   height={disc.height}

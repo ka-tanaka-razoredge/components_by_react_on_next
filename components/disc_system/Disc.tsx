@@ -200,9 +200,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
                 border: (props.style?.border) ? props.style.border : 'solid 1px lime',
                 width: (props.width) ? props.width + 'px' : 100 + 'px',
                 height: (props.height) ? props.height + 'px' : 50 + 'px',
-
                 transform: (!props.isFromNow) ? 'rotateX(180deg)' : 'rotateX(180deg) rotateY(180deg)',
-                
               }}
               dangerouslySetInnerHTML={{ __html: (!Array.isArray(props.contentsForFrontInner)) ? props.contentsForFrontInner : props.contentsForFrontInner.join('') }}
               title={t}
@@ -236,7 +234,7 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
               border: 'solid 1px red',
               width: (props.width) ? props.width + 'px' : 100 + 'px',
               height: (props.height) ? props.height + 'px' : 50 + 'px',
-              transform: 'rotateX(180deg)'
+              transform: 'rotateX(180deg)',
             }}
             title={t}
           >
@@ -329,6 +327,27 @@ export default (props: { identifier: string, [key: string]: any }, ref) => {
           }}
         >
           {drawFront()}
+          {/* frontOuter */}
+          {
+            ((!props.isBottomOnly) && (props.contentsForFrontOuter)) && (
+              <div
+                style={
+                  {
+                    position: 'absolute',
+                    top: 0,
+                    width: `${100}px`,
+                    height: `${50}px`,
+                    border: `${1}px solid olive`,
+                    transform: `rotateZ(${180}deg)`,
+                  }
+                }
+              >
+                <div
+                  dangerouslySetInnerHTML={ { __html: (!Array.isArray(props.contentsForFrontOuter)) ? props.contentsForFrontOuter : props.contentsForFrontOuter.join('') } }
+                />
+              </div>
+            )
+          }
         </div>
         {/* shaft */}
 {/*        

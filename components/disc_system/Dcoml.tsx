@@ -1,6 +1,11 @@
 import React, { useRef, useState } from 'react';
 import Ml from './Ml';
 
+/**
+ * props: {
+ *  aggregate: Ml[]
+ * }
+ */
 export default (props) => {
   const contextMenu = useRef();
   const [aggregate, setAggregate] = useState(

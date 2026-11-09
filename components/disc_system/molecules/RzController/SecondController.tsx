@@ -12,7 +12,7 @@ import axios from 'axios';
 import Editor from "@monaco-editor/react";
 import json5 from 'json5';
 
-import ToolBox from '@/components/atoms/ToolBox';
+import ToolBox from '@/components/razoredge/atoms/ToolBoxEx';
 
 
 export default forwardRef((props, ref) => {
@@ -447,7 +447,7 @@ export default forwardRef((props, ref) => {
                 />
               </div>
               <div>
-                <div style={{ width: '5rem' }}><span title='Set table name when you want to access not sailing_ships.'>resource:&nbsp;</span></div>
+                <div style={{ width: '5rem' }}><span title={`Set table name when you want to access not sailing_ships.\n[bottles, bumps, sports, soms, sailing_ship_slices]`}>resource:&nbsp;</span></div>
                 <input type='text' onChange={ (e) => { setResource(e.target.value); } } value={ resource } /><br />
               </div>
               <div className="separator-1"></div>

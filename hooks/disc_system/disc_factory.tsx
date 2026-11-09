@@ -10,6 +10,7 @@ import PastOrFuture from '@/components/disc_system/PastOrFuture';
 import Bottle from '@/components/disc_system/atoms/Bottle';
 
 import DiscForDcoml from '@/components/disc_system/DiscForDcoml';
+
 import Ms from '@/components/atoms/Ms';
 import Matrix from '@/components/rz_uml/atoms/Matrix';
 import Cluster from '@/components/rz_uml/atoms/Cluster';
@@ -23,6 +24,21 @@ import Cube from '@/components/disc_system/Cube';
 import Reel from '@/components/disc_system/atoms/Reel';
 import Ml from '@/components/disc_system/molecules/Ml';
 import JohariWindow from '@/components/disc_system/molecules/JohariWindow';
+import VerticalDisc from '@/components/disc_system/atoms/VerticalDisc';
+import Spinner from '@/components/atoms/Spinner';
+
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  MiniMap,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Position,
+  MarkerType,
+} from '@xyflow/react';
+import ReactFlowWrapper from '@/components/shared/ReactFlowWrapper';
 
 import Tank from '@/components/disc_system/molecules/Tank';
 
@@ -62,6 +78,14 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
           />
         );
         break;
+      case 'VerticalDisc':
+        reply = (
+          <VerticalDisc
+            {...disc}
+            key={disc.identifier}
+          />
+        );
+        break;
       case 'DiscForDcoml':
         reply = (
           <DiscForDcoml
@@ -83,7 +107,16 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
         } else if (disc.subType === 'Reel') {
           doms.push(<Reel { ...disc.reel } />);
         } else if (disc.subType === 'SailingShip') {
-          doms.push(<Tank ref={ref} { ...disc.sailingShip } />);
+          doms.push(<Tank ref={ref} { ...disc.sailingShip } transform='rotateZ(360deg) rotateX(-40deg) translateX(-48px) translateY(-16px)' />);
+        } else if (disc.subType === 'Spinner') {
+          doms.push(<Spinner { ...disc.spinner } />);
+        } else if (disc.subType == 'ReactFlow') {
+          doms.push(<ReactFlowWrapper {
+              ...disc.reactFlow
+            }
+            sourcePosition={Position.Bottom}
+            targetPosition={Position.Top}
+          />)
         }
 
         reply = (
@@ -124,6 +157,7 @@ const useDiscFactory = (lop: { [key: string]: any }) => {
             contentsForBottomOuter={disc.contentsForBottomOuter}
             top={disc.top}
             left={disc.left}
+            z={disc.z}
             height={disc.height}
             width={disc.width}
             views={disc.views}

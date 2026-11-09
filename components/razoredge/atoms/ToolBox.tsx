@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import Modal from '@/components/atoms/Modal';
+import Modal from '@/components/razoredge/atoms/ModalEx';
 import Sequencer from '@/components/disc_system/molecules/Sequencer';
 
 export default (props) => {

@@ -1,5 +1,13 @@
 import React, { useRef, useState } from 'react';
 
+/**
+ * props: {
+ *   singletone: {
+ *     m,
+ *     l,
+ *   }
+ * }
+ */
 export default (props) => {
   const listener = useRef(null);
   const defaultWidth = `${0.9}rem`;

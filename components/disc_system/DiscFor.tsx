@@ -44,11 +44,13 @@ console.log('DiscFor.props: ', props);
   };
 
   const drawFront = () => {
+console.log('DiscFor.drawFront', props);
+// rotateZ(90deg) rotateX(-45deg) rotateY(1deg)
     if (props.views?.frontInner) {
       if (props.subType === 'SailingShip') {
         return (
           <div
-            style={{ transform: 'rotateX(180deg)', backgroundColor: 'rgba(255, 255, 255, 1.0)', border: `${1}px solid black`, height: `${props.height}px` }}
+            style={{ transform: 'rotateZ(-270deg) rotateX(-180deg)', backgroundColor: 'rgba(255, 255, 255, 1.0)', border: `${1}px solid black`, height: `${props.height}px` }}
           >
             {props.children}
           </div>
