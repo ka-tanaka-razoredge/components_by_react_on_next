@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-export default (props) => {
+type Props = {
+  aggregate: any[];
+  style?: any;
+  source?: string;
+};
+
+export default (props: Props) => {
   const [aggregate, setAggregate] = useState((Array.isArray(props.aggregate[0])) ? props.aggregate[0] : props.aggregate);
   const [pageNumber, setPageNumber] = useState(0);
   
   useEffect(() => {
     if (Array.isArray(props.aggregate[0])) setAggregate(props.aggregate[pageNumber]);
-  }, [pageNumber]);
-  
+  }, [props.aggregate, pageNumber]);
+
   const drawIndents = (tweet) => {
     if ('indents' in tweet) {
       const indents = Array(tweet.indents).fill(null);
@@ -40,12 +46,32 @@ export default (props) => {
         </div>
         {
           aggregate.map((v, index) => {
-            return (
-              <div key={index} className="item" className="item" style={{ ...props.style }}>
-                { drawIndents(v) }
-                <div dangerouslySetInnerHTML={{ __html: v.value }}></div>
-              </div>
-            )
+            if (!props.source) {
+              return (
+                <div key={index} className="item" style={{ ...props.style }}>
+                  { drawIndents(v) }
+                  <div dangerouslySetInnerHTML={{ __html: v.value }}></div>
+                </div>
+              )
+            } else {
+              return (
+                <div key={index} style={{ padding: '0.25rem 0.25rem', ...props.style }}>
+                  <div style={{ display: 'flex' }} onClick={() => {}}>
+                    <div>id: </div>
+                    <div>{v.tweetId}</div>
+                  </div>
+                  <div>
+                    <div style={{ display: 'flex', backgroundColor: 'white' }}>
+                      { drawIndents(v) }
+                      <div dangerouslySetInnerHTML={{ __html: v.value }}></div>
+                    </div>
+                  </div>
+                  <div>
+                    <button>reply</button>
+                  </div>
+                </div>
+              )
+            }
           })
         }
       </div>
