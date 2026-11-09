@@ -1,15 +1,15 @@
 // @ts-nocheck
 
 import React, { useEffect, useState } from 'react';
-import Dac from '../Dac';
+import Dac from '@/components/razoredge/Dac';
 import Ofar from '@/components/disc_system/atoms/Ofar';
-import Cluster from '../Cluster';
+import Cluster from '@/components/razoredge/Cluster';
 
 /**
  * props: { zap, aggregate, uriPrefix }
  */
 export default (props) => {
-  const [aggregate, setAggregate]  = useState(props.contents);
+  const [aggregate, setAggregate]  = useState(() => props.contents);
   const [currentPage, setCurrentPage] = useState(0);
   const [uriPrefix] = useState(props.uriPrefix || '');
 
@@ -95,7 +95,6 @@ export default (props) => {
   };
   
   const forward = () => {
-console.log(aggregate);
     if (aggregate.length - 1 <= currentPage) {
     } else {
       const value = currentPage + 1;

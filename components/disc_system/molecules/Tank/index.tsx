@@ -20,7 +20,7 @@ import DiscForDcoml from '@/components/disc_system/DiscForDcoml';
 import DiscForDcosml from '@/components/disc_system/DiscForDcosml';
 import MutableSail from '@/components/disc_system/MutableSail';
 import Cable from './Cable';
-import Carousel from '@/components/Carousel';
+import Carousel from '@/components/razoredge/Carousel';
 import PastOrFuture from './PastOrFuture';
 import Wings from '@/components/disc_system/molecules/Wings';
 import Ms from '../atoms/Ms';
