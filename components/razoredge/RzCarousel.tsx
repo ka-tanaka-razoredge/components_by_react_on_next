@@ -7,9 +7,11 @@ export default (props) => {
   const floator = useRef<HTMLDivElement>();
   const [styleForCurrent, setStyleForCurrent] = useState({});
   const [cyclic, setCyclic] = useState(0);
-  let currentIndex = 0;
+  const [currentIndex, setCurrentIndex] = useState(0);
   
   const forward = () => {
+    (currentIndex + 1 <= props.contents.length - 1) ? setCurrentIndex(currentIndex + 1) : setCurrentIndex(0);
+
     const unit = 400;
     const valueToSet = cyclic + 400;
     setCyclic(valueToSet);
@@ -23,6 +25,8 @@ export default (props) => {
   };
   
   const backward = () => {
+    (0 < currentIndex) ? setCurrentIndex(currentIndex - 1) : setCurrentIndex(props.contents.length - 1);
+
     const unit = 400;
     const valueToSet = cyclic - unit;
     setCyclic(valueToSet);
@@ -96,13 +100,19 @@ export default (props) => {
         `
       }
       </style>
-      <div id='ground' style={{ position: 'relative', backgroundColor: `red`, width: `400px`, height: `225px`, overflow: 'hidden' }}>
+      <div id='ground' style={{ position: 'relative', backgroundColor: `red`, width: `400px`, height: `225px` }}>
         <div ref={ floator } style={ styleForCurrent } >
         {
-          props.contents.map((contents) => {
-            return (
-              <div className='slot'>{contents.html}</div>
-            )
+          props.contents.map((contents, index) => {
+            if ((index !== currentIndex)) {
+              return (
+                <div key={index} className='slot' style={{ visibility: 'hidden' }}>{contents.html}</div>
+              )
+            } else {
+              return (
+                <div key={index} className='slot'>{contents.html}</div>
+              )
+            }
           })
         }
         </div>
