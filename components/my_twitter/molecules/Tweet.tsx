@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import dynamic from 'next/dynamic';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import dynamic from "next/dynamic";
 
-const TweetListView = dynamic(() => import('./TweetListView'));
+const TweetListView = dynamic(() => import("./TweetListView"));
 
 type Props = {
   style?: any;
@@ -12,7 +12,8 @@ type Props = {
   onPostSuccess?: () => void;
   apiBaseUrl?: string;
   accessTokenKey?: string;
-  tweetsById?: Record<number, Props['tweet']>;
+  tweetsById?: Record<number, Props["tweet"]>;
+  relation?: TweetRelation;
   onImageClick?: (image: { src: string; alt: string }) => void;
   tweet: {
     tweetId: number;
@@ -21,15 +22,19 @@ type Props = {
 };
 
 type TweetRelation = {
+  id: number;
   subject: number;
+  object: number;
+  verb: string;
+  index: number | null;
 };
 
 const repliesPerPage = 5;
 
 const Tweet = (props: Props) => {
-  const apiBaseUrl = props.apiBaseUrl ?? 'https://razor-edge.net:3110';
+  const apiBaseUrl = props.apiBaseUrl ?? "https://razor-edge.net:3110";
   const accessTokenKey =
-    props.accessTokenKey ?? 'my-twitter-for-razoredge_access-token';
+    props.accessTokenKey ?? "my-twitter-for-razoredge_access-token";
   const [outgoingIds, setOutgoingIds] = useState<number[]>([]);
   const [incomingRelations, setIncomingRelations] = useState<
     TweetRelation[] | null
@@ -37,16 +42,27 @@ const Tweet = (props: Props) => {
   const [incomingRelationCount, setIncomingRelationCount] = useState<
     number | null
   >(null);
-  const [replies, setReplies] = useState<Props['tweet'][]>([]);
+  const [replies, setReplies] = useState<Props["tweet"][]>([]);
+  const [replyRelationsBySubject, setReplyRelationsBySubject] = useState<
+    Record<number, TweetRelation>
+  >({});
   const [repliesVisible, setRepliesVisible] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [relationIndex, setRelationIndex] = useState<number | null>(
+    props.relation?.index ?? null
+  );
+  const [relationIndexValue, setRelationIndexValue] = useState(
+    props.relation?.index?.toString() ?? ""
+  );
+  const [savingRelationIndex, setSavingRelationIndex] = useState(false);
+  const [relationIndexStatus, setRelationIndexStatus] = useState("");
   const handleContentClick = (event) => {
     if (!props.onImageClick) {
       return;
     }
 
-    const image = (event.target as HTMLElement).closest('img');
+    const image = (event.target as HTMLElement).closest("img");
     if (!(image instanceof HTMLImageElement)) {
       return;
     }
@@ -57,7 +73,7 @@ const Tweet = (props: Props) => {
       alt: image.alt,
     });
   };
-  const replyPages = replies.reduce<Props['tweet'][][]>(
+  const replyPages = replies.reduce<Props["tweet"][][]>(
     (pages, replyTweet, index) => {
       const pageIndex = Math.floor(index / repliesPerPage);
       if (!pages[pageIndex]) {
@@ -66,7 +82,7 @@ const Tweet = (props: Props) => {
       pages[pageIndex].push(replyTweet);
       return pages;
     },
-    [],
+    []
   );
 
   useEffect(() => {
@@ -82,10 +98,10 @@ const Tweet = (props: Props) => {
           {
             params: {
               subject_id: props.tweet.tweetId,
-              verb: 'refer',
+              verb: "refer",
             },
             headers: { Authorization: `Bearer ${token}` },
-          },
+          }
         );
         setOutgoingIds(response.data.map((relation) => relation.object));
       } catch (error) {
@@ -97,6 +113,12 @@ const Tweet = (props: Props) => {
   }, [accessTokenKey, apiBaseUrl, props.tweet.tweetId, props.refreshKey]);
 
   useEffect(() => {
+    setRelationIndex(props.relation?.index ?? null);
+    setRelationIndexValue(props.relation?.index?.toString() ?? "");
+    setRelationIndexStatus("");
+  }, [props.relation?.id, props.relation?.index]);
+
+  useEffect(() => {
     const fetchIncomingRelationCount = async () => {
       const token = localStorage.getItem(accessTokenKey);
       if (!token) {
@@ -104,13 +126,10 @@ const Tweet = (props: Props) => {
       }
 
       try {
-        const response = await axios.get(
-          `${apiBaseUrl}/tweet-relations`,
-          {
-            params: { object: props.tweet.tweetId },
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+        const response = await axios.get(`${apiBaseUrl}/tweet-relations`, {
+          params: { object: props.tweet.tweetId },
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setIncomingRelationCount(response.data.length);
       } catch (error) {
         console.log(error);
@@ -133,10 +152,10 @@ const Tweet = (props: Props) => {
           {
             params: {
               object_id: props.tweet.tweetId,
-              verb: 'refer',
+              verb: "refer",
             },
             headers: { Authorization: `Bearer ${token}` },
-          },
+          }
         );
         setIncomingRelations(response.data);
       } catch (error) {
@@ -148,13 +167,18 @@ const Tweet = (props: Props) => {
   }, [accessTokenKey, apiBaseUrl, props.tweet.tweetId, props.refreshKey]);
 
   const drawIndents = (tweet) => {
-    if ('indents' in tweet) {
+    if ("indents" in tweet) {
       const indents = Array(tweet.indents).fill(null);
-      return (
-        indents.map((v) => {
-          return (<div style={{ backgroundColor: 'rgba(255, 255, 255, 1.0)', width: '1rem' }}></div>);
-        })
-      );
+      return indents.map((v) => {
+        return (
+          <div
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 1.0)",
+              width: "1rem",
+            }}
+          ></div>
+        );
+      });
     }
   };
 
@@ -167,6 +191,7 @@ const Tweet = (props: Props) => {
     if (repliesVisible || replies.length > 0) {
       setRepliesVisible(false);
       setReplies([]);
+      setReplyRelationsBySubject({});
       return;
     }
 
@@ -176,7 +201,8 @@ const Tweet = (props: Props) => {
     }
 
     try {
-      const fetchedReplies: Props['tweet'][] = [];
+      const fetchedReplies: Props["tweet"][] = [];
+      const fetchedRelationsBySubject: Record<number, TweetRelation> = {};
       let page = 1;
 
       while (true) {
@@ -185,12 +211,12 @@ const Tweet = (props: Props) => {
           {
             params: {
               object_id: props.tweet.tweetId,
-              verb: 'refer',
+              verb: "refer",
               page,
               limit: repliesPerPage,
             },
             headers: { Authorization: `Bearer ${token}` },
-          },
+          }
         );
         const relations: TweetRelation[] = relationsResponse.data;
         if (page === 1) {
@@ -199,19 +225,17 @@ const Tweet = (props: Props) => {
         if (relations.length === 0) {
           break;
         }
+        relations.forEach((relation) => {
+          fetchedRelationsBySubject[relation.subject] = relation;
+        });
 
         const replyTweets = relations
           .map((relation) => props.tweetsById?.[relation.subject])
-          .filter(
-            (tweet): tweet is Props['tweet'] =>
-              tweet !== undefined,
-          );
+          .filter((tweet): tweet is Props["tweet"] => tweet !== undefined);
         if (replyTweets.length !== relations.length) {
-          throw new Error('Some reply Tweets are not loaded');
+          throw new Error("Some reply Tweets are not loaded");
         }
-        fetchedReplies.push(
-          ...replyTweets,
-        );
+        fetchedReplies.push(...replyTweets);
 
         if (relations.length < repliesPerPage) {
           break;
@@ -220,6 +244,7 @@ const Tweet = (props: Props) => {
       }
 
       setReplies(fetchedReplies);
+      setReplyRelationsBySubject(fetchedRelationsBySubject);
       setRepliesVisible(true);
     } catch (error) {
       console.log(error);
@@ -231,7 +256,7 @@ const Tweet = (props: Props) => {
       return;
     }
 
-    if (!window.confirm('この Tweet と参照 relation を削除しますか？')) {
+    if (!window.confirm("この Tweet と参照 relation を削除しますか？")) {
       return;
     }
 
@@ -242,17 +267,55 @@ const Tweet = (props: Props) => {
 
     setDeleting(true);
     try {
-      await axios.delete(
-        `${apiBaseUrl}/tweets/${props.tweet.tweetId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await axios.delete(`${apiBaseUrl}/tweets/${props.tweet.tweetId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setDeleted(true);
     } catch (error) {
       console.log(error);
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const saveRelationIndex = async () => {
+    if (!props.relation) {
+      return;
+    }
+
+    const normalizedValue = relationIndexValue.trim();
+    const nextIndex = normalizedValue === "" ? null : Number(normalizedValue);
+    if (nextIndex !== null && !Number.isSafeInteger(nextIndex)) {
+      setRelationIndexStatus("index must be an integer");
+      return;
+    }
+
+    const token = localStorage.getItem(accessTokenKey);
+    if (!token) {
+      return;
+    }
+
+    setSavingRelationIndex(true);
+    setRelationIndexStatus("");
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/tweet-relations/${props.relation.id}`,
+        { index: nextIndex },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setRelationIndex(response.data.index);
+      setRelationIndexValue(response.data.index?.toString() ?? "");
+      setRelationIndexStatus("saved");
+    } catch (error) {
+      console.log(error);
+      setRelationIndexStatus("save failed");
+    } finally {
+      setSavingRelationIndex(false);
     }
   };
 
@@ -263,79 +326,110 @@ const Tweet = (props: Props) => {
   return (
     <>
       <style>
-      {
-        `
+        {`
           .container-for-replies {
             margin-top: 0.25rem;
             margin-left: 1rem;
           }
-        `
-      }
+        `}
       </style>
-      <div style={{ padding: '0.25rem 0.25rem', ...props.style }}>
+      <div style={{ padding: "0.25rem 0.25rem", ...props.style }}>
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            position: 'relative',
-            paddingRight: '1.25rem',
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+            paddingRight: "1.25rem",
           }}
         >
           <div
             style={{
-              display: 'flex',
+              display: "flex",
               flex: 1,
-              flexWrap: 'wrap',
+              flexWrap: "wrap",
               minWidth: 0,
             }}
           >
             <div>id: </div>
             <div>{props.tweet.tweetId}</div>
-            <div style={{ width: '0.25rem' }} />
-            {outgoingIds.length > 0 && (
-              <div>{`refer: [${outgoingIds.join(', ')}]`}</div>
+            <div style={{ width: "0.25rem" }} />
+            {props.relation && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.25rem",
+                }}
+              >
+                <label htmlFor={`tweet-relation-index-${props.relation.id}`}>
+                  {`index: `}
+                </label>
+                <input
+                  id={`tweet-relation-index-${props.relation.id}`}
+                  type="number"
+                  step="1"
+                  value={relationIndexValue}
+                  onChange={(event) =>
+                    setRelationIndexValue(event.target.value)
+                  }
+                  disabled={savingRelationIndex}
+                />
+                <button
+                  type="button"
+                  onClick={() => void saveRelationIndex()}
+                  disabled={savingRelationIndex}
+                >
+                  {savingRelationIndex ? "updating..." : "update"}
+                </button>
+                {relationIndexStatus && <span>{relationIndexStatus}</span>}
+                <div style={{ width: "0.25rem" }} />
+              </div>
             )}
+            {outgoingIds.length > 0 && (
+              <div>{`refer: [${outgoingIds.join(", ")}]`}</div>
+            )}
+
+
           </div>
           <button
             type="button"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '1rem',
-              height: '1rem',
-              marginLeft: '0.25rem',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "1rem",
+              height: "1rem",
+              marginLeft: "0.25rem",
               padding: 0,
               lineHeight: 1,
               flexShrink: 0,
-              position: 'absolute',
-              top: '50%',
+              position: "absolute",
+              top: "50%",
               right: 0,
-              transform: 'translateY(-50%)',
+              transform: "translateY(-50%)",
             }}
             onClick={() => void removeTweet()}
             disabled={deleting || incomingRelationCount !== 0}
             title={
               incomingRelationCount === null
-                ? '参照 relation を確認中です'
+                ? "参照 relation を確認中です"
                 : incomingRelationCount > 0
-                  ? '他の Tweet から参照されているため削除できません'
-                  : 'Tweet を削除'
+                ? "他の Tweet から参照されているため削除できません"
+                : "Tweet を削除"
             }
           >
             ×
           </button>
         </div>
         <div>
-          <div style={{ display: 'flex', backgroundColor: 'white' }}>
-            { drawIndents(props.tweet) }
+          <div style={{ display: "flex", backgroundColor: "white" }}>
+            {drawIndents(props.tweet)}
             <div
               dangerouslySetInnerHTML={{ __html: props.tweet.value }}
               onClick={handleContentClick}
             ></div>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '0.25rem' }}>
+        <div style={{ display: "flex", gap: "0.25rem" }}>
           <button onClick={reply}>reply</button>
           <button
             onClick={() => void showReplies()}
@@ -357,6 +451,7 @@ const Tweet = (props: Props) => {
               apiBaseUrl={apiBaseUrl}
               accessTokenKey={accessTokenKey}
               tweetsById={props.tweetsById}
+              relationsBySubject={replyRelationsBySubject}
               onImageClick={props.onImageClick}
             />
           </div>
